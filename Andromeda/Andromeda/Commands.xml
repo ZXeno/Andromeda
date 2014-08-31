@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<commandlist version="1.0" encoding="utf-8">
+  <toolactions>
+    
+    <component name="Client Schedule Actions">
+      <action>
+        <task>Hardware Inventory Cycle</task>
+        <parameter>00000000-0000-0000-0000-000000000001</parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Software Inventory Cycle</task>
+        <parameter>00000000-0000-0000-0000-000000000002</parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Discovery Data Collection Cycle (Send DDR)</task>
+        <parameter>00000000-0000-0000-0000-000000000003</parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+    </component>
+
+    <component name="Client Agent Actions">
+      <action>
+        <task>Get ConfigMgr Client Management Point</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Restart SMS Agent Host Service</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Get SMS Agent Host Service State</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+    </component>
+
+    <component name="Application Virtualization">
+      <action>
+        <task>Get APP-V Client Packages</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Get APP-V Client Configuration</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Get APP-V Client Version</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Enable APP-V Client Package Scripts</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+    </component>
+    
+
+    <component name="Other Actions">
+      <action>
+        <task>Restart Computer</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Shutdown Computer</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Log Off Current User</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      <action>
+        <task>Get Logged On User</task>
+        <parameter></parameter>
+        <report>true</report>
+        <jobtype></jobtype>
+      </action>
+      
+    </component>
+  </toolactions>
+</commandlist>
