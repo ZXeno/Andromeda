@@ -13,9 +13,10 @@ namespace Andromeda
 {
     public class CommandImport
     {
-        public void ImportCommands()
+        public static void ImportCommands()
         {
-
+            string importPath = Environment.CurrentDirectory + "\\commands\\commands.xml";
+            
         }
     }
 }
