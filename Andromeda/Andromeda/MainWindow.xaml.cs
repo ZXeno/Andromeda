@@ -22,24 +22,15 @@ namespace Andromeda
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string WorkingDirectoryPath = Environment.CurrentDirectory;
+        public static string WorkingPath = Environment.CurrentDirectory;
         public const string ConfigFileName = "config.dat";
         public const string CommandsFileName = "commands.xml";
-        public const string CommandsDirectory = "\\commands\\";
-        public const string ResultsDirectory = "\\results\\";
+        public const string CommandsDir = "\\commands\\";
+        public const string ResultsDir = "\\results\\";
         public XmlDocument ConfigFile;
         public XmlDocument CommandsFile;
 
-        private ResultConsole rconsole;
-
-        public ResultConsole ResultConsole
-        {
-            get { return rconsole; }
-        }
-        public string ConsoleText
-        {
-            get { return rconsole.ConsoleString; }
-        }
+        public Config configuration;
 
         public MainWindow()
         {
@@ -50,11 +41,10 @@ namespace Andromeda
 
         public void ImportConfiguration()
         {
-            string p = WorkingDirectoryPath + "\\" + ConfigFileName;
-            rconsole.AddConsoleLine("config file path: " + p);
+            string p = WorkingPath + "\\" + ConfigFileName;
             if (CheckForConfigFile())
             {
-                ResultConsole.AddConsoleLine("Configuration file found at: " + p);
+                ResultConsole.AddConsoleLine("Configuration file found.");
                 ConfigFile = XMLImport.GetXMLFileData(p);
                 if (ConfigFile != null)
                 {
@@ -72,22 +62,18 @@ namespace Andromeda
 
         public void ImportCommands()
         {
-            CommandImport.ImportCommands();
-        }
-
-        public void ExternallyAddToConsole(string s)
-        {
-            rconsole.AddConsoleLine(s);
+            // External Commands functionality not implemented yet.
+            //CommandImport.ImportCommands(WorkingPath + CommandsDir + CommandsFileName);
         }
 
         private bool CheckForConfigFile()
         {
-            return File.Exists(WorkingDirectoryPath + "\\" + ConfigFileName);
+            return File.Exists(WorkingPath + "\\" + ConfigFileName);
         }
 
         private void CreateConfigFile(string pathToFile)
         {
-            rconsole.AddConsoleLine("I'm pretending to generate a new config file!");
+            ResultConsole.AddConsoleLine("I'm pretending to generate a new config file!");
         }
 
         private void OnUpdateConsole()
@@ -97,7 +83,7 @@ namespace Andromeda
 
         private void InitializeConsole()
         {
-            rconsole = new ResultConsole();
+            ResultConsole.InitializeResultConsole();
             ResultConsole.ConsoleChange += OnUpdateConsole;
         }
     }

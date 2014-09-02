@@ -5,35 +5,29 @@ using System.Text;
 
 namespace Andromeda
 {
-    public class ResultConsole
+    public static class ResultConsole
     {
         public delegate void ConsoleEvent();
         public static event ConsoleEvent ConsoleChange;
 
-        private List<string> resultconents;
-        private string consolestring = "NULL";
+        private static List<string> history;
+        private static string consoleString = "";
 
-        public List<string> Contents 
+        public static List<string> History { get { return history; } }
+        public static string ConsoleString { get { return consoleString; } }
+        public static int LoggingLevel { get; set; }
+
+        public static void InitializeResultConsole()
         {
-            get { return resultconents; }
+            consoleString = "";
+            history = new List<string>();
+            AddConsoleLine("Result console started -- " + DateTime.Now.ToString());
         }
 
-        public string ConsoleString 
-        { 
-            get { return consolestring; } 
-        }
-
-        public ResultConsole()
+        public static void AddConsoleLine(string str)
         {
-            consolestring = "";
-            resultconents = new List<string>();
-            AddConsoleLine("Result console started -- " + System.DateTime.Now.ToString());
-        }
-
-        public void AddConsoleLine(string str)
-        {
-            resultconents.Add(str + "\n");
-            consolestring += str + "\n";
+            History.Add(str + "\n");
+            consoleString += str + "\n";
             OnConsoleEvent();
         }
 
@@ -43,6 +37,19 @@ namespace Andromeda
             {
                 ConsoleChange();
             }
+        }
+
+        // Dumps the entire console and console history to a log file.
+        public static void DumpConsoleHistoryToLogFile()
+        {
+            string historydump = "";
+            foreach (string entry in History)
+            {
+                historydump += entry + "\n";
+            }
+
+            string filepath = Environment.CurrentDirectory + "\\results\\" + DateTime.Now + ".txt";
+            WriteToTextFile.WriteToLogFile(filepath, historydump);
         }
     }
 }

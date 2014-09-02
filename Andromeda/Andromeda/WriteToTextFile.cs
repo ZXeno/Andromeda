@@ -17,7 +17,11 @@ namespace Andromeda
 
             using (StreamWriter outfile = new StreamWriter(filepath, true))
             {
-                await outfile.WriteAsync(sb.ToString());
+                try { await outfile.WriteAsync(sb.ToString()); }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Unable to write to log file. \n" + e.ToString());
+                }
             }
         }
     }
