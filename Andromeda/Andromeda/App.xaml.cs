@@ -14,39 +14,6 @@ namespace Andromeda
     /// </summary>
     public partial class App : Application
     {
-        public static string WorkingDirectoryPath = Environment.CurrentDirectory;
-        public const string ConfigFileName = "config.dat";
-        public const string CommandsFileName = "commands.xml";
-        public const string CommandsDirectory = "\\commands\\";
-        public const string ResultsDirectory = "\\results\\";
-        public XmlDocument ConfigFile;
-        public XmlDocument CommandsFile;
-
-        public void ImportConfiguration()
-        {
-            if (CheckForConfigFile())
-            {
-                ConfigFile = XMLImport.GetXMLFileData(WorkingDirectoryPath + "\\" + ConfigFileName);
-            }
-            else
-            {
-
-            }
-        }
-
-        public void ImportCommands()
-        {
-            CommandImport.ImportCommands();
-        }
-
-        private bool CheckForConfigFile()
-        {
-            return File.Exists(Environment.CurrentDirectory + "\\" + "config.ini");
-        }
-
-        private void CreateConfigFile()
-        {
-
-        }
+        
     }
 }

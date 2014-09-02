@@ -102,9 +102,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\tgb.png" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Commands.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

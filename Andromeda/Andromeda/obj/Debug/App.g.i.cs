@@ -62,8 +62,6 @@ namespace Andromeda {
         public static void Main() {
             Andromeda.App app = new Andromeda.App();
             app.InitializeComponent();
-            app.ImportConfiguration();
-            app.ImportCommands();
             app.Run();
         }
     }

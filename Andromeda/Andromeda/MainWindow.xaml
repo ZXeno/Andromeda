@@ -1,12 +1,13 @@
-﻿<Window x:Class="Andromeda.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Andromeda" x:Class="Andromeda.MainWindow"
         Title="Andromeda" Height="750" Width="800"
         ResizeMode="NoResize">
+
     <Grid>
+
         <Image HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="800" Source="Resources/andromeda.jpg" Stretch="UniformToFill"/>
         <TextBox x:Name="DEVICE_LIST_TEXTBOX" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Text="Wxxxxxx" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" />
-        <TextBox x:Name="RESULTS_BOX" Margin="16,0,16,35" TextWrapping="Wrap" Text="RESULTS_BOX" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212"/>
+        <TextBox x:Name="RESULTS_BOX" Text="" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" />
         <ListBox x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Height="419" Margin="0,100,16,0" VerticalAlignment="Top" Width="622" Background="#A5474747"/>
         <Button x:Name="CHANGE_CREDS_BTTN" Content="Change Credentials" HorizontalAlignment="Right" Margin="0,10,16,0" VerticalAlignment="Top" Width="152" BorderBrush="#FF004064" Background="#CC404040" Foreground="#FFE0E0E0" FontFamily="Lucida Console"/>
         <Label x:Name="CREDS_LABEL" Content="PEACEHEALTH\CREDENTIALS" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,26,16,0" VerticalAlignment="Top" Width="182" Height="23" FontFamily="Lucida Console" FontWeight="Bold" />

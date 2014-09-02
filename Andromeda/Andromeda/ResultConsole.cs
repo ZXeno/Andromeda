@@ -5,30 +5,44 @@ using System.Text;
 
 namespace Andromeda
 {
-    class ResultConsole
+    public class ResultConsole
     {
+        public delegate void ConsoleEvent();
+        public static event ConsoleEvent ConsoleChange;
+
         private List<string> resultconents;
-        private string consolestring = "";
+        private string consolestring = "NULL";
 
         public List<string> Contents 
         {
             get { return resultconents; }
-            set { resultconents = value; }
         }
 
-        public string ConsoleString { get { return consolestring; } }
+        public string ConsoleString 
+        { 
+            get { return consolestring; } 
+        }
 
         public ResultConsole()
         {
+            consolestring = "";
             resultconents = new List<string>();
-            resultconents.Add("Result console started -- " + System.DateTime.Now.ToString());
-            consolestring = "Result console started -- " + System.DateTime.Now.ToString();
+            AddConsoleLine("Result console started -- " + System.DateTime.Now.ToString());
         }
 
         public void AddConsoleLine(string str)
         {
-            Contents.Add(str + "\n");
+            resultconents.Add(str + "\n");
             consolestring += str + "\n";
+            OnConsoleEvent();
+        }
+
+        public static void OnConsoleEvent()
+        {
+            if (ConsoleChange != null)
+            {
+                ConsoleChange();
+            }
         }
     }
 }

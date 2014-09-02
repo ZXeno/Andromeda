@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+  <settings>
+    <pingtest flag="enable" />
+    <saveofflinecomputers flag="true" />
+    <saveonlinecomputers flag="true" />
+    <logginglevel flag="3" />
+    <promptuserforcreds flag="true" />
+    <savedCredentails flag="false">
+      <warningText>--IT IS HIGHLY RECOMMENDED YOU DO NOT SAVE YOUR CREDENTAILS.-- /n Saving your credentials is a major security risk. /n Are you absolutely, completely sure you want to save credentials?</warningText>
+      <warningObserved flag="no" />
+      <secondWarningText>If you save your credentials, you are responsible for all actions taken under those credentials. /n This is your second warning not to save credentials.</secondWarningText>
+      <secondWarningObserved flag="no" />
+      <thirdWarningText>Okay, I get it... You're going to save credentials. /n I'm still telling you not to. It's no joke. /n You could get in trouble if they leak.</thirdWarningText>
+      <thirdWarningObserved flag="no" />
+      <savedUser>Don't do it!</savedUser>
+      <savedPass></savedPass>
+    </savedCredentails>
+  </settings>
+  <sccmconfig>
+    <checkServicesList flag="yes">
+      <svc>winmgmt</svc>
+      <svc>lanmanserver</svc>
+      <svc>rpcss</svc>
+      <svc>auauserv</svc>
+      <svc>bits</svc>
+      <svc>ccmexec</svc>
+    </checkServicesList>
+    <autoInstallClient flag="false" />
+    <checkEnabledDCOM flag="true" />
+    <checkEnableRemoteConnect flag="false" />
+    <ccmSetupPath flag="" />
+    <ccmSetupParameters flag="" />
+    <enableFullUninstall flag="false" />
+    <sccmSiteServer flag="" />
+  </sccmconfig>
+</config>

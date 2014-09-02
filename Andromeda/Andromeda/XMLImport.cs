@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Windows;
 using System.Text;
 using System.Xml;
 using System.IO;
@@ -19,7 +20,12 @@ namespace Andromeda
             if (FileExists(path))
             {
                 xdoc = new XmlDocument();
-                xdoc.Load(path);
+                try { xdoc.Load(path); }
+                catch (Exception e) 
+                {
+                    MessageBox.Show("Error! Something went wrong. Exception information: " + e.ToString());
+                    App.Current.Shutdown();
+                }
                 return xdoc;
             }
             else
