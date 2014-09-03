@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Andromeda
 {
-    class Config
+    public class Config
     {
         private bool pingTest = true;
         private bool saveOfflineComputers = true;
