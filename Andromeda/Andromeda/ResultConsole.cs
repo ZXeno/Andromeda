@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Andromeda
 {
@@ -48,8 +49,22 @@ namespace Andromeda
                 historydump += entry + "\n";
             }
 
-            string filepath = Environment.CurrentDirectory + "\\results\\" + DateTime.Now + ".txt";
+            string filepath = Environment.CurrentDirectory + "\\results\\" + DateTime.Now + "_console_dump.txt";
             WriteToTextFile.WriteToLogFile(filepath, historydump);
+        }
+
+        private static void AddLineToHistoryDumpFile(string line)
+        {
+            string filePath = Environment.CurrentDirectory + "\\results\\" + DateTime.Today + "_daily_logfile.txt";
+
+            if(!File.Exists(filePath))
+            {
+                WriteToTextFile.CreateNewLogFile(filePath);
+            }
+            else
+            {
+                WriteToTextFile.AddLineToFile(filePath, line);
+            }
         }
     }
 }

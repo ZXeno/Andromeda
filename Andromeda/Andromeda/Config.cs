@@ -24,6 +24,7 @@ namespace Andromeda
         private string thirdWarningText = "Okay, I get it... You're going to save credentials. \n I'm still telling you not to. It's no joke. \n You could get in trouble if they leak.";
         private string savedUserName = "Don't do it!";
         private string savedPass = "";
+        private bool alwaysDumpConsoleHistory = true;
         private bool checkServicesList = true;
         private List<string> servicesList = new List<string>();
         private bool autoInstallClient = false;
@@ -125,6 +126,11 @@ namespace Andromeda
             // Close Saved Credentials
             _xwriter.WriteEndElement();
 
+            // Always Dump console history on exit
+            _xwriter.WriteStartElement("alwaysDumpConsoleHistory");
+            _xwriter.WriteAttributeString("flag", alwaysDumpConsoleHistory.ToString());
+            _xwriter.WriteEndElement();
+
             // Close <settings>
             _xwriter.WriteEndElement();
 
@@ -191,5 +197,7 @@ namespace Andromeda
         {
             configFileDat = configdat;
         }
+
+
     }
 }
