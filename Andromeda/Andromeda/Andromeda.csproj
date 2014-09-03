@@ -61,6 +61,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
+    <Compile Include="NetworkConnection.cs" />
     <Compile Include="ResultConsole.cs" />
     <Compile Include="WriteToTextFile.cs" />
     <Compile Include="XMLImport.cs" />
