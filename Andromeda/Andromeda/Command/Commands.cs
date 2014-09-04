@@ -10,18 +10,28 @@ using System.Text;
 using System.Xml;
 using System.Windows;
 
-namespace Andromeda
+namespace Andromeda.Command
 {
-    public class CommandImport
+    public class Commands
     {
-        public static void ImportCommands(string commandsPath)
+        private List<Action> actionsList = new List<Action>();
+        public List<Action> ActionsList { get { return actionsList; } }
+
+        public Commands() { ImportCommandsList(); }
+
+        public void ImportCommandsList()
+        {
+            actionsList.Add(new PingTest("Ping Test", "Runs a ping test against the device list.", ActionGroup.Other));
+        }
+
+        public static void ImportExternalCommands(string commandsPath)
         {
             if (XMLImport.FileExists(commandsPath))
             {
                 try { XMLImport.GetXMLFileData(commandsPath); }
                 catch (Exception e)
                 {
-                    MessageBox.Show("There was an error: \n" + e.ToString());
+                    MessageBox.Show("There was an error: \n" + e.HResult.ToString());
                 }
             }
             else
