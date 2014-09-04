@@ -29,6 +29,13 @@ namespace Andromeda
         {
             History.Add(str + "\n");
             consoleString += str + "\n";
+
+            // If we are at max log level, log it all!
+            if (LoggingLevel == 3)
+            {
+                AddLineToHistoryDumpFile(str);
+            }
+
             OnConsoleEvent();
         }
 
