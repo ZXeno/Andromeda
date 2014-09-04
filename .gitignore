@@ -1,4 +1,4 @@
 *.exe
 
-Andromeda/Andromeda/bin
-Andromeda/Andromeda/obj
+Andromeda/Andromeda/bin/*
+Andromeda/Andromeda/obj/*
