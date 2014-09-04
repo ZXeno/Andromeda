@@ -86,10 +86,5 @@ namespace Andromeda
 
             return returnMsgs;
         }
-
-        public static bool HasConnection()
-        {
-            return false;
-        }
     }
 }
