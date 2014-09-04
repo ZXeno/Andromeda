@@ -60,6 +60,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Command\Action.cs" />
+    <Compile Include="Command\PingTest.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="ResultConsole.cs" />
@@ -73,7 +75,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CommandImport.cs" />
+    <Compile Include="Command\Commands.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -108,9 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\andromeda.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Commands.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.dat">
