@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using System.IO;
+using Andromeda.Command;
 
 namespace Andromeda
 {
@@ -28,9 +29,10 @@ namespace Andromeda
         public const string CommandsDir = "\\commands\\";
         public const string ResultsDir = "\\results\\";
         public XmlDocument ConfigFile;
-        public XmlDocument CommandsFile;
+        //public XmlDocument CommandsFile;
 
         public Config configuration;
+        public Commands Commander { get; set; }
 
         public MainWindow()
         {
@@ -44,8 +46,15 @@ namespace Andromeda
             string p = WorkingPath + "\\" + ConfigFileName;
             if (CheckForConfigFile())
             {
+                try { ConfigFile = XMLImport.GetXMLFileData(p); }
+                catch (FileNotFoundException fnf)
+                {
+                    MessageBox.Show("File not found. \n Exception: " + fnf.HResult.ToString());
+                    App.Current.Shutdown();
+                }
+
                 ResultConsole.AddConsoleLine("Configuration file found.");
-                ConfigFile = XMLImport.GetXMLFileData(p);
+
                 if (ConfigFile != null)
                 {
                     ResultConsole.AddConsoleLine("Config file loaded. - " + p);
@@ -62,8 +71,8 @@ namespace Andromeda
 
         public void ImportCommands()
         {
-            // External Commands functionality not implemented yet.
-            //CommandImport.ImportCommands(WorkingPath + CommandsDir + CommandsFileName);
+            Commander = new Commands();
+            
         }
 
         private bool CheckForConfigFile()
@@ -79,6 +88,11 @@ namespace Andromeda
         private void OnUpdateConsole()
         {
             RESULTS_BOX.Text = ResultConsole.ConsoleString;
+        }
+
+        private void OnRunCommandButton()
+        {
+
         }
 
         private void InitializeConsole()
