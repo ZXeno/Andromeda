@@ -27,7 +27,6 @@ namespace Andromeda
             else
             {
                 MessageBox.Show("I'm sorry, Dave. I'm affraid I can't find the commands file. \n There is an explicit need for this file. \n Please replace the commands file with the most current one.");
-
             }
         }
     }

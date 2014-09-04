@@ -6,15 +6,16 @@
     <Grid>
 
         <Image HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="800" Source="Resources/andromeda.jpg" Stretch="UniformToFill"/>
-        <TextBox x:Name="DEVICE_LIST_TEXTBOX" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Text="Wxxxxxx" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" />
-        <TextBox x:Name="RESULTS_BOX" Text="" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" />
-        <ListBox x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Height="419" Margin="0,100,16,0" VerticalAlignment="Top" Width="622" Background="#A5474747"/>
+        <TextBox x:Name="DEVICE_LIST_TEXTBOX" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Text="Wxxxxxx" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device #s here." />
+        <TextBox x:Name="RESULTS_BOX" Text="" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" IsReadOnly="True" ToolTip="Results console. This text can be copied, but not directly manipulated. This can also be dumped to a log file found at .\results\*. Depending on your verbosity settings, more, or less, text will appear both in the console and the log file." />
+        <ListBox x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747"/>
         <Button x:Name="CHANGE_CREDS_BTTN" Content="Change Credentials" HorizontalAlignment="Right" Margin="0,10,16,0" VerticalAlignment="Top" Width="152" BorderBrush="#FF004064" Background="#CC404040" Foreground="#FFE0E0E0" FontFamily="Lucida Console"/>
         <Label x:Name="CREDS_LABEL" Content="PEACEHEALTH\CREDENTIALS" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,26,16,0" VerticalAlignment="Top" Width="182" Height="23" FontFamily="Lucida Console" FontWeight="Bold" />
         <Label x:Name="AVAIL_ACTS_LABEL" Content="Available Actions:" Foreground="#FFE0E0E0" HorizontalAlignment="Left" Margin="156,77,0,0" VerticalAlignment="Top" Width="200" FontSize="16" Height="28" FontFamily="Lucida Console"/>
         <Label Content="Computers:" HorizontalAlignment="Left" Margin="16,80,0,0" VerticalAlignment="Top" Width="100" FontFamily="Lucida Console" Height="23" Foreground="#FFE0E0E0"/>
         <Button x:Name="ABOUT_BTTN" Content="About" HorizontalAlignment="Right" Margin="0,0,16,10" VerticalAlignment="Bottom" Width="65" Height="15" FontSize="9" FontFamily="Microsoft JhengHei UI" FontWeight="Bold" Background="#A54D4D4D" Foreground="#7FE0E0E0" BorderBrush="#FF004064"/>
         <Button x:Name="SETTINGS_BUTTON" Content="Change Advanced Settings" HorizontalAlignment="Left" Margin="16,10,0,0" VerticalAlignment="Top" BorderBrush="#FF004064" Background="#CC404040" Foreground="#FFE0E0E0" Width="186" FontFamily="Lucida Console"/>
+        <Button x:Name="SETTINGS_BUTTON_Copy" Content="Run Selected Command" HorizontalAlignment="Right" Margin="0,0,16,202" BorderBrush="#FF004064" Background="#CC404040" Foreground="#FFE0E0E0" Width="182" FontFamily="Lucida Console" Height="20" VerticalAlignment="Bottom"/>
 
 
     </Grid>

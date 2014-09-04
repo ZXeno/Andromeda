@@ -60,6 +60,7 @@ namespace Andromeda
             if(!File.Exists(filePath))
             {
                 WriteToTextFile.CreateNewLogFile(filePath);
+                WriteToTextFile.AddLineToFile(filePath, line);
             }
             else
             {
