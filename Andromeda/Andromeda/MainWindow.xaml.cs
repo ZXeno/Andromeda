@@ -38,7 +38,10 @@ namespace Andromeda
         {
             InitializeComponent();
             InitializeConsole();
+            ImportCommands();
             ImportConfiguration();
+
+            RUN_BUTTON.MouseUp += RUN_BUTTONMouseUp;
         }
 
         public void ImportConfiguration()
@@ -72,7 +75,8 @@ namespace Andromeda
         public void ImportCommands()
         {
             Commander = new Commands();
-            
+            AVAIL_ACTS_LISTBOX.ItemsSource = Commander.ActionsList;
+            AVAIL_ACTS_LISTBOX.Items.Refresh();
         }
 
         private bool CheckForConfigFile()
@@ -88,11 +92,21 @@ namespace Andromeda
         private void OnUpdateConsole()
         {
             RESULTS_BOX.Text = ResultConsole.ConsoleString;
+            RESULTS_BOX.ScrollToEnd();
         }
 
-        private void OnRunCommandButton()
+        private void RUN_BUTTONMouseUp(object sender, MouseButtonEventArgs e)
         {
-
+            var si = (Andromeda.Command.Action)AVAIL_ACTS_LISTBOX.SelectedItem;
+            try
+            {
+                string msg = si.RunCommand("warmachine");
+                ResultConsole.AddConsoleLine(msg);
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("No command selected. Please select an action to take on the selected machines. \n" + ex.Message);
+            }
         }
 
         private void InitializeConsole()

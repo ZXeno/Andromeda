@@ -29,5 +29,9 @@ namespace Andromeda.Command
             return null;
         }
 
+        public override string ToString()
+        {
+            return ActionName;
+        }
     }
 }

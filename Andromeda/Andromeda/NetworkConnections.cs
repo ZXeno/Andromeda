@@ -34,13 +34,13 @@ namespace Andromeda
                     switch (pr.Status)
                     {
                         case IPStatus.Success:
-                            returnMsg = string.Format("Reply from {0}: bytes={1} time={2}ms TTL={3}", pr.Address, pr.Buffer.Length, pr.RoundtripTime, pr.Options.Ttl);
+                            returnMsg = string.Format("Reply from {0} with address {1}", hostname, pr.Address);
                             break;
                         case IPStatus.TimedOut:
                             returnMsg = "Connection has timed out.";
                             break;
                         default:
-                            returnMsg = string.Format("Ping failed: {0}", pr.Status.ToString());
+                            returnMsg = string.Format("Ping to {0} failed: {1}", hostname, pr.Status.ToString());
                             break;
                     }
                 }
@@ -77,7 +77,7 @@ namespace Andromeda
         // Return dictionary of results based on a list of computers from a string array of hostnames.
         public Dictionary<string, string> PingTest(string[] hostnamearray)
         {
-            Dictionary<string, string> returnMsgs = new Dictionary<string, string>(); ;
+            Dictionary<string, string> returnMsgs = new Dictionary<string, string>();
 
             for(int i = 0; i <= hostnamearray.Length - 1; i++)
             {

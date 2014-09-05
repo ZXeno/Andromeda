@@ -32,5 +32,10 @@ namespace Andromeda.Command
         {
             return netConn.PingTest(host);
         }
+
+        public override string ToString()
+        {
+            return ActionName;
+        }
     }
 }

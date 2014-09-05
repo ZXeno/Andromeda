@@ -31,7 +31,7 @@ namespace Andromeda.Command
                 try { XMLImport.GetXMLFileData(commandsPath); }
                 catch (Exception e)
                 {
-                    MessageBox.Show("There was an error: \n" + e.HResult.ToString());
+                    MessageBox.Show("There was an error: \n" + e.Message);
                 }
             }
             else
