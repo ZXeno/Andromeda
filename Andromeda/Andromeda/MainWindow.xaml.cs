@@ -40,8 +40,6 @@ namespace Andromeda
             InitializeConsole();
             ImportCommands();
             ImportConfiguration();
-
-            RUN_BUTTON.MouseUp += RUN_BUTTONMouseUp;
         }
 
         public void ImportConfiguration()
@@ -95,7 +93,7 @@ namespace Andromeda
             RESULTS_BOX.ScrollToEnd();
         }
 
-        private void RUN_BUTTONMouseUp(object sender, MouseButtonEventArgs e)
+        private void RUN_BUTTON_Click(object sender, RoutedEventArgs e)
         {
             var si = (Andromeda.Command.Action)AVAIL_ACTS_LISTBOX.SelectedItem;
             try
@@ -114,5 +112,7 @@ namespace Andromeda
             ResultConsole.InitializeResultConsole();
             ResultConsole.ConsoleChange += OnUpdateConsole;
         }
+
+
     }
 }
