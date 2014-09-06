@@ -16,8 +16,10 @@ namespace Andromeda
         public NetworkConnections()
         {
             ping = new Ping();
+            
             pingOptions = new PingOptions();
             pingOptions.DontFragment = true;
+            
         }
 
         // Ping test for single machine.

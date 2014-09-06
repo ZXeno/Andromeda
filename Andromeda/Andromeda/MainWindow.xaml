@@ -21,7 +21,7 @@
         </ListView>
 
         <Button x:Name="CHANGE_CREDS_BTTN" Content="Change Credentials" HorizontalAlignment="Right" Margin="0,10,16,0" VerticalAlignment="Top" Width="152" BorderBrush="#FF004064" Background="#CC404040" Foreground="#FFE0E0E0" FontFamily="Lucida Console"/>
-        <Label x:Name="CREDS_LABEL" Content="PEACEHEALTH\CREDENTIALS" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,26,16,0" VerticalAlignment="Top" Width="182" Height="23" FontFamily="Lucida Console" FontWeight="Bold" />
+        <Label x:Name="CREDS_LABEL" Content="PEACEHEALTH\CREDENTIALS" Foreground="#FF009DFF" HorizontalAlignment="Right" Margin="0,26,16,0" VerticalAlignment="Top" Width="182" Height="23" FontFamily="Lucida Console" FontWeight="Bold" HorizontalContentAlignment="Right" />
         <Label x:Name="AVAIL_ACTS_LABEL" Content="Available Actions:" Foreground="#FFE0E0E0" HorizontalAlignment="Left" Margin="156,77,0,0" VerticalAlignment="Top" Width="200" FontSize="16" Height="28" FontFamily="Lucida Console"/>
         <Label Content="Computers:" HorizontalAlignment="Left" Margin="16,80,0,0" VerticalAlignment="Top" Width="100" FontFamily="Lucida Console" Height="23" Foreground="#FFE0E0E0"/>
         <Button x:Name="ABOUT_BTTN" Content="About" HorizontalAlignment="Right" Margin="0,0,16,10" VerticalAlignment="Bottom" Width="65" Height="15" FontSize="9" FontFamily="Microsoft JhengHei UI" FontWeight="Bold" Background="#A54D4D4D" Foreground="#7FE0E0E0" BorderBrush="#FF004064"/>

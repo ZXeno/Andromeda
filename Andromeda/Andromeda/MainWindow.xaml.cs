@@ -40,6 +40,7 @@ namespace Andromeda
             InitializeConsole();
             ImportCommands();
             ImportConfiguration();
+            CREDS_LABEL.Content = string.Format("{0}\\{1}", Environment.UserDomainName, Environment.UserName);
         }
 
         public void ImportConfiguration()
