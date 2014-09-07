@@ -66,70 +66,43 @@ namespace Andromeda
             _xwriter.WriteStartElement("settings");
 
             // Pingtest flag
-            _xwriter.WriteStartElement("pingtest");
-            _xwriter.WriteAttributeString("flag", pingTest.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("pingtest", "flag", pingTest.ToString());
 
             // Save Offline Computers
-            _xwriter.WriteStartElement("saveofflinecomputers");
-            _xwriter.WriteAttributeString("flag", saveOfflineComputers.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("saveofflinecomputers", "flag", saveOfflineComputers.ToString());
 
             // Save Online Computers
-            _xwriter.WriteStartElement("saveonlinecomputers");
-            _xwriter.WriteAttributeString("flag", saveOnlineComputers.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("saveonlinecomputers", "flag", saveOnlineComputers.ToString());
 
             // Logging Level
-            _xwriter.WriteStartElement("saveonlinecomputers");
-            _xwriter.WriteAttributeString("flag", loggingLevel.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("logginglevel", "flag", loggingLevel.ToString());
 
             // Prompt User for Credentials
-            _xwriter.WriteStartElement("promptuserforcreds");
-            _xwriter.WriteAttributeString("flag", promptForCredentials.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("promptuserforcreds", "flag", promptForCredentials.ToString());
 
             // Saved Credentials
             _xwriter.WriteStartElement("savedCredentails");
             _xwriter.WriteAttributeString("flag", saveCredentails.ToString());
             // Saved Credentails warnings and observed flags
-            _xwriter.WriteStartElement("warningText");
-            _xwriter.WriteString(warningText);
-            _xwriter.WriteEndElement();
-            _xwriter.WriteStartElement("warningObserved");
-            _xwriter.WriteAttributeString("flag", firstWarningObserved.ToString());
-            _xwriter.WriteEndElement();
+            CreateUnattributedElement("warningText", warningText);
+            CreateSingleAttributeElement("warningObserved", "flag", firstWarningObserved.ToString());
 
-            _xwriter.WriteStartElement("secondWarningText");
-            _xwriter.WriteString(secondWarningText);
-            _xwriter.WriteEndElement();
-            _xwriter.WriteStartElement("secondWarningObserved");
-            _xwriter.WriteAttributeString("flag", secondWarningObserved.ToString());
-            _xwriter.WriteEndElement();
 
-            _xwriter.WriteStartElement("thirdWarningText");
-            _xwriter.WriteString(thirdWarningText);
-            _xwriter.WriteEndElement();
-            _xwriter.WriteStartElement("thirdWarningText");
-            _xwriter.WriteAttributeString("flag", thirdWarningObserved.ToString());
-            _xwriter.WriteEndElement();
+            CreateUnattributedElement("secondWarningText", secondWarningText);
+            CreateSingleAttributeElement("secondWarningObserved", "flag", secondWarningObserved.ToString());
+
+            CreateUnattributedElement("thirdWarningText", thirdWarningText);
+            CreateSingleAttributeElement("thirdWarningObserved", "flag", thirdWarningObserved.ToString());
+
             // Saved Username
-            _xwriter.WriteStartElement("savedUser");
-            _xwriter.WriteString(savedUserName);
-            _xwriter.WriteEndElement();
-
-            _xwriter.WriteStartElement("savedPass");
-            _xwriter.WriteString(savedPass);
-            _xwriter.WriteEndElement();
+            CreateUnattributedElement("savedUser", savedUserName);
+            CreateUnattributedElement("savedPass", savedPass);
 
             // Close Saved Credentials
             _xwriter.WriteEndElement();
 
             // Always Dump console history on exit
-            _xwriter.WriteStartElement("alwaysDumpConsoleHistory");
-            _xwriter.WriteAttributeString("flag", alwaysDumpConsoleHistory.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("alwaysDumpConsoleHistory", "flag", alwaysDumpConsoleHistory.ToString());
 
             // Close <settings>
             _xwriter.WriteEndElement();
@@ -142,47 +115,31 @@ namespace Andromeda
             _xwriter.WriteAttributeString("flag", checkServicesList.ToString());
             foreach (string sv in servicesList) // Fill in the services list.
             {
-                _xwriter.WriteStartElement("svc");
-                _xwriter.WriteString(sv);
-                _xwriter.WriteEndElement();
+                CreateUnattributedElement("svc", sv);
             }
             // Close Check Services List
             _xwriter.WriteEndElement();
 
             // Auto Install Client
-            _xwriter.WriteStartElement("autoInstallClient");
-            _xwriter.WriteAttributeString("flag", autoInstallClient.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("autoInstallClient", "flag", autoInstallClient.ToString());
 
             // check enabled DCOM
-            _xwriter.WriteStartElement("checkEnabledDCOM");
-            _xwriter.WriteAttributeString("flag", checkEnabledDCOM.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("checkEnabledDCOM", "flag", checkEnabledDCOM.ToString());
 
             // check enabled remote connect
-            _xwriter.WriteStartElement("checkEnabledRemoteConnect");
-            _xwriter.WriteAttributeString("flag", checkEnabledRemoteConnect.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("checkEnabledRemoteConnect", "flag", checkEnabledRemoteConnect.ToString());
 
             // ccm setup path
-            _xwriter.WriteStartElement("ccmSetupPath");
-            _xwriter.WriteAttributeString("flag", "\"\"");
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("ccmSetupPath", "flag", "\"\"");
 
             // ccm setup parameters
-            _xwriter.WriteStartElement("ccmSetupParameters");
-            _xwriter.WriteAttributeString("flag","\"\"");
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("ccmSetupParameters", "flag", "\"\"");
 
             // enable full uninstall
-            _xwriter.WriteStartElement("enableFullUninstall");
-            _xwriter.WriteAttributeString("flag", enableFullUninstall.ToString());
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("enableFullUninstall", "flag", enableFullUninstall.ToString());
 
             // site server
-            _xwriter.WriteStartElement("sccmSiteServer");
-            _xwriter.WriteAttributeString("flag", "\"\"");
-            _xwriter.WriteEndElement();
+            CreateSingleAttributeElement("sccmSiteServer", "flag", "\"\"");
 
             // Close SCCM Config Settings
             _xwriter.WriteEndElement();
@@ -190,6 +147,7 @@ namespace Andromeda
             _xwriter.WriteEndElement();
 
             // Close file
+            _xwriter.WriteEndDocument();
             _xwriter.Close();
         }
 
@@ -198,6 +156,18 @@ namespace Andromeda
             configFileDat = configdat;
         }
 
+        private void CreateSingleAttributeElement(string ElementName, string AttributeString1, string AttributeString2)
+        {
+            _xwriter.WriteStartElement(ElementName);
+            _xwriter.WriteAttributeString(AttributeString1, AttributeString2);
+            _xwriter.WriteEndElement();
+        }
 
+        private void CreateUnattributedElement(string ElementName, string StringData)
+        {
+            _xwriter.WriteStartElement(ElementName);
+            _xwriter.WriteString(StringData);
+            _xwriter.WriteEndElement();
+        }
     }
 }
