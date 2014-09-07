@@ -84,9 +84,10 @@ namespace Andromeda
             }
         }
 
+        // Open about window
         private void ABOUT_BTTN_Click(object sender, RoutedEventArgs e)
         {
-            if (aboutWindow == null) { aboutWindow = new AboutWindow(); }
+            aboutWindow = new AboutWindow();
             aboutWindow.Show();
         }
 
