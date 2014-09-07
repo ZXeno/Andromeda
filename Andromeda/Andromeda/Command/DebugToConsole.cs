@@ -15,11 +15,14 @@ namespace Andromeda.Command
             Category = cat;
         }
 
-        public override string RunCommand(string a)
+        public override string RunCommand(string input)
         {
             string sendback = "";
 
-
+            foreach (string d in ParseDeviceList(input))
+            {
+                sendback += d + " was modified" + "\n";
+            }
 
             return sendback;
         }

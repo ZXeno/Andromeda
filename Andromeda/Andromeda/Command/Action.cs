@@ -19,19 +19,18 @@ namespace Andromeda.Command
         // Single entry
         public virtual string RunCommand(string a) { return null; }
 
-        // These are intended to return results tied to device keys.
-        public virtual Dictionary<string,string> RunCommand(string[] a) 
-        {
-            return null;
-        }
-        public virtual Dictionary<string,string> RunCommand(List<string> a) 
-        {
-            return null;
-        }
+        // Return results tied to device keys.
+        public virtual Dictionary<string, string> RunCommand(string[] a) { return null; }
+        public virtual Dictionary<string, string> RunCommand(List<string> a) { return null; }
 
-        public override string ToString()
+        public override string ToString() { return ActionName; }
+
+        // Return a list of devices
+        public List<string> ParseDeviceList(string list)
         {
-            return ActionName;
+            List<string> devList = new List<string>(list.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+
+            return devList;
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Andromeda.Command
             actionsList.Add(new DebugToConsole("Debug to Console", "test for spitting out data from device list", ActionGroup.Other));
         }
 
+        /* -- External commands are still not supported yet. This will be uncommented when that support is available.
+         * 
         public static void ImportExternalCommands(string commandsPath)
         {
             if (XMLImport.FileExists(commandsPath))
@@ -40,14 +42,8 @@ namespace Andromeda.Command
                 MessageBox.Show("I'm sorry, Dave. I'm affraid I can't find the commands file. \n There is an explicit need for this file. \n Please replace the commands file with the most current one.");
             }
         }
+         */
 
-        public List<string> ParseDeviceList(string list)
-        {
-            List<string> devList = new List<string>();
-
-
-
-            return devList;
-        }
+        
     }
 }

@@ -20,17 +20,14 @@ namespace Andromeda.Command
 
         public override string RunCommand(string host)
         {
-            return netConn.PingTest(host);
-        }
+            string response = "";
 
-        public override Dictionary<string,string> RunCommand(string[] host)
-        {
-            return netConn.PingTest(host);
-        }
+            foreach (string d in ParseDeviceList(host))
+            {
+                response += netConn.PingTest(d) + "\n";
+            }
 
-        public override Dictionary<string, string> RunCommand(List<string> host)
-        {
-            return netConn.PingTest(host);
+            return response;
         }
 
         public override string ToString()
