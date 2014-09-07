@@ -26,7 +26,7 @@
         <Label Content="Computers:" HorizontalAlignment="Left" Margin="16,80,0,0" VerticalAlignment="Top" Width="100" FontFamily="Lucida Console" Height="23" Foreground="#FFE0E0E0"/>
 
         <Button x:Name="CHANGE_CREDS_BTTN" Content="Change Credentials" HorizontalAlignment="Right" Margin="0,10,16,0" VerticalAlignment="Top" Width="160" Height="20" />
-        <Button x:Name="ABOUT_BTTN" Content="About" HorizontalAlignment="Right" Margin="0,0,16,10" VerticalAlignment="Bottom" Width="65" Height="15" FontSize="9" FontFamily="Microsoft JhengHei UI" FontWeight="Bold" Background="#A54D4D4D" Foreground="#7FE0E0E0" BorderBrush="#FF004064"/>
+        <Button x:Name="ABOUT_BTTN" Content="About" HorizontalAlignment="Right" Margin="0,0,16,10" VerticalAlignment="Bottom" Width="65" Height="16" FontSize="9" FontFamily="Microsoft JhengHei UI" FontWeight="Bold" Click="ABOUT_BTTN_Click"/>
         <Button x:Name="SETTINGS_BUTTON" Content="Change Advanced Settings" HorizontalAlignment="Left" Margin="16,10,0,0" VerticalAlignment="Top" Width="186" Height="20" />
         <Button x:Name="RUN_BUTTON" Content="Run" HorizontalAlignment="Right" Margin="0,0,16,202" Width="65" Height="20" VerticalAlignment="Bottom" Click="RUN_BUTTON_Click" />
 
