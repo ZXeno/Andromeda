@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
@@ -70,7 +71,7 @@ namespace Andromeda
         }
 
         // Return dictionary of results based on list of computers from a List<string> of hostnames.
-        public Dictionary<string, string> PingTest(List<string> hostnames)
+        public Dictionary<string, string> PingTestDictionaryResult(List<string> hostnames)
         {
             Dictionary<string,string> returnMsgs = new Dictionary<string,string>(); ;
             foreach (string host in hostnames)
@@ -81,17 +82,12 @@ namespace Andromeda
             return returnMsgs;
         }
 
-        // Return dictionary of results based on a list of computers from a string array of hostnames.
-        public Dictionary<string, string> PingTest(string[] hostnamearray)
+        public ManagementScope ConnectToRemoteWMI(string hostname)
         {
-            Dictionary<string, string> returnMsgs = new Dictionary<string, string>();
-
-            for(int i = 0; i <= hostnamearray.Length - 1; i++)
-            {
-                returnMsgs.Add(hostnamearray[i], PingTest(hostnamearray[i]));
-            }
-
-            return returnMsgs;
+            ManagementScope wmiscope = new ManagementScope("\\\\"+hostname+"\\root\\cimv2");
+            wmiscope.Connect();
+            ResultConsole.AddConsoleLine("Connected to WMI scope " + wmiscope.Path);
+            return wmiscope;
         }
     }
 }
