@@ -14,16 +14,16 @@ namespace Andromeda
         private bool saveOfflineComputers = true;
         private bool saveOnlineComputers = true;
         private int loggingLevel = 3;
-        private bool promptForCredentials = true;
-        private bool saveCredentails = false;
-        private bool firstWarningObserved = false;
-        private bool secondWarningObserved = false;
-        private bool thirdWarningObserved = false;
-        private string warningText = "--IT IS HIGHLY RECOMMENDED YOU DO NOT SAVE YOUR CREDENTAILS.-- \n Saving your credentials is a major security risk. \n Are you absolutely, completely sure you want to save credentials?";
-        private string secondWarningText = "If you save your credentials, you are responsible for all actions taken under those credentials. \n This is your second warning not to save credentials.";
-        private string thirdWarningText = "Okay, I get it... You're going to save credentials. \n I'm still telling you not to. It's no joke. \n You could get in trouble if they leak.";
-        private string savedUserName = "Don't do it!";
-        private string savedPass = "";
+        //private bool promptForCredentials = true;
+        //private bool saveCredentails = false;
+        //private bool firstWarningObserved = false;
+        //private bool secondWarningObserved = false;
+        //private bool thirdWarningObserved = false;
+        //private string warningText = "--IT IS HIGHLY RECOMMENDED YOU DO NOT SAVE YOUR CREDENTAILS.-- \n Saving your credentials is a major security risk. \n Are you absolutely, completely sure you want to save credentials?";
+        //private string secondWarningText = "If you save your credentials, you are responsible for all actions taken under those credentials. \n This is your second warning not to save credentials.";
+        //private string thirdWarningText = "Okay, I get it... You're going to save credentials. \n I'm still telling you not to. It's no joke. \n You could get in trouble if they leak.";
+        //private string savedUserName = "Don't do it!";
+        //private string savedPass = "";
         private bool alwaysDumpConsoleHistory = true;
         private bool checkServicesList = true;
         private List<string> servicesList = new List<string>();
@@ -39,16 +39,16 @@ namespace Andromeda
         public bool SaveOfflineComputers { get { return saveOfflineComputers; } }
         public bool SaveOnlineComputers { get { return saveOnlineComputers; } }
         public int LoggingLevel { get { return loggingLevel; } }
-        public bool PromptForCredentials { get { return promptForCredentials; } }
-        public bool SaveCredentials { get { return saveCredentails; } }
-        public bool FirstWarningObserved { get { return firstWarningObserved; } }
-        public bool SecondWarningObserved { get { return secondWarningObserved; } }
-        public bool ThirdWarningObserved { get { return thirdWarningObserved; } }
-        public string WarningText { get { return warningText; } }
-        public string SecondWarningText { get { return secondWarningText; } }
-        public string ThirdWarningText { get { return thirdWarningText; } }
-        public string SavedUsername { get { return savedUserName; } }
-        public string SavedPassword { get { return savedPass; } }
+        //public bool PromptForCredentials { get { return promptForCredentials; } }
+        //public bool SaveCredentials { get { return saveCredentails; } }
+        //public bool FirstWarningObserved { get { return firstWarningObserved; } }
+        //public bool SecondWarningObserved { get { return secondWarningObserved; } }
+        //public bool ThirdWarningObserved { get { return thirdWarningObserved; } }
+        //public string WarningText { get { return warningText; } }
+        //public string SecondWarningText { get { return secondWarningText; } }
+        //public string ThirdWarningText { get { return thirdWarningText; } }
+        //public string SavedUsername { get { return savedUserName; } }
+        //public string SavedPassword { get { return savedPass; } }
         public bool AlwaysDumpConsoleHistory { get { return alwaysDumpConsoleHistory; } }
         public bool CheckServicesList { get { return checkServicesList; } }
         public List<string> ServicesList { get { return servicesList; } }
@@ -100,6 +100,7 @@ namespace Andromeda
             // Logging Level
             CreateSingleAttributeElement("logginglevel", "flag", loggingLevel.ToString());
 
+            /*
             // Prompt User for Credentials
             CreateSingleAttributeElement("promptuserforcreds", "flag", promptForCredentials.ToString());
 
@@ -123,6 +124,7 @@ namespace Andromeda
 
             // Close Saved Credentials
             _xwriter.WriteEndElement();
+            */
 
             // Always Dump console history on exit
             CreateSingleAttributeElement("alwaysDumpConsoleHistory", "flag", alwaysDumpConsoleHistory.ToString());
