@@ -26,9 +26,14 @@ namespace Andromeda
         public string PingTest(string hostname)
         {
             string returnMsg = "";
-            PingReply pr = ping.Send(hostname);
+            if (hostname == "" || hostname == null)
+            {
+                return "No host was specified, please check the device list and try again.";
+            }
+            
             try 
             {
+                PingReply pr = ping.Send(hostname);
                 // If the ping reply isn't null...
                 if (pr != null)
                 {

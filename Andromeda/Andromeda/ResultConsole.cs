@@ -23,6 +23,7 @@ namespace Andromeda
             consoleString = "";
             history = new List<string>();
             AddConsoleLine("Result console started -- " + DateTime.Now.ToString());
+            OnConsoleEvent();
         }
 
         public static void AddConsoleLine(string str)

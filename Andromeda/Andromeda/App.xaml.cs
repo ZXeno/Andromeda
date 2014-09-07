@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Windows;
 using System.Xml;
+using Andromeda.Command;
 
 namespace Andromeda
 {
@@ -13,7 +14,6 @@ namespace Andromeda
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {
-        
+    {        
     }
 }

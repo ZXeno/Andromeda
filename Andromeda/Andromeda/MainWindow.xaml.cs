@@ -23,6 +23,7 @@ namespace Andromeda
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public static string WorkingPath = Environment.CurrentDirectory;
         public const string ConfigFileName = "config.dat";
         public const string CommandsFileName = "commands.xml";
@@ -31,16 +32,62 @@ namespace Andromeda
         public XmlDocument ConfigFile;
         //public XmlDocument CommandsFile;
 
-        public Config configuration;
-        public Commands Commander { get; set; }
+        public static Config configuration;
+        public static Commands Commander { get; set; }
+
+        private AboutWindow aboutWindow;
+
+
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeConsole();
-            ImportCommands();
             ImportConfiguration();
+            ImportCommands();
             CREDS_LABEL.Content = string.Format("{0}\\{1}", Environment.UserDomainName, Environment.UserName);
+        }
+
+        public void UpdateCommandsListbox(List<Andromeda.Command.Action> commands)
+        {
+            AVAIL_ACTS_LISTBOX.ItemsSource = commands;
+            AVAIL_ACTS_LISTBOX.Items.Refresh();
+        }
+
+        public void OnUpdateConsole()
+        {
+            RESULTS_BOX.Text = ResultConsole.ConsoleString;
+            RESULTS_BOX.ScrollToEnd();
+        }
+
+        // Run our selected command.
+        private void RUN_BUTTON_Click(object sender, RoutedEventArgs e)
+        {
+            var si = (Andromeda.Command.Action)AVAIL_ACTS_LISTBOX.SelectedItem;
+
+            try
+            {
+                if (si != null)
+                {
+                    string msg = si.RunCommand(DEVICE_LIST_TEXTBOX.Text);
+                    ResultConsole.AddConsoleLine(msg);
+                }
+                else
+                {
+                    MessageBox.Show("No action selected. Please select an action to take on the selected machines. \n What do you expect to do with these, otherwise?");
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message + "\n The application will now close.");
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void ABOUT_BTTN_Click(object sender, RoutedEventArgs e)
+        {
+            if (aboutWindow == null) { aboutWindow = new AboutWindow(); }
+            aboutWindow.Show();
         }
 
         public void ImportConfiguration()
@@ -51,7 +98,7 @@ namespace Andromeda
                 try { ConfigFile = XMLImport.GetXMLFileData(p); }
                 catch (FileNotFoundException fnf)
                 {
-                    MessageBox.Show("File not found. \n Exception: " + fnf.HResult.ToString());
+                    MessageBox.Show("File unable to load. \n Exception: " + fnf.Message);
                     App.Current.Shutdown();
                 }
 
@@ -78,6 +125,12 @@ namespace Andromeda
             AVAIL_ACTS_LISTBOX.Items.Refresh();
         }
 
+        private void InitializeConsole()
+        {
+            ResultConsole.InitializeResultConsole();
+            ResultConsole.ConsoleChange += OnUpdateConsole;
+        }
+
         private bool CheckForConfigFile()
         {
             return File.Exists(WorkingPath + "\\" + ConfigFileName);
@@ -88,32 +141,10 @@ namespace Andromeda
             ResultConsole.AddConsoleLine("I'm pretending to generate a new config file!");
         }
 
-        private void OnUpdateConsole()
-        {
-            RESULTS_BOX.Text = ResultConsole.ConsoleString;
-            RESULTS_BOX.ScrollToEnd();
-        }
-
-        private void RUN_BUTTON_Click(object sender, RoutedEventArgs e)
-        {
-            var si = (Andromeda.Command.Action)AVAIL_ACTS_LISTBOX.SelectedItem;
-            try
-            {
-                string msg = si.RunCommand("warmachine");
-                ResultConsole.AddConsoleLine(msg);
-            }
-            catch (NullReferenceException ex)
-            {
-                MessageBox.Show("No command selected. Please select an action to take on the selected machines. \n" + ex.Message);
-            }
-        }
-
-        private void InitializeConsole()
+        public void InitializeBackEnd()
         {
             ResultConsole.InitializeResultConsole();
-            ResultConsole.ConsoleChange += OnUpdateConsole;
+            
         }
-
-
     }
 }

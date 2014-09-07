@@ -60,13 +60,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Command\Action.cs" />
+    <Compile Include="Command\DebugToConsole.cs" />
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="ResultConsole.cs" />
     <Compile Include="WriteToTextFile.cs" />
     <Compile Include="XMLImport.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -115,6 +123,9 @@
     <None Include="config.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\sagan_tyson.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
