@@ -35,7 +35,30 @@ namespace Andromeda
         private bool enableFullUninstall = false;
         private string sccmSiteServer = "";
 
-        
+        public bool PingTest { get { return pingTest; } }
+        public bool SaveOfflineComputers { get { return saveOfflineComputers; } }
+        public bool SaveOnlineComputers { get { return saveOnlineComputers; } }
+        public int LoggingLevel { get { return loggingLevel; } }
+        public bool PromptForCredentials { get { return promptForCredentials; } }
+        public bool SaveCredentials { get { return saveCredentails; } }
+        public bool FirstWarningObserved { get { return firstWarningObserved; } }
+        public bool SecondWarningObserved { get { return secondWarningObserved; } }
+        public bool ThirdWarningObserved { get { return thirdWarningObserved; } }
+        public string WarningText { get { return warningText; } }
+        public string SecondWarningText { get { return secondWarningText; } }
+        public string ThirdWarningText { get { return thirdWarningText; } }
+        public string SavedUsername { get { return savedUserName; } }
+        public string SavedPassword { get { return savedPass; } }
+        public bool AlwaysDumpConsoleHistory { get { return alwaysDumpConsoleHistory; } }
+        public bool CheckServicesList { get { return checkServicesList; } }
+        public List<string> ServicesList { get { return servicesList; } }
+        public bool AutoInstallClient { get { return autoInstallClient; } }
+        public bool CheckEnabledDCOM { get { return checkEnabledDCOM; } }
+        public bool CheckEnabledRemoteConnect { get { return checkEnabledRemoteConnect; } }
+        public string CCMSetupDirectory { get { return ccmSetupDir; } }
+        public string CCMSetupParameters { get { return ccmSetupParameters; } }
+        public bool EnableFullUninstall { get { return enableFullUninstall; } }
+        public string SCCMSiteServer { get { return sccmSiteServer; } }
 
         private XmlTextWriter _xwriter;
         private XmlDocument configFileDat;
