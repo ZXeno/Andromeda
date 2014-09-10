@@ -8,22 +8,25 @@ namespace Andromeda
 {
     public static class CredentialManager
     {
+        private static string _uName = "";
+        private static string _pWord = "";
 
-        public static string UserName { get; set; }
+        public static string UserName { get { return _uName; } }
+        public static string Password { get { return _pWord; } }
 
         public static string GetDomain()
         {
             return Environment.UserDomainName;
         }
 
-        public static string GetUser()
+        public static void SetUser(string uName)
         {
-            return "null";
+            _uName = uName;
         }
 
-        public static string GetPass()
+        public static void SetPass(string pWord)
         {
-            return "null";
+            _pWord = pWord;
         }
 
         public static bool DoesUserExistInActiveDirectory(string userName)
