@@ -38,7 +38,7 @@ namespace Andromeda
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -49,16 +49,15 @@ namespace Andromeda
         public static bool IsUserLocal(string userName)
         {
             bool exists = false;
-
             using (var domainContext = new PrincipalContext(ContextType.Machine))
             {
                 using (var foundUser = UserPrincipal.FindByIdentity(domainContext, IdentityType.SamAccountName, userName))
                 {
-                    return true;
+                    exists = true;
                 }
             }
 
-            return false;
+            return exists;
         }
     }
 }
