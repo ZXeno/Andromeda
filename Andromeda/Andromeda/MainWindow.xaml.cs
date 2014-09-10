@@ -149,5 +149,13 @@ namespace Andromeda
             ResultConsole.InitializeResultConsole();
             
         }
+
+        private void CHANGE_CREDS_BTTN_Click(object sender, RoutedEventArgs e)
+        {
+            CredentialWindow credsWindow = new CredentialWindow();
+            credsWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            credsWindow.Owner = App.Current.MainWindow;
+            credsWindow.ShowDialog();
+        }
     }
 }
