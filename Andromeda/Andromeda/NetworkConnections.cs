@@ -82,12 +82,21 @@ namespace Andromeda
             return returnMsgs;
         }
 
-        public ManagementScope ConnectToRemoteWMI(string hostname)
+        public ManagementScope ConnectToRemoteWMI(string hostname, string scope)
         {
-            ManagementScope wmiscope = new ManagementScope("\\\\"+hostname+"\\root\\cimv2");
+            ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope);
             wmiscope.Connect();
-            ResultConsole.AddConsoleLine("Connected to WMI scope " + wmiscope.Path);
             return wmiscope;
         }
+
+        public bool CheckWMIAccessible(string hostname, string scope)
+        {
+            ManagementScope wmiscope = ConnectToRemoteWMI(hostname, scope);
+            if (wmiscope.IsConnected) { ResultConsole.AddConsoleLine("Connected to WMI scope " + wmiscope.Path); }
+            else { ResultConsole.AddConsoleLine("Connection to WMI scope " + wmiscope.Path + " failed."); }
+            return wmiscope.IsConnected;
+        }
+
+
     }
 }
