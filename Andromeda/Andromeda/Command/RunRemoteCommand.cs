@@ -26,8 +26,8 @@ namespace Andromeda.Command
             string processToRun = "";
             List<string> devices = ParseDeviceList(deviceList);
             ConnectionOptions connOps = new ConnectionOptions();
-            connOps.Username = CredentialManager.GetUser();
-            connOps.Password = CredentialManager.GetPass();
+            connOps.Username = CredentialManager.UserName;
+            connOps.Password = CredentialManager.Password;
 
             CLI_Prompt newPrompt = new CLI_Prompt();
             newPrompt.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
