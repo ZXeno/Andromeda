@@ -30,6 +30,8 @@ namespace Andromeda.Command
             connOps.Password = CredentialManager.GetPass();
 
             CLI_Prompt newPrompt = new CLI_Prompt();
+            newPrompt.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            newPrompt.Owner = App.Current.MainWindow;
             newPrompt.ShowDialog();
 
             try
