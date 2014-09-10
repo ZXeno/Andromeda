@@ -88,7 +88,9 @@ namespace Andromeda
         private void ABOUT_BTTN_Click(object sender, RoutedEventArgs e)
         {
             aboutWindow = new AboutWindow();
-            aboutWindow.Show();
+            aboutWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            aboutWindow.Owner = this;
+            aboutWindow.ShowDialog();
         }
 
         public void ImportConfiguration()
