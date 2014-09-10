@@ -21,6 +21,7 @@ namespace Andromeda
     {
         private string boxContents;
         private bool wasCanceled = false;
+        private bool _buttonpress = false;
 
         public string TextBoxContents { get { return boxContents; } }
         public bool WasCanceled { get { return wasCanceled; } }
@@ -28,23 +29,28 @@ namespace Andromeda
         public CLI_Prompt()
         {
             InitializeComponent();
-            Closed += CLI_Prompt_Closed;
+            Closing += CLI_Prompt_Closed;
         }
 
-        void CLI_Prompt_Closed(object sender, EventArgs e)
+        private void CLI_Prompt_Closed(object sender, EventArgs e)
         {
-            wasCanceled = true;
-            this.Close();
+            if (!_buttonpress)
+            {
+                wasCanceled = true;
+            }
         }
 
         public void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
+            _buttonpress = true;
             wasCanceled = true;
             this.Close();
+
         }
 
         private void Okay_Button_Click(object sender, RoutedEventArgs e)
         {
+            _buttonpress = true;
             boxContents = CommandBox.Text;
             wasCanceled = false;
             this.Close();
