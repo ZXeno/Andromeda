@@ -11,11 +11,11 @@ namespace Andromeda.Command
     {
         NetworkConnections netconn;
 
-        public DebugToConsole(string name, string descriptor, ActionGroup cat)
+        public DebugToConsole()
         {
-            ActionName = name;
-            Desctiption = descriptor;
-            Category = cat;
+            ActionName = "Debug to Console";
+            Desctiption = "For testing new commands, actions, and abilities.";
+            Category = ActionGroup.Other;
             netconn = new NetworkConnections();
         }
 
@@ -25,7 +25,10 @@ namespace Andromeda.Command
 
             foreach (string d in ParseDeviceList(input))
             {
-                ManagementScope testscope = netconn.ConnectToRemoteWMI(d);
+                if (netconn.CheckWMIAccessible(d, "\\root\\CIMV2"))
+                {
+                    ManagementScope testscope = netconn.ConnectToRemoteWMI(d, "\\root\\CIMV2");
+                }
             }
 
             return sendback;

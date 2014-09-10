@@ -21,8 +21,10 @@ namespace Andromeda.Command
 
         public void ImportCommandsList()
         {
-            actionsList.Add(new DebugToConsole("Debug to Console", "Test for spitting out data from device list", ActionGroup.Other));
-            actionsList.Add(new PingTest("Ping Test", "Runs a ping test against the device list.", ActionGroup.Other));
+            actionsList.Add(new DebugToConsole());
+            actionsList.Add(new PingTest());
+            actionsList.Add(new RunRemoteCommand());
+
         }
 
         /* -- External commands are still not supported yet. This will be uncommented when that support is available.

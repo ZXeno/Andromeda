@@ -10,11 +10,11 @@ namespace Andromeda.Command
     {
         NetworkConnections netConn;
 
-        public PingTest(string name, string descriptor, ActionGroup cat)
+        public PingTest()
         {
-            ActionName = name;
-            Desctiption = descriptor;
-            Category = cat;
+            ActionName = "Ping Test";
+            Desctiption = "Runs a ping test against the device list.";
+            Category = ActionGroup.Other;
             netConn = new NetworkConnections();
         }
 
