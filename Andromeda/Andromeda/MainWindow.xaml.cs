@@ -125,6 +125,9 @@ namespace Andromeda
         {
             Commander = new Commands();
             AVAIL_ACTS_LISTBOX.ItemsSource = Commander.ActionsList;
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(AVAIL_ACTS_LISTBOX.ItemsSource);
+            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
+            view.GroupDescriptions.Add(groupDescription);
             AVAIL_ACTS_LISTBOX.Items.Refresh();
         }
 
