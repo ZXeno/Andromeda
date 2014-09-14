@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum ActionGroup { Schedule, Agent, Health, Advertisement, Other }
+public enum ActionGroup { Schedule, Agent, Health, Advertisement, Other, Debug }
 
 namespace Andromeda.Command
 {
