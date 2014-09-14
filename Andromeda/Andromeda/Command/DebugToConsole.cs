@@ -15,7 +15,7 @@ namespace Andromeda.Command
         {
             ActionName = "Debug to Console";
             Desctiption = "For testing new commands, actions, and abilities.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.Debug;
             netconn = new NetworkConnections();
         }
 
