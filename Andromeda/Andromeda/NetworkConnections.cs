@@ -70,18 +70,6 @@ namespace Andromeda
             return returnMsg;
         }
 
-        // Return dictionary of results based on list of computers from a List<string> of hostnames.
-        public Dictionary<string, string> PingTestDictionaryResult(List<string> hostnames)
-        {
-            Dictionary<string,string> returnMsgs = new Dictionary<string,string>(); ;
-            foreach (string host in hostnames)
-            {
-                returnMsgs.Add(host, PingTest(host));
-            }
-
-            return returnMsgs;
-        }
-
         public ManagementScope ConnectToRemoteWMI(string hostname, string scope)
         {
             ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope);
@@ -95,6 +83,22 @@ namespace Andromeda
             if (wmiscope.IsConnected) { ResultConsole.AddConsoleLine("Connected to WMI scope " + wmiscope.Path); }
             else { ResultConsole.AddConsoleLine("Connection to WMI scope " + wmiscope.Path + " failed."); }
             return wmiscope.IsConnected;
+        }
+
+        public ManagementScope ConnectToSCCMscope(string hostname)
+        {
+            try
+            {
+                ManagementScope ccmscope = new ManagementScope("\\\\" + hostname + "root\\ccm");
+                ccmscope.Connect();
+                return ccmscope;
+            }
+            catch (ManagementException e)
+            {
+                ResultConsole.AddConsoleLine("Failed to connect.");
+                ResultConsole.AddConsoleLine(e.Message);
+                throw;
+            }
         }
 
 

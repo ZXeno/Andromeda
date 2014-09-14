@@ -1,11 +1,10 @@
 ﻿/*
- *  Imports the Command.XML file from .\Tasks directory, then parses them and prepares them for display in the program window. 
+ *  Imports the commands and adds them to the Action List to be accessed in the actions window. 
  * 
  */
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Windows;
@@ -20,11 +19,10 @@ namespace Andromeda.Command
         public Commands() { ImportCommandsList(); }
 
         public void ImportCommandsList()
-        {
-            actionsList.Add(new DebugToConsole());
+        {            
             actionsList.Add(new PingTest());
             actionsList.Add(new RunRemoteCommand());
-
+            actionsList.Add(new DebugToConsole());
         }
 
         /* -- External commands are still not supported yet. This will be uncommented when that support is available.
