@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Management;
 using System.DirectoryServices.AccountManagement;
+using System.Security;
+using System.Runtime.InteropServices;
 
 namespace Andromeda
 {
@@ -12,24 +14,42 @@ namespace Andromeda
         private static bool _isImpersonating = true;
 
         private static string _uName = "";
-        private static string _pWord = "";
+        private static SecureString _pWord = new SecureString();
 
         public static string UserName { get { return _uName; } }
-        public static string Password { get { return _pWord; } }
+        public static SecureString Password { get { return _pWord; } }
         public static string Domain { get { return Environment.UserDomainName; } }
         public static bool IsImpersonationEnabled { get { return _isImpersonating; } }
 
-        public static void SetUser(string uName)
+        public static void SetCustomCredentials(string user, SecureString pass)
         {
-            _uName = uName;
+            _uName = user;
+            _pWord = pass;
         }
 
-        public static void SetPass(string pWord)
+        public static string ExtractSecureString(SecureString secString)
         {
-            _pWord = pWord;
+            IntPtr unmanagedString = IntPtr.Zero;
+            try
+            {
+                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(secString);
+                return Marshal.PtrToStringUni(unmanagedString);
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+            }
         }
 
-        
+        public static SecureString BuildSecureString(string strPassword)
+        {
+            SecureString secureStr = new SecureString();
+            if (strPassword.Length > 0)
+                {
+                    foreach (var c in strPassword.ToCharArray()) secureStr.AppendChar(c);
+                }
+            return secureStr;
+        }
 
         public static bool DoesUserExistInActiveDirectory(string userName)
         {

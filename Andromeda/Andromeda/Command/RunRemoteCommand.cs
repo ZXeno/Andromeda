@@ -29,7 +29,7 @@ namespace Andromeda.Command
             if (!CredentialManager.IsImpersonationEnabled)
             {
                 connOps.Username = CredentialManager.UserName;
-                connOps.Password = CredentialManager.Password;
+                connOps.Password = CredentialManager.ExtractSecureString(CredentialManager.Password);
             }
             else
             {
