@@ -24,50 +24,10 @@ namespace Andromeda
         }
 
         // Ping test for single machine.
-        public string PingTest(string hostname)
+        public PingReply PingTest(string hostname)
         {
-            string returnMsg = "";
-            if (hostname == "" || hostname == null)
-            {
-                return "No host was specified, please check the device list and try again.";
-            }
-            
-            try 
-            {
-                PingReply pr = ping.Send(hostname);
-                // If the ping reply isn't null...
-                if (pr != null)
-                {
-                    // based on our connection status, return a message
-                    switch (pr.Status)
-                    {
-                        case IPStatus.Success:
-                            returnMsg = string.Format("Reply from {0} with address {1}", hostname, pr.Address);
-                            break;
-                        case IPStatus.TimedOut:
-                            returnMsg = "Connection has timed out.";
-                            break;
-                        default:
-                            returnMsg = string.Format("Ping to {0} failed: {1}", hostname, pr.Status.ToString());
-                            break;
-                    }
-                }
-                else
-                {
-                    // if it isn't null, but fails anyway, I'm not exactly certain why we would have an error.
-                    returnMsg = "Connection failed for an unknown reason.";
-                }
-            }
-            catch (PingException ex)
-            {
-                returnMsg = string.Format("Connection Error: {0}", ex.Message);
-            }
-            catch (SocketException ex)
-            {
-                returnMsg = string.Format("Connection Error: {0}", ex.Message);
-            }
-
-            return returnMsg;
+            PingReply pr = ping.Send(hostname);
+            return pr;
         }
 
         public ManagementScope ConnectToRemoteWMI(string hostname, string scope)
