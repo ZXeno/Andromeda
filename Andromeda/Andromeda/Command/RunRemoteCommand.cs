@@ -75,11 +75,19 @@ namespace Andromeda.Command
             string result = "";
             var processToRun = new[] { process };
 
-            if (netconn.CheckWMIAccessible(d, scope))
+            if (netconn.CheckWMIAccessible(d, scope, options))
             {
-                deviceWMI = netconn.ConnectToRemoteWMI(d, scope);
-                ManagementClass wmiProcess = new ManagementClass(deviceWMI, new ManagementPath("Win32_Process"), new ObjectGetOptions());
-                wmiProcess.InvokeMethod("Create", processToRun);
+                deviceWMI = netconn.ConnectToRemoteWMI(d, scope, options);
+                ManagementPath p = new ManagementPath("Win32_Process");
+                ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, new ObjectGetOptions());
+                ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
+                startupSettings.Scope = deviceWMI;
+                ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
+                inParams["CommandLine"] = process;
+                inParams["ProcessStartupInformation"] = startupSettings;
+                ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
+                string retval = outValue["ReturnValue"].ToString();
+                ResultConsole.AddConsoleLine(d + "returned exit code: " + retval);
             }
             else
             {
