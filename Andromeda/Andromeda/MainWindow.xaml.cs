@@ -73,7 +73,7 @@ namespace Andromeda
                 }
                 else
                 {
-                    MessageBox.Show("No action selected. Please select an action to take on the selected machines. \n What do you expect to do with these, otherwise?");
+                    MessageBox.Show("No action selected. Please select an action to take on the selected machines. \n\n I'm just a dumb machine, you have to tell me what to do!");
                 }
             }
             catch (NullReferenceException ex)
@@ -97,25 +97,33 @@ namespace Andromeda
             string p = WorkingPath + "\\" + ConfigFileName;
             if (CheckForConfigFile())
             {
-                try { ConfigFile = XMLImport.GetXMLFileData(p); }
+                try 
+                { 
+                    ConfigFile = XMLImport.GetXMLFileData(p);
+                    if (ConfigFile != null)
+                    {
+                        configuration.UpdateConfigDocument(ConfigFile);
+                    }
+                    else
+                    {
+                        configuration = new Config(p);
+                    }
+                }
                 catch (FileNotFoundException fnf)
                 {
                     MessageBox.Show("File unable to load. \n Exception: " + fnf.Message);
                     App.Current.Shutdown();
                 }
 
-                ResultConsole.AddConsoleLine("Configuration file found.");
-
                 if (ConfigFile != null)
                 {
+                    ResultConsole.AddConsoleLine("Configuration file found.");
                     ResultConsole.AddConsoleLine("Config file loaded. - " + p);
                 }
             }
             else
             {
                 ResultConsole.AddConsoleLine("No config file found!");
-                ResultConsole.AddConsoleLine("Generating new config file...");
-                File.CreateText(p);
                 CreateConfigFile(p);
             }
         }
@@ -143,7 +151,17 @@ namespace Andromeda
 
         private void CreateConfigFile(string pathToFile)
         {
-            ResultConsole.AddConsoleLine("I'm pretending to generate a new config file!");
+            ResultConsole.AddConsoleLine("Generating new config file...");
+            configuration = new Config(WorkingPath + "\\" + ConfigFileName);
+            if (CheckForConfigFile())
+            {
+                ResultConsole.AddConsoleLine("Config file created.");
+            }
+            else
+            {
+                ResultConsole.AddConsoleLine("For some reason, the config file location either isn't readable, \n or there was another problem generating the configuration file.");
+                ResultConsole.AddConsoleLine("For now, I'm not sure what to do with this, so we'll use a default configuration for the time being.");
+            }
         }
 
         public void InitializeBackEnd()
