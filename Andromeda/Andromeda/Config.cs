@@ -192,9 +192,10 @@ namespace Andromeda
         }
         #endregion
 
-        public void UpdateConfigDocument(XmlDocument configdat)
+        public void UpdateConfigDocument(XmlDocument configdat, string path)
         {
             configFileDat = configdat;
+            configFileDat.Save(path);
             ResultConsole.AddConsoleLine("Config file updated.");
         }
 
