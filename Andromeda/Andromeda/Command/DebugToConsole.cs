@@ -21,14 +21,15 @@ namespace Andromeda.Command
 
         public override void RunCommand(string input)
         {
-            string sendback = "";
-
             foreach (string d in ParseDeviceList(input))
             {
                 if (netconn.CheckWMIAccessible(d, "\\root\\CIMV2"))
                 {
                     ManagementScope testscope = netconn.ConnectToRemoteWMI(d, "\\root\\CIMV2");
-                    if(testscope!=null){ResultConsole.AddConsoleLine("Successfull connection");
+                    if (testscope != null)
+                    {
+                        ResultConsole.AddConsoleLine("Successfull connection");
+                    }
                 }
             }
         }

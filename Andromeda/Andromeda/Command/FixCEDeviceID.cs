@@ -18,12 +18,9 @@ namespace Andromeda.Command
             netconn = new NetworkConnections();
         }
 
-        public override string RunCommand(string a)
+        public override void RunCommand(string a)
         {
-            string returnMsg = "";
-
-
-            return returnMsg;
+            
         }
     }
 }

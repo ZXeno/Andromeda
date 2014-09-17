@@ -69,8 +69,7 @@ namespace Andromeda
             {
                 if (si != null)
                 {
-                    string msg = si.RunCommand(DEVICE_LIST_TEXTBOX.Text);
-                    ResultConsole.AddConsoleLine(msg);
+                    si.RunCommand(DEVICE_LIST_TEXTBOX.Text);
                 }
                 else
                 {

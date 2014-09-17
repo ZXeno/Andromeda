@@ -19,24 +19,14 @@ namespace Andromeda.Command
             netConn = new NetworkConnections();
         }
 
-        public override string RunCommand(string host)
+        public override void RunCommand(string host)
         {
-            string response = "";
-
             foreach (string d in ParseDeviceList(host))
             {
                 if (d == "") { continue; }
-                response += ParseResponse(netConn.PingTest(d), d) + "\n";
+                ParseResponse(netConn.PingTest(d), d);
             }
-
-            return response;
         }
-
-        public override string ToString()
-        {
-            return ActionName;
-        }
-
 
 
         private string ParseResponse(PingReply hostname, string device)
