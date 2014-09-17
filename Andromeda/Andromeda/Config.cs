@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
+using System.Windows;
 
 namespace Andromeda
 {
@@ -27,7 +28,6 @@ namespace Andromeda
         private bool alwaysDumpConsoleHistory = true;
         private bool checkServicesList = true;
         private List<string> servicesList = new List<string>();
-        private bool autoInstallClient = false;
         private bool checkEnabledDCOM = true;
         private bool checkEnabledRemoteConnect = false;
         private string ccmSetupDir = "";
@@ -52,7 +52,6 @@ namespace Andromeda
         public bool AlwaysDumpConsoleHistory { get { return alwaysDumpConsoleHistory; } }
         public bool CheckServicesList { get { return checkServicesList; } }
         public List<string> ServicesList { get { return servicesList; } }
-        public bool AutoInstallClient { get { return autoInstallClient; } }
         public bool CheckEnabledDCOM { get { return checkEnabledDCOM; } }
         public bool CheckEnabledRemoteConnect { get { return checkEnabledRemoteConnect; } }
         public string CCMSetupDirectory { get { return ccmSetupDir; } }
@@ -60,11 +59,14 @@ namespace Andromeda
         public bool EnableFullUninstall { get { return enableFullUninstall; } }
         public string SCCMSiteServer { get { return sccmSiteServer; } }
 
-        private XmlTextWriter _xwriter;
+        private XmlWriter _xwriter;
         private XmlDocument configFileDat;
 
 
-        public Config() { }
+        public Config(string FilePath) 
+        {
+            CreateNewConfigFile(FilePath);
+        }
 
         public Config(XmlDocument configFile)
         {
@@ -80,100 +82,111 @@ namespace Andromeda
             servicesList.Add("bits");
             servicesList.Add("ccmexec");
 
-            _xwriter = new XmlTextWriter(FilePath, Encoding.UTF8);
-            _xwriter.Formatting = Formatting.Indented;
-            _xwriter.WriteStartDocument();
-            _xwriter.WriteStartElement("config");
-
-            //Program Settings Category
-            _xwriter.WriteStartElement("settings");
-
-            // Pingtest flag
-            CreateSingleAttributeElement("pingtest", "flag", pingTest.ToString());
-
-            // Save Offline Computers
-            CreateSingleAttributeElement("saveofflinecomputers", "flag", saveOfflineComputers.ToString());
-
-            // Save Online Computers
-            CreateSingleAttributeElement("saveonlinecomputers", "flag", saveOnlineComputers.ToString());
-
-            // Logging Level
-            CreateSingleAttributeElement("logginglevel", "flag", loggingLevel.ToString());
-
-            /*
-            // Prompt User for Credentials
-            CreateSingleAttributeElement("promptuserforcreds", "flag", promptForCredentials.ToString());
-
-            // Saved Credentials
-            _xwriter.WriteStartElement("savedCredentails");
-            _xwriter.WriteAttributeString("flag", saveCredentails.ToString());
-            // Saved Credentails warnings and observed flags
-            CreateUnattributedElement("warningText", warningText);
-            CreateSingleAttributeElement("warningObserved", "flag", firstWarningObserved.ToString());
-
-
-            CreateUnattributedElement("secondWarningText", secondWarningText);
-            CreateSingleAttributeElement("secondWarningObserved", "flag", secondWarningObserved.ToString());
-
-            CreateUnattributedElement("thirdWarningText", thirdWarningText);
-            CreateSingleAttributeElement("thirdWarningObserved", "flag", thirdWarningObserved.ToString());
-
-            // Saved Username
-            CreateUnattributedElement("savedUser", savedUserName);
-            CreateUnattributedElement("savedPass", savedPass);
-
-            // Close Saved Credentials
-            _xwriter.WriteEndElement();
-            */
-
-            // Always Dump console history on exit
-            CreateSingleAttributeElement("alwaysDumpConsoleHistory", "flag", alwaysDumpConsoleHistory.ToString());
-
-            // Close <settings>
-            _xwriter.WriteEndElement();
-
-            // SCCM config settings
-            _xwriter.WriteStartElement("sccmconfig");
-
-            // Check Services List settings
-            _xwriter.WriteStartElement("checkServicesList");
-            _xwriter.WriteAttributeString("flag", checkServicesList.ToString());
-            foreach (string sv in servicesList) // Fill in the services list.
+            #region Document Creation
+            try
             {
-                CreateUnattributedElement("svc", sv);
+                XmlWriterSettings _xsets = new XmlWriterSettings();
+                _xsets.Encoding = UTF8Encoding.UTF8;
+                _xsets.Indent = true;
+
+                _xwriter = XmlWriter.Create(FilePath, _xsets);
+                
+                _xwriter.WriteStartDocument();
+                _xwriter.WriteStartElement("config");
+
+                //Program Settings Category
+                _xwriter.WriteStartElement("settings");
+
+                // Pingtest flag
+                CreateSingleAttributeElement("pingtest", "flag", pingTest.ToString());
+
+                // Save Offline Computers
+                CreateSingleAttributeElement("saveofflinecomputers", "flag", saveOfflineComputers.ToString());
+
+                // Save Online Computers
+                CreateSingleAttributeElement("saveonlinecomputers", "flag", saveOnlineComputers.ToString());
+
+                // Logging Level
+                CreateSingleAttributeElement("logginglevel", "flag", loggingLevel.ToString());
+
+                /*
+                // Prompt User for Credentials
+                CreateSingleAttributeElement("promptuserforcreds", "flag", promptForCredentials.ToString());
+
+                // Saved Credentials
+                _xwriter.WriteStartElement("savedCredentails");
+                _xwriter.WriteAttributeString("flag", saveCredentails.ToString());
+                // Saved Credentails warnings and observed flags
+                CreateUnattributedElement("warningText", warningText);
+                CreateSingleAttributeElement("warningObserved", "flag", firstWarningObserved.ToString());
+
+
+                CreateUnattributedElement("secondWarningText", secondWarningText);
+                CreateSingleAttributeElement("secondWarningObserved", "flag", secondWarningObserved.ToString());
+
+                CreateUnattributedElement("thirdWarningText", thirdWarningText);
+                CreateSingleAttributeElement("thirdWarningObserved", "flag", thirdWarningObserved.ToString());
+
+                // Saved Username
+                CreateUnattributedElement("savedUser", savedUserName);
+                CreateUnattributedElement("savedPass", savedPass);
+
+                // Close Saved Credentials
+                _xwriter.WriteEndElement();
+                */
+
+                // Always Dump console history on exit
+                CreateSingleAttributeElement("alwaysDumpConsoleHistory", "flag", alwaysDumpConsoleHistory.ToString());
+
+                // Close <settings>
+                _xwriter.WriteEndElement();
+
+                // SCCM config settings
+                _xwriter.WriteStartElement("sccmconfig");
+
+                // Check Services List settings
+                _xwriter.WriteStartElement("checkServicesList");
+                _xwriter.WriteAttributeString("flag", checkServicesList.ToString());
+                foreach (string sv in servicesList) // Fill in the services list.
+                {
+                    CreateUnattributedElement("svc", sv);
+                }
+                // Close Check Services List
+                _xwriter.WriteEndElement();
+
+                // check enabled DCOM
+                CreateSingleAttributeElement("checkEnabledDCOM", "flag", checkEnabledDCOM.ToString());
+
+                // check enabled remote connect
+                CreateSingleAttributeElement("checkEnabledRemoteConnect", "flag", checkEnabledRemoteConnect.ToString());
+
+                // ccm setup path
+                CreateSingleAttributeElement("ccmSetupPath", "flag", "\"\"");
+
+                // ccm setup parameters
+                CreateSingleAttributeElement("ccmSetupParameters", "flag", "\"\"");
+
+                // enable full uninstall
+                CreateSingleAttributeElement("enableFullUninstall", "flag", enableFullUninstall.ToString());
+
+                // site server
+                CreateSingleAttributeElement("sccmSiteServer", "flag", "\"\"");
+
+                // Close SCCM Config Settings
+                _xwriter.WriteEndElement();
+                // Close <config>
+                _xwriter.WriteEndElement();
+
+                // Close file
+                _xwriter.WriteEndDocument();
+                _xwriter.Close();
             }
-            // Close Check Services List
-            _xwriter.WriteEndElement();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            #endregion
 
-            // Auto Install Client
-            CreateSingleAttributeElement("autoInstallClient", "flag", autoInstallClient.ToString());
-
-            // check enabled DCOM
-            CreateSingleAttributeElement("checkEnabledDCOM", "flag", checkEnabledDCOM.ToString());
-
-            // check enabled remote connect
-            CreateSingleAttributeElement("checkEnabledRemoteConnect", "flag", checkEnabledRemoteConnect.ToString());
-
-            // ccm setup path
-            CreateSingleAttributeElement("ccmSetupPath", "flag", "\"\"");
-
-            // ccm setup parameters
-            CreateSingleAttributeElement("ccmSetupParameters", "flag", "\"\"");
-
-            // enable full uninstall
-            CreateSingleAttributeElement("enableFullUninstall", "flag", enableFullUninstall.ToString());
-
-            // site server
-            CreateSingleAttributeElement("sccmSiteServer", "flag", "\"\"");
-
-            // Close SCCM Config Settings
-            _xwriter.WriteEndElement();
-            // Close <config>
-            _xwriter.WriteEndElement();
-
-            // Close file
-            _xwriter.WriteEndDocument();
-            _xwriter.Close();
         }
 
         public void UpdateConfigDocument(XmlDocument configdat)
