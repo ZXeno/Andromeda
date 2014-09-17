@@ -8,7 +8,12 @@ namespace Andromeda
 {
     public class Program
     {
+        //CredentialManager credman;
 
+        public Program()
+        {
+            //credman = new CredentialManager();
+        }
 
     }
 }
