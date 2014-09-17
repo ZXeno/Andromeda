@@ -30,16 +30,16 @@ namespace Andromeda
             return pr;
         }
 
-        public ManagementScope ConnectToRemoteWMI(string hostname, string scope)
+        public ManagementScope ConnectToRemoteWMI(string hostname, string scope, ConnectionOptions options)
         {
-            ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope);
+            ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope, options);
             wmiscope.Connect();
             return wmiscope;
         }
 
-        public bool CheckWMIAccessible(string hostname, string scope)
+        public bool CheckWMIAccessible(string hostname, string scope, ConnectionOptions options)
         {
-            ManagementScope wmiscope = ConnectToRemoteWMI(hostname, scope);
+            ManagementScope wmiscope = ConnectToRemoteWMI(hostname, scope, options);
             if (wmiscope.IsConnected) { ResultConsole.AddConsoleLine("Connected to WMI scope " + wmiscope.Path); }
             else { ResultConsole.AddConsoleLine("Connection to WMI scope " + wmiscope.Path + " failed."); }
             return wmiscope.IsConnected;
