@@ -20,13 +20,18 @@ namespace Andromeda
             if (FileExists(path))
             {
                 xdoc = new XmlDocument();
-                try { xdoc.Load(path); }
+                try 
+                { 
+                    xdoc.Load(path);
+                    return xdoc;
+                }
                 catch (Exception e) 
                 {
-                    MessageBox.Show("Error! Something went wrong. Exception information: " + e.ToString());
-                    App.Current.Shutdown();
+                    MessageBox.Show("Error! Something went wrong. Exception information: \n" + e.ToString());
+                    ResultConsole.AddConsoleLine("Cannot open file: " + path);
+                    xdoc = null;
+                    return xdoc;
                 }
-                return xdoc;
             }
             else
             {
