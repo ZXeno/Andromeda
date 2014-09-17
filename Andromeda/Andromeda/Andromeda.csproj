@@ -141,11 +141,6 @@
     <Resource Include="Resources\andromeda.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\sagan_tyson.png" />
   </ItemGroup>
   <ItemGroup>
