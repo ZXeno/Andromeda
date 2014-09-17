@@ -1,4 +1,6 @@
 *.exe
+*.suo
+*.csproj
 
 Andromeda/Andromeda/bin/*
 Andromeda/Andromeda/obj/*
