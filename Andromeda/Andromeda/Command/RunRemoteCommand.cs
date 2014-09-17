@@ -34,6 +34,7 @@ namespace Andromeda.Command
             else
             {
                 connOps.Impersonation = ImpersonationLevel.Impersonate;
+                connOps.Authentication = AuthenticationLevel.PacketPrivacy;
             }
 
             CLI_Prompt newPrompt = new CLI_Prompt();
@@ -79,15 +80,17 @@ namespace Andromeda.Command
             {
                 deviceWMI = netconn.ConnectToRemoteWMI(d, scope, options);
                 ManagementPath p = new ManagementPath("Win32_Process");
-                ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, new ObjectGetOptions());
+                ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
                 ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
                 startupSettings.Scope = deviceWMI;
+                startupSettings["CreateFlags"] = 16777216;
                 ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
                 inParams["CommandLine"] = process;
                 inParams["ProcessStartupInformation"] = startupSettings;
                 ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
                 string retval = outValue["ReturnValue"].ToString();
-                ResultConsole.AddConsoleLine(d + "returned exit code: " + retval);
+                //string retval = outValue.Properties.ToString();
+                ResultConsole.AddConsoleLine(d + " returned exit code: " + retval);
             }
             else
             {
