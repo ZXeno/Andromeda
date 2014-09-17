@@ -102,7 +102,8 @@ namespace Andromeda
                     ConfigFile = XMLImport.GetXMLFileData(p);
                     if (ConfigFile != null)
                     {
-                        configuration.UpdateConfigDocument(ConfigFile);
+                        ResultConsole.AddConsoleLine("Configuration file found.");
+                        configuration = new Config(ConfigFile);
                     }
                     else
                     {
@@ -113,12 +114,6 @@ namespace Andromeda
                 {
                     MessageBox.Show("File unable to load. \n Exception: " + fnf.Message);
                     App.Current.Shutdown();
-                }
-
-                if (ConfigFile != null)
-                {
-                    ResultConsole.AddConsoleLine("Configuration file found.");
-                    ResultConsole.AddConsoleLine("Config file loaded. - " + p);
                 }
             }
             else
@@ -151,7 +146,6 @@ namespace Andromeda
 
         private void CreateConfigFile(string pathToFile)
         {
-            ResultConsole.AddConsoleLine("Generating new config file...");
             configuration = new Config(WorkingPath + "\\" + ConfigFileName);
             if (CheckForConfigFile())
             {

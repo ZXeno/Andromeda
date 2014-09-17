@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.XPath;
 using System.IO;
 using System.Windows;
 
@@ -16,15 +17,6 @@ namespace Andromeda
         private bool saveOnlineComputers = true;
         private int loggingLevel = 3;
         //private bool promptForCredentials = true;
-        //private bool saveCredentails = false;
-        //private bool firstWarningObserved = false;
-        //private bool secondWarningObserved = false;
-        //private bool thirdWarningObserved = false;
-        //private string warningText = "--IT IS HIGHLY RECOMMENDED YOU DO NOT SAVE YOUR CREDENTAILS.-- \n Saving your credentials is a major security risk. \n Are you absolutely, completely sure you want to save credentials?";
-        //private string secondWarningText = "If you save your credentials, you are responsible for all actions taken under those credentials. \n This is your second warning not to save credentials.";
-        //private string thirdWarningText = "Okay, I get it... You're going to save credentials. \n I'm still telling you not to. It's no joke. \n You could get in trouble if they leak.";
-        //private string savedUserName = "Don't do it!";
-        //private string savedPass = "";
         private bool alwaysDumpConsoleHistory = true;
         private bool checkServicesList = true;
         private List<string> servicesList = new List<string>();
@@ -40,15 +32,6 @@ namespace Andromeda
         public bool SaveOnlineComputers { get { return saveOnlineComputers; } }
         public int LoggingLevel { get { return loggingLevel; } }
         //public bool PromptForCredentials { get { return promptForCredentials; } }
-        //public bool SaveCredentials { get { return saveCredentails; } }
-        //public bool FirstWarningObserved { get { return firstWarningObserved; } }
-        //public bool SecondWarningObserved { get { return secondWarningObserved; } }
-        //public bool ThirdWarningObserved { get { return thirdWarningObserved; } }
-        //public string WarningText { get { return warningText; } }
-        //public string SecondWarningText { get { return secondWarningText; } }
-        //public string ThirdWarningText { get { return thirdWarningText; } }
-        //public string SavedUsername { get { return savedUserName; } }
-        //public string SavedPassword { get { return savedPass; } }
         public bool AlwaysDumpConsoleHistory { get { return alwaysDumpConsoleHistory; } }
         public bool CheckServicesList { get { return checkServicesList; } }
         public List<string> ServicesList { get { return servicesList; } }
@@ -62,6 +45,7 @@ namespace Andromeda
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
 
+        public Config() { }
 
         public Config(string FilePath) 
         {
@@ -70,11 +54,50 @@ namespace Andromeda
 
         public Config(XmlDocument configFile)
         {
+            try
+            {
+                configFileDat = configFile;
+
+                // "config" node
+
+                pingTest = StringToBool(configFileDat.SelectSingleNode("config/settings/pingtest").InnerText);
+                saveOfflineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveofflinecomputers").InnerText);
+                saveOnlineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveonlinecomputers").InnerText);
+                loggingLevel = Convert.ToInt32(configFileDat.SelectSingleNode("config/settings/logginglevel").InnerText);
+                alwaysDumpConsoleHistory = StringToBool(configFileDat.SelectSingleNode("config/settings/alwaysDumpConsoleHistory").InnerText);
+
+                // "sccmconfig" node
+                checkServicesList = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkServicesList/bool").InnerText);
+                servicesList.Clear();
+                foreach (XmlNode node in configFileDat.SelectSingleNode("config/sccmconfig/checkServicesList"))
+                {
+                    if (node.Name == "svc")
+                    {
+                        servicesList.Add(node.InnerText);
+                    }
+                    
+                }
+
+                checkEnabledDCOM = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkEnabledDCOM").InnerText);
+                checkEnabledRemoteConnect = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkEnabledRemoteConnect").InnerText);
+                ccmSetupDir = configFileDat.SelectSingleNode("config/sccmconfig/ccmSetupPath").InnerText;
+                ccmSetupParameters = configFileDat.SelectSingleNode("config/sccmconfig/ccmSetupParameters").InnerText;
+                enableFullUninstall = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/enableFullUninstall").InnerText);
+                sccmSiteServer = configFileDat.SelectSingleNode("config/sccmconfig/sccmSiteServer").InnerText;
+
+                ResultConsole.AddConsoleLine("Config file loaded.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Uh oh! \n\n The config file failed to load with error message:\n" + ex.Message);
+            }
 
         }
-
+        #region create new config file
         public void CreateNewConfigFile(string FilePath)
         {
+            ResultConsole.AddConsoleLine("Generating new config file...");
+
             servicesList.Add("winmgmt");
             servicesList.Add("lanmanserver");
             servicesList.Add("rpcss");
@@ -98,45 +121,24 @@ namespace Andromeda
                 _xwriter.WriteStartElement("settings");
 
                 // Pingtest flag
-                CreateSingleAttributeElement("pingtest", "flag", pingTest.ToString());
+                CreateUnattributedElement("pingtest", pingTest.ToString());
 
                 // Save Offline Computers
-                CreateSingleAttributeElement("saveofflinecomputers", "flag", saveOfflineComputers.ToString());
+                CreateUnattributedElement("saveofflinecomputers", saveOfflineComputers.ToString());
 
                 // Save Online Computers
-                CreateSingleAttributeElement("saveonlinecomputers", "flag", saveOnlineComputers.ToString());
+                CreateUnattributedElement("saveonlinecomputers", saveOnlineComputers.ToString());
 
                 // Logging Level
-                CreateSingleAttributeElement("logginglevel", "flag", loggingLevel.ToString());
+                CreateUnattributedElement("logginglevel", loggingLevel.ToString());
 
                 /*
                 // Prompt User for Credentials
-                CreateSingleAttributeElement("promptuserforcreds", "flag", promptForCredentials.ToString());
-
-                // Saved Credentials
-                _xwriter.WriteStartElement("savedCredentails");
-                _xwriter.WriteAttributeString("flag", saveCredentails.ToString());
-                // Saved Credentails warnings and observed flags
-                CreateUnattributedElement("warningText", warningText);
-                CreateSingleAttributeElement("warningObserved", "flag", firstWarningObserved.ToString());
-
-
-                CreateUnattributedElement("secondWarningText", secondWarningText);
-                CreateSingleAttributeElement("secondWarningObserved", "flag", secondWarningObserved.ToString());
-
-                CreateUnattributedElement("thirdWarningText", thirdWarningText);
-                CreateSingleAttributeElement("thirdWarningObserved", "flag", thirdWarningObserved.ToString());
-
-                // Saved Username
-                CreateUnattributedElement("savedUser", savedUserName);
-                CreateUnattributedElement("savedPass", savedPass);
-
-                // Close Saved Credentials
-                _xwriter.WriteEndElement();
-                */
+                CreateUnattributedElement("promptuserforcreds", promptForCredentials.ToString());
+                 */
 
                 // Always Dump console history on exit
-                CreateSingleAttributeElement("alwaysDumpConsoleHistory", "flag", alwaysDumpConsoleHistory.ToString());
+                CreateUnattributedElement("alwaysDumpConsoleHistory", alwaysDumpConsoleHistory.ToString());
 
                 // Close <settings>
                 _xwriter.WriteEndElement();
@@ -146,7 +148,7 @@ namespace Andromeda
 
                 // Check Services List settings
                 _xwriter.WriteStartElement("checkServicesList");
-                _xwriter.WriteAttributeString("flag", checkServicesList.ToString());
+                CreateUnattributedElement("bool", checkServicesList.ToString());
                 foreach (string sv in servicesList) // Fill in the services list.
                 {
                     CreateUnattributedElement("svc", sv);
@@ -155,22 +157,22 @@ namespace Andromeda
                 _xwriter.WriteEndElement();
 
                 // check enabled DCOM
-                CreateSingleAttributeElement("checkEnabledDCOM", "flag", checkEnabledDCOM.ToString());
+                CreateUnattributedElement("checkEnabledDCOM", checkEnabledDCOM.ToString());
 
                 // check enabled remote connect
-                CreateSingleAttributeElement("checkEnabledRemoteConnect", "flag", checkEnabledRemoteConnect.ToString());
+                CreateUnattributedElement("checkEnabledRemoteConnect", checkEnabledRemoteConnect.ToString());
 
                 // ccm setup path
-                CreateSingleAttributeElement("ccmSetupPath", "flag", "\"\"");
+                CreateUnattributedElement("ccmSetupPath", "\"\"");
 
                 // ccm setup parameters
-                CreateSingleAttributeElement("ccmSetupParameters", "flag", "\"\"");
+                CreateUnattributedElement("ccmSetupParameters", "\"\"");
 
                 // enable full uninstall
-                CreateSingleAttributeElement("enableFullUninstall", "flag", enableFullUninstall.ToString());
+                CreateUnattributedElement("enableFullUninstall", enableFullUninstall.ToString());
 
                 // site server
-                CreateSingleAttributeElement("sccmSiteServer", "flag", "\"\"");
+                CreateUnattributedElement("sccmSiteServer", "\"\"");
 
                 // Close SCCM Config Settings
                 _xwriter.WriteEndElement();
@@ -188,10 +190,12 @@ namespace Andromeda
             #endregion
 
         }
+        #endregion
 
         public void UpdateConfigDocument(XmlDocument configdat)
         {
             configFileDat = configdat;
+            ResultConsole.AddConsoleLine("Config file updated.");
         }
 
         private void CreateSingleAttributeElement(string ElementName, string AttributeString1, string AttributeString2)
@@ -206,6 +210,18 @@ namespace Andromeda
             _xwriter.WriteStartElement(ElementName);
             _xwriter.WriteString(StringData);
             _xwriter.WriteEndElement();
+        }
+
+        private bool StringToBool(string tfval)
+        {
+            if (tfval == "True" || tfval == "true")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
