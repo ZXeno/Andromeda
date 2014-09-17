@@ -17,15 +17,16 @@ namespace Andromeda.Command
         public Action() { }
 
         // Single entry
-        public virtual string RunCommand(string a) { return null; }
+        public virtual void RunCommand(string a) {  }
 
         // Return results tied to device keys.
-        public virtual Dictionary<string, string> RunCommand(string[] a) { return null; }
+        public virtual Dictionary<string, string> RunCommand(string a) { return null; }
         public virtual Dictionary<string, string> RunCommand(List<string> a) { return null; }
 
+        // Used for returning the name of the command to the GUI
         public override string ToString() { return ActionName; }
 
-        // Return a list of devices
+        // Return a list of devices from the string list of the GUI
         public List<string> ParseDeviceList(string list)
         {
             List<string> devList = new List<string>(list.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));

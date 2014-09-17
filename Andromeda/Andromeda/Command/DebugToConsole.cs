@@ -19,7 +19,7 @@ namespace Andromeda.Command
             netconn = new NetworkConnections();
         }
 
-        public override string RunCommand(string input)
+        public override void RunCommand(string input)
         {
             string sendback = "";
 
@@ -28,10 +28,9 @@ namespace Andromeda.Command
                 if (netconn.CheckWMIAccessible(d, "\\root\\CIMV2"))
                 {
                     ManagementScope testscope = netconn.ConnectToRemoteWMI(d, "\\root\\CIMV2");
+                    if(testscope!=null){ResultConsole.AddConsoleLine("Successfull connection");
                 }
             }
-
-            return sendback;
         }
     }
 }

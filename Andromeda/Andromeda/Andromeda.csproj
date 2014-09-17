@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Command\Action.cs" />
     <Compile Include="Command\DebugToConsole.cs" />
+    <Compile Include="Command\FixCEDeviceID.cs" />
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Command\RunRemoteCommand.cs" />
     <Compile Include="Config.cs" />

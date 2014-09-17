@@ -20,7 +20,7 @@ namespace Andromeda.Command
         }
 
 
-        public override string RunCommand(string deviceList) 
+        public override void RunCommand(string deviceList) 
         {
             string wmiscope = "\\root\\cimv2";
             string processToRun = "";
@@ -51,13 +51,13 @@ namespace Andromeda.Command
                 else if (newPrompt.WasCanceled)
                 {
                     newPrompt = null;
-                    return "Run Command Remotely action was canceled.";
+                    ResultConsole.AddConsoleLine("Run Command Remotely action was canceled.");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("There was an error running this command. \n " + ex.Message);
-                return "Command failed with exception error caught: \n" + ex.Message;
+                ResultConsole.AddConsoleLine("Command failed with exception error caught: \n" + ex.Message);
             }
 
             foreach (string d in devices)
@@ -65,7 +65,8 @@ namespace Andromeda.Command
                 ResultConsole.AddConsoleLine(RunOnDevice(d, wmiscope, processToRun, connOps));
             }
 
-            return "Completed"; 
+            wmiscope = "";
+            processToRun = "";
         }
 
         private string RunOnDevice(string d, string scope, string process, ConnectionOptions options)
