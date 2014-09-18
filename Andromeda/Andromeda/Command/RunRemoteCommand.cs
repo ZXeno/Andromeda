@@ -10,6 +10,8 @@ namespace Andromeda.Command
     {
 
         NetworkConnections netconn;
+        ConnectionOptions connOps;
+        WMIFuncs wmi;
 
         public RunRemoteCommand()
         {
@@ -17,6 +19,8 @@ namespace Andromeda.Command
             Desctiption = "Run any console command remotely, as specified credentials.";
             Category = ActionGroup.Other;
             netconn = new NetworkConnections();
+            wmi = new WMIFuncs();
+            connOps = new ConnectionOptions();
         }
 
 
@@ -25,7 +29,6 @@ namespace Andromeda.Command
             string wmiscope = "\\root\\cimv2";
             string processToRun = "";
             List<string> devices = ParseDeviceList(deviceList);
-            ConnectionOptions connOps = new ConnectionOptions();
             if (!CredentialManager.IsImpersonationEnabled)
             {
                 connOps.Username = CredentialManager.UserName;
@@ -33,8 +36,8 @@ namespace Andromeda.Command
             }
             else
             {
-                connOps.Impersonation = ImpersonationLevel.Impersonate;
-                connOps.Authentication = AuthenticationLevel.PacketPrivacy;
+                connOps = CredentialManager.GetImpersonatedConnOptions();
+                
             }
 
             CLI_Prompt newPrompt = new CLI_Prompt();
@@ -74,11 +77,11 @@ namespace Andromeda.Command
         {
             ManagementScope deviceWMI;
             string result = "";
-            var processToRun = new[] { process };
+            //var processToRun = new[] { process };
 
-            if (netconn.CheckWMIAccessible(d, scope, options))
+            if (wmi.CheckWMIAccessible(d, scope, options))
             {
-                deviceWMI = netconn.ConnectToRemoteWMI(d, scope, options);
+                deviceWMI = wmi.ConnectToRemoteWMI(d, scope, options);
                 ManagementPath p = new ManagementPath("Win32_Process");
                 ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
                 ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
