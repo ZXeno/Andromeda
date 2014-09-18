@@ -72,6 +72,7 @@
     <Compile Include="Command\Action.cs" />
     <Compile Include="Command\DebugToConsole.cs" />
     <Compile Include="Command\FixCEDeviceID.cs" />
+    <Compile Include="Command\GetLoggedOnUser.cs" />
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Command\RunRemoteCommand.cs" />
     <Compile Include="Config.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResultConsole.cs" />
+    <Compile Include="WMIFuncs.cs" />
     <Compile Include="WriteToTextFile.cs" />
     <Compile Include="XMLImport.cs" />
     <Page Include="AboutWindow.xaml">
