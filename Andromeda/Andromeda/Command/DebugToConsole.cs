@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Management;
 using System.Collections.Generic;
-using System.Linq;
+using System.Windows;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Andromeda.Command
 {
@@ -26,16 +25,28 @@ namespace Andromeda.Command
 
         public override void RunCommand(string input)
         {
-            foreach (string d in ParseDeviceList(input))
+            CLI_Prompt newPrompt = new CLI_Prompt();
+            newPrompt.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            newPrompt.Owner = App.Current.MainWindow;
+            newPrompt.ShowDialog();
+
+            try
             {
-                if (wmi.CheckWMIAccessible(d, "\\root\\CIMV2", connOps))
+                if (!newPrompt.WasCanceled)
                 {
-                    ManagementScope testscope = wmi.ConnectToRemoteWMI(d, "\\root\\CIMV2", connOps);
-                    if (testscope != null)
-                    {
-                        ResultConsole.AddConsoleLine("Successfull connection");
-                    }
+                    ResultConsole.AddConsoleLine(newPrompt.TextBoxContents);
+                    newPrompt = null;
                 }
+                else if (newPrompt.WasCanceled)
+                {
+                    newPrompt = null;
+                    ResultConsole.AddConsoleLine("Action was canceled.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There was an error running this command. \n " + ex.Message);
+                ResultConsole.AddConsoleLine("Command failed with exception error caught: \n" + ex.Message);
             }
         }
     }
