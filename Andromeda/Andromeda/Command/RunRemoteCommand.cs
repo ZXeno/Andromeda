@@ -50,6 +50,7 @@ namespace Andromeda.Command
                 if (!newPrompt.WasCanceled)
                 {
                     processToRun = newPrompt.TextBoxContents;
+                    //processToRun = processToRun.Replace("\\", "\\\\");
                     newPrompt = null;
                 }
                 else if (newPrompt.WasCanceled)
@@ -79,28 +80,41 @@ namespace Andromeda.Command
             string result = "";
             //var processToRun = new[] { process };
 
-            if (wmi.CheckWMIAccessible(d, scope, options))
+            try
             {
-                deviceWMI = wmi.ConnectToRemoteWMI(d, scope, options);
-                ManagementPath p = new ManagementPath("Win32_Process");
-                ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
-                ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
-                startupSettings.Scope = deviceWMI;
-                startupSettings["CreateFlags"] = 16777216;
-                ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
-                inParams["CommandLine"] = process;
-                inParams["ProcessStartupInformation"] = startupSettings;
-                ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
-                string retval = outValue["ReturnValue"].ToString();
-                //string retval = outValue.Properties.ToString();
-                ResultConsole.AddConsoleLine(d + " returned exit code: " + retval);
-            }
-            else
-            {
-                result = "Unable to connect to device " + d + ".";
-            }
+                if (wmi.CheckWMIAccessible(d, scope, options))
+                {
+                    deviceWMI = wmi.ConnectToRemoteWMI(d, scope, options);
+                    ManagementPath p = new ManagementPath("Win32_Process");
+                    ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
+                    ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
+                    startupSettings.Scope = deviceWMI;
+                    //startupSettings["CreateFlags"] = 16777216;
+                    ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
+                    inParams["CommandLine"] = process;
+                    inParams["ProcessStartupInformation"] = startupSettings;
+                    ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
+                    
+                    //string retval = outValue.Properties.ToString();
+                    foreach (var v in outValue.Properties)
+                    {
+                        ResultConsole.AddConsoleLine(v.Name.ToString() + "  " + v.Value.ToString());
+                    }
 
-            return result;
+                    result = d + " returned exit code: " + outValue["ReturnValue"].ToString();
+                }
+                else
+                {
+                    result = "Unable to connect to device " + d + ".";
+                }
+
+                return result;
+            }
+            finally
+            {
+                result = string.Empty;
+                deviceWMI = null;
+            }
         }
     }
 }
