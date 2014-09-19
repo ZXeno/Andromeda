@@ -76,9 +76,10 @@ namespace Andromeda
                     MessageBox.Show("No action selected. Please select an action to take on the selected machines. \n\n I'm just a dumb machine, you have to tell me what to do!");
                 }
             }
-            catch (NullReferenceException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n The application will now close.");
+                MessageBox.Show(ex.Message + "\n" + this.ToString() + " is where the error is located. \n " + ex.TargetSite.ToString());
+                
                 Application.Current.Shutdown();
             }
         }

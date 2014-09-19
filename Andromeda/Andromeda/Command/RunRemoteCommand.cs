@@ -37,7 +37,6 @@ namespace Andromeda.Command
             else
             {
                 connOps = CredentialManager.GetImpersonatedConnOptions();
-                
             }
 
             CLI_Prompt newPrompt = new CLI_Prompt();
@@ -76,10 +75,9 @@ namespace Andromeda.Command
 
         private string RunOnDevice(string d, string scope, string process, ConnectionOptions options)
         {
-            ManagementScope deviceWMI;
+            ManagementScope deviceWMI = new ManagementScope();
             string result = "";
-            //var processToRun = new[] { process };
-
+            
             try
             {
                 if (wmi.CheckWMIAccessible(d, scope, options))
@@ -96,12 +94,6 @@ namespace Andromeda.Command
                     inParams["CommandLine"] = process;
                     inParams["ProcessStartupInformation"] = startupSettings;
                     ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
-                    
-                    //string retval = outValue.Properties.ToString();
-                    foreach (var v in outValue.Properties)
-                    {
-                        ResultConsole.AddConsoleLine(v.Name.ToString() + "  " + v.Value.ToString());
-                    }
 
                     result = d + " returned exit code: " + wmi.GetProcessReturnValueText(Convert.ToInt32(outValue["ReturnValue"]));
                 }
@@ -112,10 +104,9 @@ namespace Andromeda.Command
 
                 return result;
             }
-            finally
+            catch (Exception ex)
             {
-                result = string.Empty;
-                deviceWMI = null;
+                return "RUN ON DEVICE " + d + " FAILED WITH EXCEPTION \n" + ex.Message; 
             }
         }
     }

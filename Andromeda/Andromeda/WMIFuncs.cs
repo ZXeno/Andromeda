@@ -49,6 +49,8 @@ namespace Andromeda
         {
             switch (retval)
             {
+                case 0:
+                    return "0 – Success.";
                 case 2:
                     return "2 – Access Denied.";
                 case 3:
