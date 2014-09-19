@@ -90,6 +90,7 @@ namespace Andromeda
             ConnectionOptions connOps = new ConnectionOptions();
             connOps.Impersonation = ImpersonationLevel.Impersonate;
             connOps.EnablePrivileges = true;
+            connOps.Authentication = AuthenticationLevel.PacketPrivacy;
 
             return connOps;
         }
