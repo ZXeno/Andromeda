@@ -44,5 +44,24 @@ namespace Andromeda
                 throw;
             }
         }
+
+        public string GetProcessReturnValueText(int retval)
+        {
+            switch (retval)
+            {
+                case 2:
+                    return "2 – Access Denied.";
+                case 3:
+                    return "3 – Insufficient privilege.";
+                case 8:
+                    return "8 – Unknown failure.";
+                case 9:
+                    return "9 – Path not found";
+                case 21:
+                    return "21 – Invalid parameter.";
+            }
+
+            return retval.ToString() + " – This return value is unknown.";
+        }
     }
 }

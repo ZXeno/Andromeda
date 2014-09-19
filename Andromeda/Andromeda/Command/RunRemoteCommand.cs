@@ -88,8 +88,10 @@ namespace Andromeda.Command
                     ManagementPath p = new ManagementPath("Win32_Process");
                     ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
                     ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
+
                     startupSettings.Scope = deviceWMI;
-                    //startupSettings["CreateFlags"] = 16777216;
+                    startupSettings["CreateFlags"] = 0x01000000; // 0x01000000 is CREATE_BREAKAWAY_FROM_JOB creation flag, or "not a child process"
+
                     ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
                     inParams["CommandLine"] = process;
                     inParams["ProcessStartupInformation"] = startupSettings;
@@ -101,7 +103,7 @@ namespace Andromeda.Command
                         ResultConsole.AddConsoleLine(v.Name.ToString() + "  " + v.Value.ToString());
                     }
 
-                    result = d + " returned exit code: " + outValue["ReturnValue"].ToString();
+                    result = d + " returned exit code: " + wmi.GetProcessReturnValueText(Convert.ToInt32(outValue["ReturnValue"]));
                 }
                 else
                 {
@@ -118,3 +120,4 @@ namespace Andromeda.Command
         }
     }
 }
+
