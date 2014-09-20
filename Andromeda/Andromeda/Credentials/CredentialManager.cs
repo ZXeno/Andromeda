@@ -5,43 +5,25 @@ using System.Text;
 using System.Management;
 using System.DirectoryServices.AccountManagement;
 using System.Security;
-using System.Runtime.InteropServices;
+using Andromeda.Credentials;
 
 namespace Andromeda
 {
-    public static class CredentialManager
+    public class CredentialManager
     {
-        private static bool _isImpersonating = true;
+        private bool _isImpersonating = true;
 
-        private static string _uName = "";
-        private static SecureString _pWord = new SecureString();
+        private CredToken _creds;
 
-        public static string UserName { get { return _uName; } }
-        public static SecureString Password { get { return _pWord; } }
-        public static string Domain { get { return Environment.UserDomainName; } }
-        public static bool IsImpersonationEnabled { get { return _isImpersonating; } }
+        public CredToken UserCredentials { get { return _creds; } }
+        public bool IsImpersonationEnabled { get { return _isImpersonating; } }
 
-        public static void SetCustomCredentials(string user, SecureString pass)
+        public void SetCredentials(string domain, string user, SecureString pass)
         {
-            _uName = user;
-            _pWord = pass;
+            _creds = new CredToken(domain, user, pass);
         }
 
-        public static string ExtractSecureString(SecureString secString)
-        {
-            IntPtr unmanagedString = IntPtr.Zero;
-            try
-            {
-                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(secString);
-                return Marshal.PtrToStringUni(unmanagedString);
-            }
-            finally
-            {
-                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
-            }
-        }
-
-        public static SecureString BuildSecureString(string strPassword)
+        public SecureString BuildSecureString(string strPassword)
         {
             SecureString secureStr = new SecureString();
             if (strPassword.Length > 0)
@@ -51,7 +33,7 @@ namespace Andromeda
             return secureStr;
         }
 
-        public static bool DoesUserExistInActiveDirectory(string userName)
+        public bool DoesUserExistInActiveDirectory(string userName)
         {
             try
             {
@@ -71,7 +53,7 @@ namespace Andromeda
 
         }
 
-        public static bool IsUserLocal(string userName)
+        public bool IsUserLocal(string userName)
         {
             bool exists = false;
             using (var domainContext = new PrincipalContext(ContextType.Machine))
@@ -85,7 +67,7 @@ namespace Andromeda
             return exists;
         }
 
-        public static ConnectionOptions GetImpersonatedConnOptions()
+        public ConnectionOptions GetImpersonatedConnOptions()
         {
             ConnectionOptions connOps = new ConnectionOptions();
             connOps.Impersonation = ImpersonationLevel.Impersonate;
