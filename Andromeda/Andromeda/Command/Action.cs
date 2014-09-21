@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Management;
 using System.Text;
+using Andromeda.Credentials;
 
 public enum ActionGroup { SCCM, Other, Debug }
 
@@ -17,6 +18,7 @@ namespace Andromeda.Command
 
         // Single entry
         public virtual void RunCommand(string a) {  }
+        public virtual void RunCommand(string a, CredToken creds) { }
 
         // Return results tied to device keys.
         public virtual Dictionary<string, string> RunDictionaryResultCommand(string a) { return null; }
