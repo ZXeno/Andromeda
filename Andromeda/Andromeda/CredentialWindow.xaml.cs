@@ -22,7 +22,7 @@ namespace Andromeda
         private bool passCheckedOkay = false;
         private bool credsWereChecked = false;
 
-        private CredentialManager CredMan { get { return Andromeda.App.program.credman; } }
+        private CredentialManager CredMan { get { return Andromeda.App.program.CredentialManager; } }
 
         public CredentialWindow()
         {
