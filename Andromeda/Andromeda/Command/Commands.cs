@@ -19,7 +19,8 @@ namespace Andromeda.Command
         public Commands() { ImportCommandsList(); }
 
         public void ImportCommandsList()
-        {            
+        {
+            actionsList.Add(new GetLoggedOnUser());
             actionsList.Add(new PingTest());
             actionsList.Add(new RunRemoteCommand());
             actionsList.Add(new DebugToConsole());
