@@ -24,7 +24,7 @@ namespace Andromeda.Command
             foreach (string d in ParseDeviceList(host))
             {
                 if (d == "") { continue; }
-                ParseResponse(netConn.PingTest(d), d);
+                ResultConsole.AddConsoleLine(ParseResponse(netConn.PingTest(d), d));
             }
         }
 
