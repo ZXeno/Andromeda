@@ -22,6 +22,8 @@ namespace Andromeda
         private bool passCheckedOkay = false;
         private bool credsWereChecked = false;
 
+        private CredentialManager CredMan { get { return Andromeda.App.program.credman; } }
+
         public CredentialWindow()
         {
             InitializeComponent();
@@ -50,7 +52,7 @@ namespace Andromeda
             }
             else
             {
-                if (CredentialManager.DoesUserExistInActiveDirectory(ufield.Text))
+                if (CredMan.DoesUserExistInActiveDirectory(ufield.Text))
                 {
 
                 }
