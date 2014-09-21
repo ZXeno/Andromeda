@@ -4,7 +4,7 @@
  */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Xml;
 using System.Windows;
@@ -13,8 +13,8 @@ namespace Andromeda.Command
 {
     public class Commands
     {
-        private List<Action> actionsList = new List<Action>();
-        public List<Action> ActionsList { get { return actionsList; } }
+        private ObservableCollection<Action> actionsList = new ObservableCollection<Action>();
+        public ObservableCollection<Action> ActionsList { get { return actionsList; } }
 
         public Commands() { ImportCommandsList(); }
 
