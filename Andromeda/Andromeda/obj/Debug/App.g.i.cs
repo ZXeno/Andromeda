@@ -72,7 +72,8 @@ namespace Andromeda {
         [System.STAThreadAttribute()]
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
-        public static void Main() {
+        public static void Main() 
+        {
             Andromeda.App app = new Andromeda.App();
             app.InitializeComponent();
             app.Run();
