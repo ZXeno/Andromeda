@@ -66,15 +66,5 @@ namespace Andromeda
 
             return exists;
         }
-
-        public ConnectionOptions GetImpersonatedConnOptions()
-        {
-            ConnectionOptions connOps = new ConnectionOptions();
-            connOps.Impersonation = ImpersonationLevel.Impersonate;
-            connOps.Authentication = AuthenticationLevel.PacketPrivacy;
-            connOps.EnablePrivileges = true;
-
-            return connOps;
-        }
     }
 }
