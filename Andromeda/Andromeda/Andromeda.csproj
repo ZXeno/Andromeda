@@ -76,10 +76,13 @@
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Command\RunRemoteCommand.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="CredentialManager.cs" />
+    <Compile Include="Credentials\CredentialManager.cs" />
+    <Compile Include="Credentials\CredToken.cs" />
     <Compile Include="CredentialWindow.xaml.cs">
       <DependentUpon>CredentialWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\DelegateCommand.cs" />
+    <Compile Include="MVVM\ObservableObject.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResultConsole.cs" />
