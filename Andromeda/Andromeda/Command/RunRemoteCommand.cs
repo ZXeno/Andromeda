@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Management;
 using System.Windows;
+using Andromeda.Credentials;
 
 namespace Andromeda.Command
 {
@@ -24,20 +25,12 @@ namespace Andromeda.Command
         }
 
 
-        public override void RunCommand(string deviceList) 
+        public override void RunCommand(string deviceList, CredToken creds) 
         {
             string wmiscope = "\\root\\cimv2";
             string processToRun = "";
             List<string> devices = ParseDeviceList(deviceList);
-            if (!CredentialManager.IsImpersonationEnabled)
-            {
-                connOps.Username = CredentialManager.UserName;
-                connOps.Password = CredentialManager.ExtractSecureString(CredentialManager.Password);
-            }
-            else
-            {
-                connOps = CredentialManager.GetImpersonatedConnOptions();
-            }
+            connOps = creds.GetImpersonatedConnOptions();
 
             CLI_Prompt newPrompt = new CLI_Prompt();
             newPrompt.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
