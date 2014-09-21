@@ -14,6 +14,7 @@ namespace Andromeda
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {        
+    {
+        public static Program program = new Program();
     }
 }
