@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +14,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.IO;
 using Andromeda.Command;
+using Andromeda.MVVM;
 
 namespace Andromeda
 {
@@ -23,29 +23,14 @@ namespace Andromeda
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        public static string WorkingPath = Environment.CurrentDirectory;
-        public const string ConfigFileName = "config.dat";
-        public const string CommandsFileName = "commands.xml";
-        public const string CommandsDir = "\\commands\\";
-        public const string ResultsDir = "\\results\\";
-        public XmlDocument ConfigFile;
-        //public XmlDocument CommandsFile;
-
-        public static Config configuration;
-        public static Commands Commander { get; set; }
-
         private AboutWindow aboutWindow;
-
-
 
         public MainWindow()
         {
             InitializeComponent();
-            InitializeConsole();
-            ImportConfiguration();
-            ImportCommands();
+            
             CREDS_LABEL.Content = string.Format("{0}\\{1}", Environment.UserDomainName, Environment.UserName);
+
         }
 
         public void UpdateCommandsListbox(List<Andromeda.Command.Action> commands)
@@ -56,7 +41,6 @@ namespace Andromeda
 
         public void OnUpdateConsole()
         {
-            RESULTS_BOX.Text = ResultConsole.ConsoleString;
             RESULTS_BOX.ScrollToEnd();
         }
 
@@ -93,77 +77,7 @@ namespace Andromeda
             aboutWindow.ShowDialog();
         }
 
-        public void ImportConfiguration()
-        {
-            string p = WorkingPath + "\\" + ConfigFileName;
-            if (CheckForConfigFile())
-            {
-                try 
-                { 
-                    ConfigFile = XMLImport.GetXMLFileData(p);
-                    if (ConfigFile != null)
-                    {
-                        ResultConsole.AddConsoleLine("Configuration file found.");
-                        configuration = new Config(ConfigFile);
-                    }
-                    else
-                    {
-                        configuration = new Config(p);
-                    }
-                }
-                catch (FileNotFoundException fnf)
-                {
-                    MessageBox.Show("File unable to load. \n Exception: " + fnf.Message);
-                    App.Current.Shutdown();
-                }
-            }
-            else
-            {
-                ResultConsole.AddConsoleLine("No config file found!");
-                CreateConfigFile(p);
-            }
-        }
-
-        public void ImportCommands()
-        {
-            Commander = new Commands();
-            AVAIL_ACTS_LISTBOX.ItemsSource = Commander.ActionsList;
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(AVAIL_ACTS_LISTBOX.ItemsSource);
-            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
-            view.GroupDescriptions.Add(groupDescription);
-            AVAIL_ACTS_LISTBOX.Items.Refresh();
-        }
-
-        private void InitializeConsole()
-        {
-            ResultConsole.InitializeResultConsole();
-            ResultConsole.ConsoleChange += OnUpdateConsole;
-        }
-
-        private bool CheckForConfigFile()
-        {
-            return File.Exists(WorkingPath + "\\" + ConfigFileName);
-        }
-
-        private void CreateConfigFile(string pathToFile)
-        {
-            configuration = new Config(WorkingPath + "\\" + ConfigFileName);
-            if (CheckForConfigFile())
-            {
-                ResultConsole.AddConsoleLine("Config file created.");
-            }
-            else
-            {
-                ResultConsole.AddConsoleLine("For some reason, the config file location either isn't readable, \n or there was another problem generating the configuration file.");
-                ResultConsole.AddConsoleLine("For now, I'm not sure what to do with this, so we'll use a default configuration for the time being.");
-            }
-        }
-
-        public void InitializeBackEnd()
-        {
-            ResultConsole.InitializeResultConsole();
-            
-        }
+        
 
         private void CHANGE_CREDS_BTTN_Click(object sender, RoutedEventArgs e)
         {
@@ -171,6 +85,13 @@ namespace Andromeda
             credsWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             credsWindow.Owner = App.Current.MainWindow;
             credsWindow.ShowDialog();
+        }
+
+        private void ActionListChange()
+        {
+            //PropertyGroupDescription groupDescription = new PropertyGroupDescription("Category");
+            //view.GroupDescriptions.Add(groupDescription);
+            //AVAIL_ACTS_LISTBOX.Items.Refresh();
         }
     }
 }

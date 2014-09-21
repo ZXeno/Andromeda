@@ -2,15 +2,18 @@
         xmlns:local="clr-namespace:Andromeda" x:Class="Andromeda.MainWindow"
         Title="Andromeda" Height="750" Width="800"
         ResizeMode="NoResize">
+    <Window.DataContext>
+        <local:Program/>
+    </Window.DataContext>
 
     <Grid>
 
         <Image Name="BGIMG" HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="800" Source="Resources/andromeda.jpg" Stretch="UniformToFill"/>
         
         <TextBox x:Name="DEVICE_LIST_TEXTBOX" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Text="Wxxxxxx" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device #s here." />
-        <TextBox x:Name="RESULTS_BOX" Text="" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" IsReadOnly="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ToolTip="Results console. This text can be copied, but not directly manipulated. This can also be dumped to a log file found at .\results\*. Depending on your verbosity settings, more, or less, text will appear both in the console and the log file." />
+        <TextBox x:Name="RESULTS_BOX" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" IsReadOnly="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{Binding ConsoleContent, UpdateSourceTrigger=PropertyChanged}" />
 
-        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747">
+        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
@@ -30,7 +33,7 @@
                                         <Expander IsExpanded="False">
                                             <Expander.Header>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="#FFE0E0E0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Category}" FontWeight="Bold" Foreground="#FFE0E0E0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </StackPanel>
                                             </Expander.Header>
                                             <ItemsPresenter />
