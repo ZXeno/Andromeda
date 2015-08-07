@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.IO;
 using System.Windows;
 using System.Xml;
-using Andromeda.Command;
+using Andromeda.ViewModel;
 
 namespace Andromeda
 {
@@ -15,6 +10,22 @@ namespace Andromeda
     /// </summary>
     public partial class App : Application
     {
-        public static Program program = new Program();
+        public Program Program { get; private set; }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            //base.OnStartup(e);
+
+            Program = new Program();
+
+            MainWindow window = new MainWindow();
+            var viewModel = new MainWindowViewModel();
+            window.DataContext = viewModel;
+            window.Title = "Andromeda";
+            window.Height = 750;
+            window.Width = 800;
+            window.ResizeMode= ResizeMode.CanMinimize;
+            window.Show();
+        }
     }
 }

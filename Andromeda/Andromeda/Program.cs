@@ -1,106 +1,69 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Xml;
 using System.IO;
 using System.Windows;
-using Andromeda.Command;
-using Andromeda.Credentials;
-using Andromeda.MVVM;
+using System.Xml;
+using Andromeda.ViewModel;
 
 namespace Andromeda
 {
-    public class Program: ObservableObject
+    public class Program
     {
-        public static string WorkingPath = Environment.CurrentDirectory;
-        public const string ConfigFileName = "config.dat";
-        public const string CommandsFileName = "commands.xml";
-        public const string CommandsDir = "\\commands\\";
-        public const string ResultsDir = "\\results\\";
-        public XmlDocument ConfigFile;
-        //public XmlDocument CommandsFile;
-
-        private CredentialManager _credman;
-        private Commands _cmndr;
-        private Config _cnfg;
         private string _consoleContent;
 
-        public CredentialManager CredentialManager 
+        public static string WorkingPath = Environment.CurrentDirectory;
+        public static string UserFolder;
+        public const string ConfigFileName = "config.dat";
+        public const string ResultsDir = "\\results\\";
+
+        private Logger _logger;
+
+        private static CredentialManager _credman;
+        public static CredentialManager CredentialManager
         {
             get { return _credman; }
-            set
-            {
-                _credman = value;
-                RaisePropertyChangedEvent("CredentialManager");
-            }
+            set { _credman = value; }
         }
+
+        private static Config _cnfg;
+        private static Config _staticconfig;
+        public static Config Config { get { return _staticconfig; } }
         public Config Configuration
         {
             get { return _cnfg; }
-            set 
+            set
             {
                 _cnfg = value;
-                RaisePropertyChangedEvent("Configuration");
+                _staticconfig = value;
             }
         }
-        public Commands Commander 
-        { 
-            get { return _cmndr; }
-            set
-            {
-                _cmndr = value;
-                RaisePropertyChangedEvent("Commander");
-            }
-        }
-        public string ConsoleContent
-        {
-            get { return _consoleContent; }
-            set
-            {
-                _consoleContent = value;
-                RaisePropertyChangedEvent("ConsoleContent");
-            }
-        }
-        public ObservableCollection<Andromeda.Command.Action> ActionsList
-        {
-            get 
-            { 
-                return Commander.ActionsList; 
-            }
-        }
-        
+        public XmlDocument ConfigFile;
 
         public Program()
         {
-            InitializeConsole();
-            ImportConfiguration();
-            ImportCommands();
-            GatherCredentials();
+            UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
 
-        }
+            if (!Directory.Exists(UserFolder))
+            {
+                Directory.CreateDirectory(UserFolder);
+            }
 
-        public void GatherCredentials()
-        {
-            _credman = new CredentialManager();
-        }
+            _logger = new Logger();
 
-        public void ImportConfiguration()
-        {
-            string p = WorkingPath + "\\" + ConfigFileName;
-            if (CheckForConfigFile())
+            string p = UserFolder + "\\" + ConfigFileName;
+            if (File.Exists(p))
             {
                 try
                 {
                     ConfigFile = XMLImport.GetXMLFileData(p);
                     if (ConfigFile != null)
                     {
-                        ResultConsole.AddConsoleLine("Configuration file found.");
+                        Logger.Log("Configuration file found.");
                         Configuration = new Config(ConfigFile);
                     }
                     else
                     {
                         Configuration = new Config(p);
+                        Logger.Log("Created new configuration file at " + p);
                     }
                 }
                 catch (FileNotFoundException fnf)
@@ -111,50 +74,27 @@ namespace Andromeda
             }
             else
             {
-                ResultConsole.AddConsoleLine("No config file found!");
+                Logger.Log("No config file found!");
+                ResultConsole.Instance.AddConsoleLine("No config file found!");
                 CreateConfigFile(p);
             }
         }
 
-        public void ImportCommands()
-        {
-            Commander = new Commands();
-        }
-
-        private void InitializeConsole()
-        {
-            ResultConsole.InitializeResultConsole();
-            ResultConsole.ConsoleChange += OnUpdateConsole;
-        }
-
-        private void OnUpdateConsole()
-        {
-            ConsoleContent = ResultConsole.ConsoleString;
-        }
-
-        private bool CheckForConfigFile()
-        {
-            return File.Exists(WorkingPath + "\\" + ConfigFileName);
-        }
-
         private void CreateConfigFile(string pathToFile)
         {
-            _cnfg = new Config(WorkingPath + "\\" + ConfigFileName);
-            if (CheckForConfigFile())
+            Logger.Log("Creating new config file...");
+            Configuration = new Config(pathToFile);
+
+            if (File.Exists(UserFolder + "\\" + ConfigFileName))
             {
-                ResultConsole.AddConsoleLine("Config file created.");
+                Logger.Log("Config file created.");
+                ResultConsole.Instance.AddConsoleLine("Config file created.");
             }
             else
             {
-                ResultConsole.AddConsoleLine("For some reason, the config file location either isn't readable, \n or there was another problem generating the configuration file.");
-                ResultConsole.AddConsoleLine("For now, I'm not sure what to do with this, so we'll use a default configuration for the time being.");
+                ResultConsole.Instance.AddConsoleLine("For some reason, the config file location either isn't readable, \n or there was another problem generating the configuration file.");
+                ResultConsole.Instance.AddConsoleLine("For now, I'm not sure what to do with this, so we'll use a default configuration for the time being.");
             }
-        }
-
-        public void InitializeBackEnd()
-        {
-            ResultConsole.InitializeResultConsole();
-
         }
     }
 }

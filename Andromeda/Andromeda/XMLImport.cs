@@ -8,6 +8,7 @@ using System.Windows;
 using System.Text;
 using System.Xml;
 using System.IO;
+using Andromeda.ViewModel;
 
 namespace Andromeda
 {
@@ -17,7 +18,7 @@ namespace Andromeda
         public static XmlDocument GetXMLFileData(string path)
         {
             XmlDocument xdoc;
-            if (FileExists(path))
+            if (File.Exists(path))
             {
                 xdoc = new XmlDocument();
                 try 
@@ -28,7 +29,10 @@ namespace Andromeda
                 catch (Exception e) 
                 {
                     MessageBox.Show("Error! Something went wrong. Exception information: \n" + e.ToString());
-                    ResultConsole.AddConsoleLine("Cannot open file: " + path);
+                    if (ResultConsole.Instance.IsInitialized)
+                    {
+                        ResultConsole.Instance.AddConsoleLine("Cannot open file: " + path);
+                    }
                     xdoc = null;
                     return xdoc;
                 }

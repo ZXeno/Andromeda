@@ -1,54 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.XPath;
 using System.IO;
+using System.Text;
+using System.Xml;
 using System.Windows;
+using Andromeda.ViewModel;
 
 namespace Andromeda
 {
     public class Config
     {
-        private bool pingTest = true;
-        private bool saveOfflineComputers = true;
-        private bool saveOnlineComputers = true;
-        private int loggingLevel = 3;
-        //private bool promptForCredentials = true;
-        private bool alwaysDumpConsoleHistory = true;
-        private bool checkServicesList = true;
-        private List<string> servicesList = new List<string>();
-        private bool checkEnabledDCOM = true;
-        private bool checkEnabledRemoteConnect = false;
-        private string ccmSetupDir = "";
-        private string ccmSetupParameters = "";
-        private bool enableFullUninstall = false;
-        private string sccmSiteServer = "";
+        private bool _saveOfflineComputers = true;
+        private bool _saveOnlineComputers = true;
+        private string _resultsDirectory;
+        private bool _alwaysDumpConsoleHistory = true;
+        private string _componentsDirectory = "\\\\melvin\\Andromeda\\components";
+        private const string _failedConnectListFile = "failed_to_connect.txt";
+        private const string _successfulConnectionListFile = "connection_succeeded_list.txt";
 
-        public bool PingTest { get { return pingTest; } }
-        public bool SaveOfflineComputers { get { return saveOfflineComputers; } }
-        public bool SaveOnlineComputers { get { return saveOnlineComputers; } }
-        public int LoggingLevel { get { return loggingLevel; } }
-        //public bool PromptForCredentials { get { return promptForCredentials; } }
-        public bool AlwaysDumpConsoleHistory { get { return alwaysDumpConsoleHistory; } }
-        public bool CheckServicesList { get { return checkServicesList; } }
-        public List<string> ServicesList { get { return servicesList; } }
-        public bool CheckEnabledDCOM { get { return checkEnabledDCOM; } }
-        public bool CheckEnabledRemoteConnect { get { return checkEnabledRemoteConnect; } }
-        public string CCMSetupDirectory { get { return ccmSetupDir; } }
-        public string CCMSetupParameters { get { return ccmSetupParameters; } }
-        public bool EnableFullUninstall { get { return enableFullUninstall; } }
-        public string SCCMSiteServer { get { return sccmSiteServer; } }
+        public bool SaveOfflineComputers { get { return _saveOfflineComputers; } }
+        public bool SaveOnlineComputers { get { return _saveOnlineComputers; } }
+        public bool AlwaysDumpConsoleHistory { get { return _alwaysDumpConsoleHistory; } }
+        public string ResultsDirectory { get { return _resultsDirectory; } }
+        public string ComponentDirectory { get { return _componentsDirectory; } }
+        public string FailedConnectListFile { get { return _failedConnectListFile; }}
+        public string SuccessfulConnectionListFile { get { return _successfulConnectionListFile; } }
 
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
 
         public Config() { }
 
-        public Config(string FilePath) 
+        public Config(string FilePath)
         {
+            _resultsDirectory = Program.UserFolder + "\\results";
+            if (!Directory.Exists(_resultsDirectory))
+            {
+                Directory.CreateDirectory(_resultsDirectory);
+            }
+
             CreateNewConfigFile(FilePath);
         }
 
@@ -60,32 +49,13 @@ namespace Andromeda
 
                 // "config" node
 
-                pingTest = StringToBool(configFileDat.SelectSingleNode("config/settings/pingtest").InnerText);
-                saveOfflineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveofflinecomputers").InnerText);
-                saveOnlineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveonlinecomputers").InnerText);
-                loggingLevel = Convert.ToInt32(configFileDat.SelectSingleNode("config/settings/logginglevel").InnerText);
-                alwaysDumpConsoleHistory = StringToBool(configFileDat.SelectSingleNode("config/settings/alwaysDumpConsoleHistory").InnerText);
+                _saveOfflineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveofflinecomputers").InnerText);
+                _saveOnlineComputers = StringToBool(configFileDat.SelectSingleNode("config/settings/saveonlinecomputers").InnerText);
+                _alwaysDumpConsoleHistory = StringToBool(configFileDat.SelectSingleNode("config/settings/alwaysDumpConsoleHistory").InnerText);
+                _resultsDirectory = configFileDat.SelectSingleNode("config/settings/resultsDirectory").InnerText;
+                _componentsDirectory = configFileDat.SelectSingleNode("config/settings/componentsDirectory").InnerText;
 
-                // "sccmconfig" node
-                checkServicesList = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkServicesList/bool").InnerText);
-                servicesList.Clear();
-                foreach (XmlNode node in configFileDat.SelectSingleNode("config/sccmconfig/checkServicesList"))
-                {
-                    if (node.Name == "svc")
-                    {
-                        servicesList.Add(node.InnerText);
-                    }
-                    
-                }
-
-                checkEnabledDCOM = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkEnabledDCOM").InnerText);
-                checkEnabledRemoteConnect = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/checkEnabledRemoteConnect").InnerText);
-                ccmSetupDir = configFileDat.SelectSingleNode("config/sccmconfig/ccmSetupPath").InnerText;
-                ccmSetupParameters = configFileDat.SelectSingleNode("config/sccmconfig/ccmSetupParameters").InnerText;
-                enableFullUninstall = StringToBool(configFileDat.SelectSingleNode("config/sccmconfig/enableFullUninstall").InnerText);
-                sccmSiteServer = configFileDat.SelectSingleNode("config/sccmconfig/sccmSiteServer").InnerText;
-
-                ResultConsole.AddConsoleLine("Config file loaded.");
+                ResultConsole.Instance.AddConsoleLine("Configuration file loaded.");
             }
             catch (Exception ex)
             {
@@ -94,16 +64,9 @@ namespace Andromeda
 
         }
         #region create new config file
-        public void CreateNewConfigFile(string FilePath)
+        public void CreateNewConfigFile(string filePath)
         {
-            ResultConsole.AddConsoleLine("Generating new config file...");
-
-            servicesList.Add("winmgmt");
-            servicesList.Add("lanmanserver");
-            servicesList.Add("rpcss");
-            servicesList.Add("auauserv");
-            servicesList.Add("bits");
-            servicesList.Add("ccmexec");
+            ResultConsole.Instance.AddConsoleLine("Generating new config file...");
 
             #region Document Creation
             try
@@ -112,7 +75,7 @@ namespace Andromeda
                 _xsets.Encoding = UTF8Encoding.UTF8;
                 _xsets.Indent = true;
 
-                _xwriter = XmlWriter.Create(FilePath, _xsets);
+                _xwriter = XmlWriter.Create(filePath, _xsets);
                 
                 _xwriter.WriteStartDocument();
                 _xwriter.WriteStartElement("config");
@@ -120,62 +83,24 @@ namespace Andromeda
                 //Program Settings Category
                 _xwriter.WriteStartElement("settings");
 
-                // Pingtest flag
-                CreateUnattributedElement("pingtest", pingTest.ToString());
-
                 // Save Offline Computers
-                CreateUnattributedElement("saveofflinecomputers", saveOfflineComputers.ToString());
+                CreateUnattributedElement("saveofflinecomputers", _saveOfflineComputers.ToString());
 
                 // Save Online Computers
-                CreateUnattributedElement("saveonlinecomputers", saveOnlineComputers.ToString());
-
-                // Logging Level
-                CreateUnattributedElement("logginglevel", loggingLevel.ToString());
-
-                /*
-                // Prompt User for Credentials
-                CreateUnattributedElement("promptuserforcreds", promptForCredentials.ToString());
-                 */
+                CreateUnattributedElement("saveonlinecomputers", _saveOnlineComputers.ToString());
 
                 // Always Dump console history on exit
-                CreateUnattributedElement("alwaysDumpConsoleHistory", alwaysDumpConsoleHistory.ToString());
+                CreateUnattributedElement("alwaysDumpConsoleHistory", _alwaysDumpConsoleHistory.ToString());
+
+                // Results Log File Directory
+                CreateUnattributedElement("resultsDirectory", _resultsDirectory);
+
+                // Components Directory
+                CreateUnattributedElement("componentsDirectory", _componentsDirectory);
 
                 // Close <settings>
                 _xwriter.WriteEndElement();
 
-                // SCCM config settings
-                _xwriter.WriteStartElement("sccmconfig");
-
-                // Check Services List settings
-                _xwriter.WriteStartElement("checkServicesList");
-                CreateUnattributedElement("bool", checkServicesList.ToString());
-                foreach (string sv in servicesList) // Fill in the services list.
-                {
-                    CreateUnattributedElement("svc", sv);
-                }
-                // Close Check Services List
-                _xwriter.WriteEndElement();
-
-                // check enabled DCOM
-                CreateUnattributedElement("checkEnabledDCOM", checkEnabledDCOM.ToString());
-
-                // check enabled remote connect
-                CreateUnattributedElement("checkEnabledRemoteConnect", checkEnabledRemoteConnect.ToString());
-
-                // ccm setup path
-                CreateUnattributedElement("ccmSetupPath", "\"\"");
-
-                // ccm setup parameters
-                CreateUnattributedElement("ccmSetupParameters", "\"\"");
-
-                // enable full uninstall
-                CreateUnattributedElement("enableFullUninstall", enableFullUninstall.ToString());
-
-                // site server
-                CreateUnattributedElement("sccmSiteServer", "\"\"");
-
-                // Close SCCM Config Settings
-                _xwriter.WriteEndElement();
                 // Close <config>
                 _xwriter.WriteEndElement();
 
@@ -196,7 +121,7 @@ namespace Andromeda
         {
             configFileDat = configdat;
             configFileDat.Save(path);
-            ResultConsole.AddConsoleLine("Config file updated.");
+            ResultConsole.Instance.AddConsoleLine("Config file updated.");
         }
 
         private void CreateSingleAttributeElement(string ElementName, string AttributeString1, string AttributeString2)
@@ -215,14 +140,12 @@ namespace Andromeda
 
         private bool StringToBool(string tfval)
         {
-            if (tfval == "True" || tfval == "true")
+            if (tfval == "True" || tfval == "true" || tfval == "1" || tfval == "T" || tfval == "t" || tfval == "y" || tfval == "Y")
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }
