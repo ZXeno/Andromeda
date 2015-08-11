@@ -8,13 +8,17 @@
         x:Class="Andromeda.MainWindow"
         Height="750" Width="800">
 
+    <Window.Resources>
+        <ResourceDictionary Source="ResourceDictionary.xaml" />
+    </Window.Resources>
+
     <Grid>
         <Image HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="800" Source="Assets/andromeda.jpg" Stretch="UniformToFill"/>
 
         <Label Content="{Binding Domain}" HorizontalContentAlignment="Right" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,11,187,0" VerticalAlignment="Top" Width="98" FontSize="12" Height="20" FontFamily="Lucida Console"/>
         <Label Content="Password:" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,35,187,0" VerticalAlignment="Top" Width="74" FontSize="12" Height="20" FontFamily="Lucida Console"/>
-        <TextBox Text="{Binding UserName}" HorizontalAlignment="Right" Background="#E5C9C9C9" Foreground="#FF121212" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
-        <PasswordBox HorizontalAlignment="Right" Background="#E5C9C9C9" Foreground="#FF121212" Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="" SelectionOpacity="-1"/>
+        <TextBox Style="{StaticResource White}" Text="{Binding UserName}" HorizontalAlignment="Right" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
+        <PasswordBox Style="{StaticResource PwdWhite}" HorizontalAlignment="Right"  Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="" SelectionOpacity="-1"/>
 
         <TextBox x:Name="DEVICE_LIST_TEXTBOX" Text="{Binding DeviceListString}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device ids here." />
 
@@ -35,7 +39,7 @@
 
         <Label Content="{Binding Path=SelectedAction.Description}" Foreground="#FFE0E0E0" Background="#A5474747" Margin="0,0,86,202" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="552" Height="26"/>
         <Button Content="Run" HorizontalAlignment="Right" Margin="0,0,16,205" Width="65" Height="20" VerticalAlignment="Bottom" Command="{Binding RunCommand, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox  Text="{Binding Instance.ConsoleString, UpdateSourceTrigger=PropertyChanged}" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" IsReadOnly="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+        <TextBox Style="{StaticResource ResultConsole}" Text="{Binding Instance.ConsoleString, UpdateSourceTrigger=PropertyChanged}" Margin="16,0,16,35" TextWrapping="Wrap" Height="150" VerticalAlignment="Bottom" Background="#E5C9C9C9" Foreground="#FF121212" UndoLimit="0" IsReadOnly="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" >
             <TextBox.DataContext>
                 <vm:ResultConsole/>
             </TextBox.DataContext>
