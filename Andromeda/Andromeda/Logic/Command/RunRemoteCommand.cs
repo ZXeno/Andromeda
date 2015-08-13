@@ -26,7 +26,7 @@ namespace Andromeda.Command
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             _creds = Program.CredentialManager.UserCredentials;
 
-            if (!ValidateCredentials(_creds))
+            if (_creds.User == "" || _creds.User == "USERNAME" || _creds.User == "username")
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
                 ResultConsole.AddConsoleLine("Run Remote Command was canceled due to improper credentials.");

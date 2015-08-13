@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Security;
 using Andromeda.Model;
 using Andromeda.ViewModel;
 
+public enum ActionGroup { SCCM, Other, Debug }
 
 namespace Andromeda.Command
 {
@@ -48,19 +48,6 @@ namespace Andromeda.Command
             }
 
             return resultList;
-        }
-
-        public bool ValidateCredentials(CredToken credentialToken)
-        {
-            if (credentialToken == null||
-                credentialToken.User == "" || 
-                credentialToken.User == "USERNAME" || 
-                credentialToken.User == "username")
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

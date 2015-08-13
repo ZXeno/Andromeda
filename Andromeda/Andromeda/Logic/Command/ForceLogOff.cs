@@ -23,7 +23,7 @@ namespace Andromeda.Command
         public ForceLogOff()
         {
             ActionName = "Force Log Off";
-            Description = "Forces the remote user to log off.";
+            Description = "Forces the remote user to log off. [Requires Credentials]";
             Category = ActionGroup.Other;
             _connOps = new ConnectionOptions();
         }
@@ -35,6 +35,16 @@ namespace Andromeda.Command
 
             List<string> devList = ParseDeviceList(a);
             List<string> successList = GetPingableDevices.GetDevices(devList);
+
+            _creds = Program.CredentialManager.UserCredentials;
+
+            if (_creds.User == "" || _creds.User == "USERNAME" || _creds.User == "username")
+            {
+                ResultConsole.AddConsoleLine("You must enter your USERNAME and PASSWORD above for this command to work.");
+                ResultConsole.AddConsoleLine("Force Reboot Command was canceled due to improper credentials.");
+                Logger.Log("Invalid credentials entered. Action canceled.");
+                return;
+            }
 
             foreach (var d in successList)
             {

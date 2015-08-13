@@ -29,7 +29,7 @@ namespace Andromeda.Command
             List<string> failedlist = new List<string>();
             _creds = Program.CredentialManager.UserCredentials;
 
-            if (!ValidateCredentials(_creds))
+            if (_creds.User == "" || _creds.User == "USERNAME" || _creds.User == "username")
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
                 ResultConsole.AddConsoleLine("Remove Xcelera Monitor was canceled due to improper credentials.");

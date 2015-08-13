@@ -48,7 +48,6 @@ namespace Andromeda
             }
 
             _logger = new Logger();
-            _credman = new CredentialManager();
 
             string p = UserFolder + "\\" + ConfigFileName;
             if (File.Exists(p))
@@ -58,7 +57,6 @@ namespace Andromeda
                     ConfigFile = XMLImport.GetXMLFileData(p);
                     if (ConfigFile != null)
                     {
-                        ResultConsole.Instance.AddConsoleLine("Configuration file found.");
                         Logger.Log("Configuration file found.");
                         Configuration = new Config(ConfigFile);
                     }
