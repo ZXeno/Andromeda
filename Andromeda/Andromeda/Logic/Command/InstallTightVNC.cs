@@ -23,7 +23,7 @@ namespace Andromeda.Command
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             _creds = Program.CredentialManager.UserCredentials;
 
-            if (_creds.User == "" || _creds.User == "USERNAME" || _creds.User == "username")
+            if (!ValidateCredentials(_creds))
             {
                 ResultConsole.AddConsoleLine("You must enter your USERNAME and PASSWORD above for this command to work.");
                 ResultConsole.AddConsoleLine("Install TightVNC Command was canceled due to improper credentials.");

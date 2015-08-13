@@ -30,7 +30,7 @@ namespace Andromeda.Command
             List<string> failedlist = new List<string>();
             _creds = Program.CredentialManager.UserCredentials;
 
-            if (_creds.User == "" || _creds.User == "USERNAME" || _creds.User == "username")
+            if (!ValidateCredentials(_creds))
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
                 ResultConsole.AddConsoleLine("Remove TightVNC was canceled due to improper credentials.");
