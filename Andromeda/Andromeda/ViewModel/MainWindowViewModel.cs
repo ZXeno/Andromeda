@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.ObjectModel;
+using System.Security;
 using System.Windows.Input;
 using Andromeda.Command;
 using Andromeda.Model;
@@ -54,9 +55,8 @@ namespace Andromeda.ViewModel
             get { return _password; }
             set
             {
-                _password = value;
                 OnPropertyChanged("Password");
-                Program.CredentialManager.SetCredentials(Domain, Username, Program.CredentialManager.BuildSecureString(_password));
+                Program.CredentialManager.SetCredentials(Domain, Username, Program.CredentialManager.BuildSecureString(value));                
             }
         }
 
@@ -105,23 +105,28 @@ namespace Andromeda.ViewModel
         {
             ActionsList = new ObservableCollection<Action>
             {
-                new PingTest(),
+                new SccmAppDeploymentSchedule(),
+                new FixCEDeviceID(),
+                new ForceLogOff(),
+                new ForceReboot(),
                 new GetLoggedOnUser(),
+                new GetPHPrintFile(),
+                new SccmHardwareInventoryCycle(),
+                new SccmMachinePolicyRetreivalCycle(),
+                new PingTest(),
                 new InstallTightVNC(),
                 new RemoveTightVNC(),
-                new GetPHPrintFile(),
+                new RunGpUpdate(),
                 new RunRemoteCommand(),
-                new FixCEDeviceID(),
-                new ForceReboot(),
-                new ForceLogOff(),
-                new UninstallXceleraMonitor(),
-                new AppDeploymentSchedule()
+                new SccmSoftwareInventoryCycle(),
+                new UninstallXceleraMonitor()
             };
 
             _viewModels = new ObservableCollection<ViewModelBase>();
             _viewModels.Add(new ResultConsole());
 
             DeviceListString = "Wxxxxxx";
+            Username = "USERNAME";
             Domain = Environment.UserDomainName;
         }
 
@@ -133,6 +138,8 @@ namespace Andromeda.ViewModel
 
         public void RunCommandExecute()
         {
+            
+
             if (SelectedAction != null)
             {
                 SelectedAction.RunCommand(DeviceListString);

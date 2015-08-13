@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>andromeda.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -63,7 +66,9 @@
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Logic\Command\Action.cs" />
-    <Compile Include="Logic\Command\AppDeploymentSchedule.cs" />
+    <Compile Include="Logic\Command\ActionGroup.cs" />
+    <Compile Include="Logic\Command\RunGpUpdate.cs" />
+    <Compile Include="Logic\Command\sccmAppDeploymentSchedule.cs" />
     <Compile Include="Logic\Command\FixCEDeviceID.cs" />
     <Compile Include="Logic\Command\ForceLogOff.cs" />
     <Compile Include="Logic\Command\ForceReboot.cs" />
@@ -72,17 +77,23 @@
     <Compile Include="Logic\Command\InstallTightVNC.cs" />
     <Compile Include="Logic\Command\PingTest.cs" />
     <Compile Include="Logic\Command\RemoveTightVNC.cs" />
-    <Compile Include="Logic\Command\RunPHprint2.cs" />
     <Compile Include="Logic\Command\RunRemoteCommand.cs" />
+    <Compile Include="Logic\Command\SccmHardwareInventoryCycle.cs" />
+    <Compile Include="Logic\Command\SccmMachinePolicyRetreivalCycle.cs" />
+    <Compile Include="Logic\Command\SccmScheduleActionBase.cs" />
+    <Compile Include="Logic\Command\SccmSoftwareInventoryCycle.cs" />
+    <Compile Include="Logic\Command\SccmUserPolicyRetrievalCycle.cs" />
     <Compile Include="Logic\Command\UninstallXceleraMonitor.cs" />
     <Compile Include="Logic\GetPingableDevices.cs" />
     <Compile Include="Logic\RunPSExecCommand.cs" />
+    <Compile Include="Logic\SccmClientFuncs.cs" />
     <Compile Include="Logic\WMIFuncs.cs" />
     <Compile Include="Model\CredToken.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\ResultConsole.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\CLI.xaml.cs">
@@ -102,6 +113,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\CLI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,7 +157,9 @@
     <Resource Include="Assets\sagan_tyson.png" />
     <Resource Include="Assets\tgb.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="andromeda.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
