@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using Andromeda.Model;
 
@@ -23,9 +24,9 @@ namespace Andromeda.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            List<string> devlist = ParseDeviceList(deviceList);
+            List<string> devlist = ParseDeviceList(a);
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
             _creds = Program.CredentialManager.UserCredentials;
@@ -76,6 +77,8 @@ namespace Andromeda.Command
                     Logger.Log("Error connecting to WMI scope " + d + ". Process aborted for this device.");
                     failedlist.Add(d);
                 }
+
+                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

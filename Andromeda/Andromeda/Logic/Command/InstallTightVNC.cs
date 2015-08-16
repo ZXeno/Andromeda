@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Management;
+using System.Threading.Tasks;
 using Andromeda.Model;
 
 namespace Andromeda.Command
@@ -17,9 +18,9 @@ namespace Andromeda.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            List<string> devlist = ParseDeviceList(deviceList);
+            List<string> devlist = ParseDeviceList(a);
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             _creds = Program.CredentialManager.UserCredentials;
 
@@ -31,12 +32,13 @@ namespace Andromeda.Command
                 return;
             }
 
-            string cmdToRun = "MsiExec.exe /i " + Program.Config.ComponentDirectory + "\\tightvnc-setup-64bit.msi" + @" /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS";
+            string cmdToRun = "MsiExec.exe /i " + Config.ComponentDirectory + "\\tightvnc-setup-64bit.msi" + @" /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS SET_REMOVEWALLPAPER=0";
             Logger.Log("Running TightVNC Install with following command line parameters: " + cmdToRun);
 
             foreach (var d in successList)
             {
                 RunPSExecCommand.RunOnDeviceWithAuthentication(d, cmdToRun, _creds);
+                ProgressData.OnUpdateProgressBar(1);
             }
         }
     }

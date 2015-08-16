@@ -1,4 +1,6 @@
-﻿namespace Andromeda.Command
+﻿using System.Threading.Tasks;
+
+namespace Andromeda.Command
 {
     public class SccmUserPolicyRetrievalCycle : SccmScheduleActionBase
     {
@@ -10,9 +12,9 @@
             Category = ActionGroup.SCCM;
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            RunScheduleTrigger(SccmClientFuncs.UserPolicyRetrievalCycleScheduleId, deviceList);
+            RunScheduleTrigger(SccmClientFuncs.UserPolicyRetrievalCycleScheduleId, a);
         }
 
     }

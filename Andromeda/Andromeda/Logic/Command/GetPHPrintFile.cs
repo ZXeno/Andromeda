@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Andromeda.Model;
 
 namespace Andromeda.Command
 {
@@ -56,6 +57,8 @@ namespace Andromeda.Command
                     ResultConsole.AddConsoleLine("An exception occurred!");
                     ResultConsole.AddConsoleLine(ex.Message);
                 }
+
+                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (Directory.Exists(_destinationDirectory))

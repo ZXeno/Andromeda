@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Andromeda.Command
@@ -17,9 +18,9 @@ namespace Andromeda.Command
             Category = ActionGroup.SCCM;
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            RunScheduleTrigger(SccmClientFuncs.ApplicationDeploymentEvaluationCycleScheduleId, deviceList);
+            RunScheduleTrigger(SccmClientFuncs.ApplicationDeploymentEvaluationCycleScheduleId, a);
         }
     }
 }

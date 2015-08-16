@@ -1,5 +1,7 @@
 ﻿using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using Andromeda.Model;
 
 namespace Andromeda.Command
 {
@@ -13,9 +15,9 @@ namespace Andromeda.Command
             netConn=new NetworkConnections();
         }
 
-        public override void RunCommand(string host)
+        public override void RunCommand(string a)
         {
-            var devlist = ParseDeviceList(host);
+            var devlist = ParseDeviceList(a);
             var successful = GetPingableDevices.GetDevices(devlist);
 
             foreach (string d in successful)
@@ -23,6 +25,7 @@ namespace Andromeda.Command
                 if (d == "") { continue; }
 
                 ResultConsole.AddConsoleLine(ParseResponse(netConn.PingTest(d), d));
+                ProgressData.OnUpdateProgressBar(1);
             }
         }
 

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml;
+using Andromeda.Model;
 
 namespace Andromeda.Command
 {
@@ -51,6 +52,8 @@ namespace Andromeda.Command
                     ResultConsole.AddConsoleLine("An exception occurred!");
                     ResultConsole.AddConsoleLine(ex.Message);
                 }
+
+                ProgressData.OnUpdateProgressBar(1);
             }
         }
 
@@ -75,7 +78,7 @@ namespace Andromeda.Command
             try
             {
                 XmlWriterSettings _xset = new XmlWriterSettings();
-                _xset.Encoding = UTF8Encoding.UTF8;
+                _xset.Encoding = Encoding.UTF8;
                 _xset.Indent = true;
 
                 XmlWriter _xwriter = XmlWriter.Create(path, _xset);

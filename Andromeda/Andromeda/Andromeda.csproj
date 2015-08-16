@@ -90,6 +90,7 @@
     <Compile Include="Logic\WMIFuncs.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\CredToken.cs" />
+    <Compile Include="Model\ProgressData.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
@@ -156,6 +157,7 @@
     <Resource Include="Assets\andromeda.jpg" />
     <Resource Include="Assets\check.png" />
     <Resource Include="Assets\cli_bg.png" />
+    <Resource Include="Assets\notification_warning.png" />
     <Resource Include="Assets\red-x.png" />
     <Resource Include="Assets\sagan_tyson.png" />
     <Resource Include="Assets\tgb.png" />

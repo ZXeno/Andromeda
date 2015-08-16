@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Andromeda.Model;
-using Andromeda.ViewModel;
 
 
 namespace Andromeda.Command
@@ -21,7 +20,6 @@ namespace Andromeda.Command
 
         // Single entry
         public virtual void RunCommand(string a) {  }
-        public virtual void RunCommand(string a, CredToken creds) { }
 
         // Return results tied to device keys.
         public virtual Dictionary<string, string> RunDictionaryResultCommand(string a) { return null; }
@@ -45,6 +43,8 @@ namespace Andromeda.Command
 
                 resultList.Add(t);
             }
+
+            ProgressData.OnStartProgressBar(resultList.Count);
 
             return resultList;
         }

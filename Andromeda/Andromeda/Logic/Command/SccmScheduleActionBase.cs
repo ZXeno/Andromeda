@@ -4,6 +4,7 @@ using System.IO;
 using System.Management;
 using System.Text;
 using System.Windows;
+using Andromeda.Model;
 
 namespace Andromeda.Command
 {
@@ -34,6 +35,8 @@ namespace Andromeda.Command
                     Logger.Log("Error connecting to WMI scope " + d + ". Process aborted for this device.");
                     failedlist.Add(d);
                 }
+
+                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

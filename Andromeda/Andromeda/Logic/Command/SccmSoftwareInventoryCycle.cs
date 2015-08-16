@@ -1,4 +1,6 @@
-﻿namespace Andromeda.Command
+﻿using System.Threading.Tasks;
+
+namespace Andromeda.Command
 {
     public class SccmSoftwareInventoryCycle : SccmScheduleActionBase
     {
@@ -9,9 +11,9 @@
             Category = ActionGroup.SCCM;
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            RunScheduleTrigger(SccmClientFuncs.SoftwareInventoryCycleScheduleId, deviceList);
+            RunScheduleTrigger(SccmClientFuncs.SoftwareInventoryCycleScheduleId, a);
         }
     }
 }

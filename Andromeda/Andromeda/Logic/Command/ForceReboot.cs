@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Management;
+using System.Threading.Tasks;
 using Andromeda.Model;
 
 namespace Andromeda.Command
@@ -65,6 +66,8 @@ namespace Andromeda.Command
                     Logger.Log("There was an error connecting to WMI namespace on " + d);
                     ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + d);
                 }
+
+                ProgressData.OnUpdateProgressBar(1);
             }
 
         }

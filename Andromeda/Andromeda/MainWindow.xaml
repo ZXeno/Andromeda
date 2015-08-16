@@ -37,11 +37,13 @@
 
         <Label Content="{Binding Path=SelectedAction.Description}" Foreground="#FFE0E0E0" Background="#A5474747" Margin="0,0,86,202" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="552" Height="26"/>
         <Button Content="{Binding Path=RunButtonText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,0,16,205" Width="65" Height="20" VerticalAlignment="Bottom" Command="{Binding RunCommand, UpdateSourceTrigger=PropertyChanged}"  />
+        <ProgressBar Margin="0,0,16,190" Visibility="{Binding ProgressBarVisible}" Maximum="{Binding ProgressTotal}" Minimum="0" Value="{Binding ProgressCurrent}" HorizontalAlignment="Right" Width="65" Height="10" VerticalAlignment="Bottom"/>
         <TextBox Style="{StaticResource ResultConsole}" Text="{Binding ConsoleString, UpdateSourceTrigger=PropertyChanged}" Margin="16,0,16,35" Height="150" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
             <TextBox.DataContext>
                 <vm:ResultConsoleViewModel/>
             </TextBox.DataContext>
         </TextBox>
+        <Image x:Name="image" Source="Assets/notification_warning.png" Visibility="{Binding ProgressBarVisible}" HorizontalAlignment="Right"  Margin="0,0,18,241" VerticalAlignment="Bottom" Width="24" Height="24"/>
 
 
     </Grid>

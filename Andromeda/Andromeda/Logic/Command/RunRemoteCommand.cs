@@ -20,9 +20,9 @@ namespace Andromeda.Command
             connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            List<string> devlist = ParseDeviceList(deviceList);
+            List<string> devlist = ParseDeviceList(a);
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             _creds = Program.CredentialManager.UserCredentials;
 
@@ -51,6 +51,7 @@ namespace Andromeda.Command
                     foreach (var d in successList)
                     {
                         RunOnDevice(d, cmdToRun);
+                        ProgressData.OnUpdateProgressBar(1);
                     }
                 }
                 else //if (newPrompt.WasCanceled)

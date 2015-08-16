@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Andromeda.Model;
 
 namespace Andromeda.Command
@@ -14,9 +15,9 @@ namespace Andromeda.Command
             Category = ActionGroup.Other;
         }
 
-        public override void RunCommand(string deviceList)
+        public override void RunCommand(string a)
         {
-            List<string> devlist = ParseDeviceList(deviceList);
+            List<string> devlist = ParseDeviceList(a);
             List<string> successList = GetPingableDevices.GetDevices(devlist);
             _creds = Program.CredentialManager.UserCredentials;
 
@@ -31,6 +32,7 @@ namespace Andromeda.Command
             foreach (var d in successList)
             {
                 RunPSExecCommand.RunOnDeviceWithAuthentication(d, "cmd.exe /C gpupdate.exe /force", _creds);
+                ProgressData.OnUpdateProgressBar(1);
             }
         }
     }

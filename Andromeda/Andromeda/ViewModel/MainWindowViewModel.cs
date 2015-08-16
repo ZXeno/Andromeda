@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using Andromeda.Command;
+using Andromeda.Model;
 using Andromeda.MVVM;
 using Action = Andromeda.Command.Action;
 
@@ -9,6 +12,16 @@ namespace Andromeda.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public delegate void ActionsStarted(bool justStarted);
+        public static event ActionsStarted ActionStart;
+        public void OnActionStarted(bool justStarted)
+        {
+            if (ActionStart != null)
+            {
+                ActionStart(justStarted);
+            }
+        }
+
         public ObservableCollection<Action> ActionsList { get; private set; }
         private ObservableCollection<ViewModelBase> _viewModels; 
         public ObservableCollection<ViewModelBase> ViewModels
@@ -91,6 +104,56 @@ namespace Andromeda.ViewModel
             }
         }
 
+        private bool _actionRunning;
+        public bool ActionRunning
+        {
+            get { return _actionRunning; }
+            set
+            {
+                _actionRunning = value;
+                OnPropertyChanged("ActionRunning");
+            }
+        }
+
+        private ProgressData _progressData;
+        public ProgressData ProgressData
+        {
+            get { return _progressData; }
+            set
+            {
+                _progressData = value;
+                OnPropertyChanged("ProgressData");
+                OnPropertyChanged("ProgressBarVisible");
+            }
+        }
+
+        public int ProgressTotal
+        {
+            get { return _progressData.TotalCount; }
+            set
+            {
+                _progressData.TotalCount = value;
+                OnPropertyChanged("ProgressTotal");
+                OnPropertyChanged("ProgressBarVisible");
+            }
+        }
+
+        public int ProgressCurrent
+        {
+            get { return _progressData.Current; }
+            set
+            {
+                _progressData.Current = value;
+                OnPropertyChanged("ProgressCurrent");
+                OnPropertyChanged("ProgressBarVisible");
+            }
+        }
+
+        public Visibility ProgressBarVisible
+        {
+            get { return (ProgressCurrent < ProgressTotal && ActionRunning) ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
         private ICommand _runCmd;
         public ICommand RunCommand
         {
@@ -133,9 +196,14 @@ namespace Andromeda.ViewModel
             _viewModels = new ObservableCollection<ViewModelBase>();
             _viewModels.Add(new ResultConsoleViewModel());
 
+            ProgressData = new ProgressData();
             RunButtonText = "Run";
-
             Domain = Environment.UserDomainName;
+            ActionRunning = false;
+
+            ActionStart += UpdateActionIcon;
+            ProgressData.SetTotal += SetProgressTotal;
+            ProgressData.SetChange += SetProgressChange;
         }
 
         protected override void OnDispose()
@@ -146,22 +214,50 @@ namespace Andromeda.ViewModel
 
         public void RunCommandExecute()
         {
-            if (SelectedAction != null)
+            if (SelectedAction != null && RunCommandCanExecute())
             {
-                RunButtonText = "Working";
-                SelectedAction.RunCommand(DeviceListString);
-                RunButtonText = "Run";
+                OnActionStarted(true);
+
+                ThreadPool.QueueUserWorkItem(
+                    o =>
+                    {
+                        SelectedAction.RunCommand(DeviceListString);
+                        OnActionStarted(false);
+                    });   
             }
         }
 
         public bool RunCommandCanExecute()
         {
-            if (SelectedAction == null)
+            if (_actionRunning)
             {
                 return false;
             }
 
             return true;
+        }
+
+        private void UpdateActionIcon(bool justStarted)
+        {
+            ActionRunning = justStarted;
+
+            if (justStarted)
+            {
+                RunButtonText = "Working";
+                return;
+            }
+
+            RunButtonText = "Run";
+        }
+
+        private void SetProgressTotal(int total)
+        {
+            ProgressTotal = total;
+        }
+
+        private void SetProgressChange(int change)
+        {
+            ProgressCurrent += change;
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using Andromeda.Model;
-using Andromeda.ViewModel;
 
 namespace Andromeda
 {
@@ -58,10 +57,12 @@ namespace Andromeda
                                 case IPStatus.TimedOut:
                                     sb.AppendLine(d);
                                     ResultConsole.Instance.AddConsoleLine(d + " failed to connect: Timeout. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
                                     break;
                                 default:
                                     sb.AppendLine(d);
                                     ResultConsole.Instance.AddConsoleLine(d + " failed to connect. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
                                     break;
                             }
                         }
@@ -70,6 +71,7 @@ namespace Andromeda
                             // if it isn't null, but fails anyway, I'm not exactly certain why we would have an error.
                             sb.AppendLine(d);
                             ResultConsole.Instance.AddConsoleLine(d + " failed to connect. Added to failed list file.");
+                            ProgressData.OnUpdateProgressBar(1);
                         }
                     }
                     catch (PingException ex)
@@ -77,12 +79,14 @@ namespace Andromeda
                         var returnMsg = string.Format(d + " Connection Error: {0}", ex.Message + ": " + ex.InnerException);
                         sb.AppendLine(returnMsg);
                         ResultConsole.Instance.AddConsoleLine(returnMsg);
+                        ProgressData.OnUpdateProgressBar(1);
                     }
                     catch (SocketException ex)
                     {
                         var returnMsg = string.Format(d + " Connection Error: {0}", ex.Message + ": " + ex.InnerException);
                         sb.AppendLine(returnMsg);
                         ResultConsole.Instance.AddConsoleLine(returnMsg);
+                        ProgressData.OnUpdateProgressBar(1);
                     }
                 }
             }
