@@ -1,10 +1,7 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.ObjectModel;
-using System.Security;
 using System.Windows.Input;
 using Andromeda.Command;
-using Andromeda.Model;
 using Andromeda.MVVM;
 using Action = Andromeda.Command.Action;
 
@@ -24,6 +21,17 @@ namespace Andromeda.ViewModel
                 }
 
                 return _viewModels;
+            }
+        }
+
+        private string _runButtonText;
+        public string RunButtonText
+        {
+            get { return _runButtonText; }
+            set
+            {
+                _runButtonText = value;
+                OnPropertyChanged("RunButtonText");
             }
         }
 
@@ -123,10 +131,14 @@ namespace Andromeda.ViewModel
             };
 
             _viewModels = new ObservableCollection<ViewModelBase>();
-            _viewModels.Add(new ResultConsole());
 
-            DeviceListString = "Wxxxxxx";
-            Username = "USERNAME";
+            var console = Program.ResultConsole;
+            ResultConsole.Instance = console; // Hacky fix for a stupid issue? //TODO: Refactor how the Result Console View Model works...
+            _viewModels.Add(console);
+            ResultConsole.Instance.AddConsoleLine("");
+
+            RunButtonText = "Run";
+
             Domain = Environment.UserDomainName;
         }
 
@@ -138,11 +150,11 @@ namespace Andromeda.ViewModel
 
         public void RunCommandExecute()
         {
-            
-
             if (SelectedAction != null)
             {
+                RunButtonText = "Working";
                 SelectedAction.RunCommand(DeviceListString);
+                RunButtonText = "Run";
             }
         }
 

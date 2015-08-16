@@ -11,9 +11,23 @@ namespace Andromeda
 
         public static ManagementScope ConnectToRemoteWMI(string hostname, string scope, ConnectionOptions options)
         {
-            ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope, options);
-            wmiscope.Connect();
-            return wmiscope;
+            try
+            {
+                ManagementScope wmiscope = new ManagementScope("\\\\" + hostname + scope, options);
+                wmiscope.Connect();
+                return wmiscope;
+            }
+            catch (Exception e)
+            {
+                ResultConsole.Instance.AddConsoleLine("Failed to connect to WMI namespace" + "\\\\" + hostname + scope);
+                ResultConsole.Instance.AddConsoleLine("Exception: " + e.InnerException);
+                Logger.Log("Error connecting to WMI namespace \\\\" + hostname + scope +
+                    "\n Exception was caught: " + e.InnerException +
+                    "\n Calling method: " + e.TargetSite);
+
+                return null;
+            }
+            
         }
 
         public static bool CheckWMIAccessible(string hostname, string scope, ConnectionOptions options)

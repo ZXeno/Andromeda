@@ -15,7 +15,7 @@ namespace Andromeda.Command
             Description = "Retreives the PHPrint file from the given device and copies it to results directory.";
             Category = ActionGroup.Other;
 
-            _destinationDirectory = Program.Config.ResultsDirectory + "\\" + "GetPHPrints\\";
+            _destinationDirectory = Config.ResultsDirectory + "\\" + "GetPHPrints\\";
         }
 
         public override void RunCommand(string a)

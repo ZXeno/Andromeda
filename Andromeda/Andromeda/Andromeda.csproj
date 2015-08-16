@@ -61,8 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Config.cs" />
-    <Compile Include="CredentialManager.cs" />
+    <Compile Include="Managers\ConfigManager.cs" />
+    <Compile Include="Managers\CredentialManager.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Logic\Command\Action.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Logic\RunPSExecCommand.cs" />
     <Compile Include="Logic\SccmClientFuncs.cs" />
     <Compile Include="Logic\WMIFuncs.cs" />
+    <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\CredToken.cs" />
     <Compile Include="NetworkConnections.cs" />
     <Compile Include="Program.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\ResultConsole.cs" />
+    <Compile Include="ViewModel\ScrollViewerExtensions.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\CLI.xaml.cs">
       <DependentUpon>CLI.xaml</DependentUpon>

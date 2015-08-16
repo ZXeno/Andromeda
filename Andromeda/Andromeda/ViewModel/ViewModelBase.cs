@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Andromeda.ViewModel
 {
@@ -11,14 +12,14 @@ namespace Andromeda.ViewModel
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
+            //Raise the PropertyChanged event on the UI Thread, with the relevant propertyName parameter:
+            Application.Current.Dispatcher.BeginInvoke((Action) (() =>
             {
-                var e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
-            }
-
+                PropertyChangedEventHandler handler = PropertyChanged;
+                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            }));
         }
+
 
         public void Dispose()
         {
@@ -27,7 +28,7 @@ namespace Andromeda.ViewModel
 
         protected virtual void OnDispose()
         {
-            
+
         }
     }
 }

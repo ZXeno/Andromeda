@@ -72,21 +72,5 @@ namespace Andromeda
             }
             else { return; }
         }
-
-        private static void ValidateDestinationExists()
-        {
-            try
-            {
-                if (!Directory.Exists(Program.Config.ResultsDirectory))
-                {
-                    Directory.CreateDirectory(Program.Config.ResultsDirectory);
-                }
-            }
-            catch (Exception ex)
-            {
-                ResultConsole.Instance.AddConsoleLine("There was an exception when validating or creating the destination folder.");
-                ResultConsole.Instance.AddConsoleLine(ex.Message);
-            }
-        }
     }
 }

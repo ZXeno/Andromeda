@@ -17,8 +17,7 @@ namespace Andromeda.Command
         //' 8 - Power off
         //' 12 - Forced power off 
 
-        private ConnectionOptions _connOps;
-        private CredToken _creds;
+        private readonly ConnectionOptions _connOps;
 
         public ForceReboot()
         {

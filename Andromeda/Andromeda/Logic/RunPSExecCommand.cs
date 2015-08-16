@@ -8,12 +8,13 @@ namespace Andromeda
 {
     public class RunPSExecCommand
     {
+        private static Configuration Config { get { return ConfigManager.CurrentConfig; } }
         public static void RunOnDeviceWithAuthentication(string device, string commandline, CredToken creds)
         {
             try
             {
                 Process process = new Process();
-                ProcessStartInfo psi = new ProcessStartInfo(Program.Config.ComponentDirectory + "\\PsExec.exe");
+                ProcessStartInfo psi = new ProcessStartInfo(Config.ComponentDirectory + "\\PsExec.exe");
                 psi.UseShellExecute = false;
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
@@ -48,7 +49,7 @@ namespace Andromeda
             try
             {
                 Process process = new Process();
-                ProcessStartInfo psi = new ProcessStartInfo(Program.Config.ComponentDirectory + "\\PsExec.exe");
+                ProcessStartInfo psi = new ProcessStartInfo(Config.ComponentDirectory + "\\PsExec.exe");
                 psi.UseShellExecute = false;
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Security;
 using Andromeda.Model;
 using Andromeda.ViewModel;
 
@@ -12,6 +10,7 @@ namespace Andromeda.Command
     public class Action
     {
         public ResultConsole ResultConsole { get { return ResultConsole.Instance; } }
+        protected Configuration Config { get { return ConfigManager.CurrentConfig; } }
         protected NetworkConnections netConn;
 
         public string ActionName { get; protected set; }

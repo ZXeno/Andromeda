@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Andromeda.Model;
 
 namespace Andromeda.ViewModel
 {
     public class ResultConsole : ViewModelBase
     {
+        private static Configuration Config { get { return ConfigManager.CurrentConfig; } }
         private static ResultConsole _instance;
-
         public static ResultConsole Instance
         {
             get
@@ -17,6 +18,13 @@ namespace Andromeda.ViewModel
                     _instance = new ResultConsole();
                 }
                 return _instance;
+            }
+            set
+            {
+                if (_instance == null || _instance != value)
+                {
+                    _instance = value;
+                }
             }
         }
 
@@ -43,7 +51,6 @@ namespace Andromeda.ViewModel
         }
 
         public bool _isInitialized = false;
-
         public bool IsInitialized { get { return _isInitialized; } }
 
         public ResultConsole()
@@ -61,9 +68,9 @@ namespace Andromeda.ViewModel
                 History.Add(str + "\n");
                 ConsoleString += str + "\n";
 
-                if (Program.Config != null)
+                if (Config != null)
                 {
-                    if (Program.Config.AlwaysDumpConsoleHistory)
+                    if (Config.AlwaysDumpConsoleHistory)
                     {
                         AddLineToHistoryDumpFile(str);
                         Logger.Log("History dump at " + DateTime.Now + ". Contents: " + str);
@@ -81,13 +88,13 @@ namespace Andromeda.ViewModel
                 historydump += entry;
             }
 
-            var filepath = Program.Config.ResultsDirectory + DateTime.Now + "_console_dump.txt";
+            var filepath = Config.ResultsDirectory + DateTime.Now + "_console_dump.txt";
             WriteToTextFile.WriteToLogFile(filepath, historydump);
         }
 
         private void AddLineToHistoryDumpFile(string line)
         {
-            var filePath = Program.Config.ResultsDirectory + "\\" + DateTime.Today.Month + "_" + DateTime.Today.Day + "_" + DateTime.Today.Year + "_history_dump_file.txt";
+            var filePath = Config.ResultsDirectory + "\\" + DateTime.Today.Month + "_" + DateTime.Today.Day + "_" + DateTime.Today.Year + "_history_dump_file.txt";
 
             if (!File.Exists(filePath))
             {

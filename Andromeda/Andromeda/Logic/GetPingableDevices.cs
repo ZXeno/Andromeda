@@ -6,16 +6,18 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using Andromeda.Model;
 using Andromeda.ViewModel;
 
 namespace Andromeda
 {
     public class GetPingableDevices
     {
+        private static Configuration Config { get { return ConfigManager.CurrentConfig; } }
 
         public static List<string> GetDevices(List<string> devlist)
         {
-            string destinationdirectory = Program.Config.ResultsDirectory;
+            string destinationdirectory = Config.ResultsDirectory;
             var netConn = new NetworkConnections();
 
             List<string> successList = new List<string>();
@@ -85,14 +87,14 @@ namespace Andromeda
                 }
             }
 
-            if (Program.Config.SaveOfflineComputers)
+            if (Config.SaveOfflineComputers)
             {
-                if (File.Exists(destinationdirectory + "\\" + Program.Config.FailedConnectListFile))
+                if (File.Exists(destinationdirectory + "\\" + Config.FailedConnectListFile))
                 {
-                    File.Delete(destinationdirectory + "\\" + Program.Config.FailedConnectListFile);
+                    File.Delete(destinationdirectory + "\\" + Config.FailedConnectListFile);
                 }
 
-                using (StreamWriter outfile = new StreamWriter(destinationdirectory + "\\" + Program.Config.FailedConnectListFile, true))
+                using (StreamWriter outfile = new StreamWriter(destinationdirectory + "\\" + Config.FailedConnectListFile, true))
                 {
                     try
                     {
@@ -100,19 +102,19 @@ namespace Andromeda
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Unable to write to " + Program.Config.FailedConnectListFile + ". \n" + e.InnerException);
+                        MessageBox.Show("Unable to write to " + Config.FailedConnectListFile + ". \n" + e.InnerException);
                     }
                 }
             }
 
-            if (Program.Config.SaveOnlineComputers)
+            if (Config.SaveOnlineComputers)
             {
-                if (File.Exists(destinationdirectory + "\\" + Program.Config.SuccessfulConnectionListFile))
+                if (File.Exists(destinationdirectory + "\\" + Config.SuccessfulConnectionListFile))
                 {
-                    File.Delete(destinationdirectory + "\\" + Program.Config.SuccessfulConnectionListFile);
+                    File.Delete(destinationdirectory + "\\" + Config.SuccessfulConnectionListFile);
                 }
 
-                using (StreamWriter outfile = new StreamWriter(destinationdirectory + "\\" + Program.Config.SuccessfulConnectionListFile, true))
+                using (StreamWriter outfile = new StreamWriter(destinationdirectory + "\\" + Config.SuccessfulConnectionListFile, true))
                 {
                     StringBuilder sce = new StringBuilder();
                     foreach (var sc in successList)
@@ -123,7 +125,7 @@ namespace Andromeda
                     try { outfile.WriteAsync(sce.ToString()); }
                     catch (Exception e)
                     {
-                        MessageBox.Show("Unable to write to " + Program.Config.SuccessfulConnectionListFile + ". \n" + e.InnerException);
+                        MessageBox.Show("Unable to write to " + Config.SuccessfulConnectionListFile + ". \n" + e.InnerException);
                     }
                 }
             }

@@ -13,23 +13,26 @@ namespace Andromeda
         public Logger()
         {
             _logFilePath = Program.UserFolder + "\\logs";
-            _logFileName = DateTime.Today.Month + "_" + DateTime.Today.Day + "_" + DateTime.Today.Year + "__" +
-                           DateTime.Now.Hour + "-" + DateTime.Now.Minute + "_log.txt";
+            _logFileName = DateTime.Today.Month + "_" + DateTime.Today.Day + "_" + DateTime.Today.Year + "_log.txt";
 
             _fullLogPath = _logFilePath + "\\" + _logFileName;
 
-            ValidateDestinationExists();
+            ValidateLogDirectoryExists();
 
-            WriteToTextFile.CreateNewLogFile(_fullLogPath);
-            Log("Logger initiated");
+            if (!File.Exists(_fullLogPath))
+            {
+                WriteToTextFile.CreateNewLogFile(_fullLogPath);
+            }
+
+            Log("Logger initiated.");
         }
 
         public static void Log(string line)
         {
-            WriteToTextFile.AddLineToFile(_logFilePath + "\\" + _logFileName, DateTime.Now + " " + line);
+            WriteToTextFile.AddLineToFile(_fullLogPath, DateTime.Now + " " + line);
         }
 
-        private static void ValidateDestinationExists()
+        private static void ValidateLogDirectoryExists()
         {
             try
             {

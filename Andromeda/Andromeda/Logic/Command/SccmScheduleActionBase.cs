@@ -41,10 +41,10 @@ namespace Andromeda.Command
                 ResultConsole.AddConsoleLine("There were " + failedlist.Count + "computers that failed the process. They have been recorded in the log.");
                 StringBuilder sb = new StringBuilder();
 
-                if (File.Exists(Program.Config.ResultsDirectory + "\\" + FailedLog))
+                if (File.Exists(Config.ResultsDirectory + "\\" + FailedLog))
                 {
-                    File.Delete(Program.Config.ResultsDirectory + "\\" + FailedLog);
-                    Logger.Log("Deleted file " + Program.Config.ResultsDirectory + "\\" + FailedLog);
+                    File.Delete(Config.ResultsDirectory + "\\" + FailedLog);
+                    Logger.Log("Deleted file " + Config.ResultsDirectory + "\\" + FailedLog);
                 }
 
                 foreach (var failed in failedlist)
@@ -52,12 +52,12 @@ namespace Andromeda.Command
                     sb.AppendLine(failed);
                 }
 
-                using (StreamWriter outfile = new StreamWriter(Program.Config.ResultsDirectory + "\\" + FailedLog, true))
+                using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + FailedLog, true))
                 {
                     try
                     {
                         outfile.WriteAsync(sb.ToString());
-                        Logger.Log("Wrote \"Remove TightVNC Failed\" results to file " + Program.Config.ResultsDirectory + "\\" + FailedLog);
+                        Logger.Log("Wrote \"Remove TightVNC Failed\" results to file " + Config.ResultsDirectory + "\\" + FailedLog);
                     }
                     catch (Exception e)
                     {
