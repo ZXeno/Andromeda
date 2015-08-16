@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
-using Andromeda.ViewModel;
 
 namespace Andromeda
 {
     public class Program
     {
+        public const string VersionNumber = "Version 0.1";
+
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
 

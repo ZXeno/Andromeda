@@ -37,6 +37,11 @@ namespace Andromeda.ViewModel
             }
         }
 
+        public string VersionNumber
+        {
+            get { return Program.VersionNumber; }
+        }
+
         private string _runButtonText;
         public string RunButtonText
         {
@@ -178,6 +183,7 @@ namespace Andromeda.ViewModel
             {
                 new SccmAppDeploymentSchedule(),
                 new FixCEDeviceID(),
+                new RunGpUpdate(),
                 new ForceLogOff(),
                 new ForceReboot(),
                 new GetLoggedOnUser(),
@@ -187,7 +193,7 @@ namespace Andromeda.ViewModel
                 new PingTest(),
                 new InstallTightVNC(),
                 new RemoveTightVNC(),
-                new RunGpUpdate(),
+                new RemoveHealthcast(),
                 new RunRemoteCommand(),
                 new SccmSoftwareInventoryCycle(),
                 new UninstallXceleraMonitor()

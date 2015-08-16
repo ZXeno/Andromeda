@@ -46,6 +46,9 @@
         <Image x:Name="image" Source="Assets/notification_warning.png" Visibility="{Binding ProgressBarVisible}" HorizontalAlignment="Right"  Margin="0,0,18,241" VerticalAlignment="Bottom" Width="24" Height="24"/>
 
 
+        <Label x:Name="label" Content="{Binding VersionNumber}" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" Foreground="#FFE0E0E0" FontSize="8"  Margin="16,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="20" Width="80" FontFamily="Lucida Console"/>
+
+
     </Grid>
 
 </Window>
