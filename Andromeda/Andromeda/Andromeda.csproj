@@ -95,7 +95,8 @@
     <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
-    <Compile Include="ViewModel\ResultConsole.cs" />
+    <Compile Include="Managers\ResultConsole.cs" />
+    <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
     <Compile Include="ViewModel\ScrollViewerExtensions.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\CLI.xaml.cs">

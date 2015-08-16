@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using Andromeda.Model;
 
-namespace Andromeda.ViewModel
+
+namespace Andromeda
 {
-    public class ResultConsole : ViewModelBase
+    public class ResultConsole
     {
+        public delegate void ConsoleEvent(string updateData);
+        public static event ConsoleEvent ConsoleChange;
+
         private static Configuration Config { get { return ConfigManager.CurrentConfig; } }
         private static ResultConsole _instance;
         public static ResultConsole Instance
@@ -35,7 +39,6 @@ namespace Andromeda.ViewModel
             private set
             {
                 _history = value;
-                OnPropertyChanged("History");
             }
         }
 
@@ -46,12 +49,20 @@ namespace Andromeda.ViewModel
             private set
             {
                 _consoleString = value;
-                OnPropertyChanged("ConsoleString");
+                OnConsoleChange(value);
             }
         }
 
         public bool _isInitialized = false;
         public bool IsInitialized { get { return _isInitialized; } }
+
+        public void OnConsoleChange(string updateData)
+        {
+            if (ConsoleChange != null)
+            {
+                ConsoleChange(updateData);
+            }
+        }
 
         public ResultConsole()
         {

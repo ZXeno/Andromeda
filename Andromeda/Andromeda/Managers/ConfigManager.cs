@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -42,7 +41,7 @@ namespace Andromeda
         {
             
 
-            _configFilePath = Program.WorkingPath + "\\" + ConfigFileName;
+            _configFilePath = Program.UserFolder + "\\" + ConfigFileName;
             _resultsDirectory = Program.UserFolder + "\\Results";
 
             CurrentConfig = new Configuration();

@@ -131,11 +131,7 @@ namespace Andromeda.ViewModel
             };
 
             _viewModels = new ObservableCollection<ViewModelBase>();
-
-            var console = Program.ResultConsole;
-            ResultConsole.Instance = console; // Hacky fix for a stupid issue? //TODO: Refactor how the Result Console View Model works...
-            _viewModels.Add(console);
-            ResultConsole.Instance.AddConsoleLine("");
+            _viewModels.Add(new ResultConsoleViewModel());
 
             RunButtonText = "Run";
 
