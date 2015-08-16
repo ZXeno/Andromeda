@@ -4,7 +4,7 @@ using System.Linq;
 using Andromeda.Model;
 
 
-namespace Andromeda.Command
+namespace Andromeda.Logic
 {
     public class Action
     {

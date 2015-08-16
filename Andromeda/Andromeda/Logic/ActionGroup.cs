@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Andromeda
+﻿namespace Andromeda
 {
     public enum ActionGroup
     {

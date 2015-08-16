@@ -21,7 +21,7 @@
 
         <TextBox x:Name="DEVICE_LIST_TEXTBOX" Text="{Binding DeviceListString}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}" SelectedItem="{Binding SelectedAction}">
+        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

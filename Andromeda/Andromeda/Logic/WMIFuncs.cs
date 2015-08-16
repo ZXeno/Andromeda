@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Management;
 using Andromeda.Model;
-using Andromeda.ViewModel;
 
 namespace Andromeda
 {

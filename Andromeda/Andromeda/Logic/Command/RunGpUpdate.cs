@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class RunGpUpdate : Action
     {

@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Management;
 using Andromeda.Model;
 
 namespace Andromeda.Logic.Command
 {
-    public class ForceReboot : Action
+    public class GetSerialNumber : Action
     {
-        //' Flag values:
-        //' 0 - Log off
-        //' 4 - Forced log off
-        //' 1 - Shut down
-        //' 5 - Forced shut down
-        //' 2 - Reboot
-        //' 6 - Forced reboot
-        //' 8 - Power off
-        //' 12 - Forced power off 
-
         private readonly ConnectionOptions _connOps;
 
-        public ForceReboot()
+        public GetSerialNumber()
         {
-            ActionName = "Force Reboot";
-            Description = "Force reboots the remote computer.";
+            ActionName = "Get Device Serial Number";
+            Description = "Gets the serial number of the selected device.";
             Category = ActionGroup.Other;
             _connOps = new ConnectionOptions();
         }
@@ -40,24 +29,15 @@ namespace Andromeda.Logic.Command
                 var remote = WMIFuncs.ConnectToRemoteWMI(d, scope, _connOps);
                 if (remote != null)
                 {
-                    ObjectQuery query = new SelectQuery("Win32_OperatingSystem");
+                    ObjectQuery query = new SelectQuery("Win32_BIOS");
 
                     ManagementObjectSearcher searcher = new ManagementObjectSearcher(remote, query);
                     ManagementObjectCollection queryCollection = searcher.Get();
 
-                    foreach (var resultobject in queryCollection)
+                    foreach (ManagementObject resultobject in queryCollection)
                     {
-                        ManagementObject ro = resultobject as ManagementObject;
-                        // Obtain in-parameters for the method
-                        ManagementBaseObject inParams = ro.GetMethodParameters("Win32Shutdown");
-
-                        // Add the input parameters.
-                        inParams["Flags"] = 6;
-
-                        // Execute the method and obtain the return values.
-                        ManagementBaseObject outParams = ro.InvokeMethod("Win32Shutdown", inParams, null);
-
-                        ResultConsole.AddConsoleLine("Returned with value " + WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"])));
+                        
+                        ResultConsole.AddConsoleLine(d + " returned serial number " + resultobject["SerialNumber"]);
                     }
                 }
                 else

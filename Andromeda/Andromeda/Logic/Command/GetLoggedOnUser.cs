@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Management;
-using System.Threading.Tasks;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class GetLoggedOnUser : Action
     {

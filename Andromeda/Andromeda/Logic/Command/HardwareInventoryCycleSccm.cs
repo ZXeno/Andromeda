@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Andromeda.ViewModel;
-
-namespace Andromeda.Command
+﻿namespace Andromeda.Logic.Command
 {
-    public class SccmHardwareInventoryCycle : SccmScheduleActionBase
+    public class HardwareInventoryCycleSccm : SccmScheduleActionBase
     {
-         public SccmHardwareInventoryCycle()
+         public HardwareInventoryCycleSccm()
         {
             ActionName = "Hardware Inventory Cycle";
             Description = "Forces SCCM to schedule a Hardware Inventory check on the client.";

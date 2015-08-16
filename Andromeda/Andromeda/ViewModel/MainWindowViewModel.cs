@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Management.Instrumentation;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Andromeda.Command;
+using Andromeda.Logic.Command;
 using Andromeda.Model;
 using Andromeda.MVVM;
-using Action = Andromeda.Command.Action;
+using Action = Andromeda.Logic.Action;
 
 namespace Andromeda.ViewModel
 {
@@ -74,11 +77,9 @@ namespace Andromeda.ViewModel
                 OnPropertyChanged("Username");
             }
         }
-
-        private string _password;
+        
         public string Password
         {
-            get { return _password; }
             set
             {
                 OnPropertyChanged("Password");
@@ -177,30 +178,62 @@ namespace Andromeda.ViewModel
             }
         }
 
+        private bool _updateNotification;
+        public bool UpdateNotification
+        {
+            get { return _updateNotification; }
+            set
+            {
+                _updateNotification = value;
+                OnPropertyChanged("UpdateNotification");
+            }
+        }
+
         public MainWindowViewModel()
         {
-            ActionsList = new ObservableCollection<Action>
+            //ActionsList = new ObservableCollection<Action>
+            //{
+            //    new SccmAppDeploymentSchedule(),
+            //    new FixCEDeviceID(),
+            //    new RunGpUpdate(),
+            //    new ForceLogOff(),
+            //    new ForceReboot(),
+            //    new GetLoggedOnUser(),
+            //    new GetPHPrintFile(),
+            //    new GetSerialNumber(),
+            //    new SccmHardwareInventoryCycle(),
+            //    new SccmMachinePolicyRetreivalCycle(),
+            //    new PingTest(),
+            //    new InstallTightVNC(),
+            //    new RemoveTightVNC(),
+            //    new RemoveHealthcast(),
+            //    new RunRemoteCommand(),
+            //    new SccmSoftwareInventoryCycle(),
+            //    new UninstallXceleraMonitor()
+            //};
+
+            ActionsList = new ObservableCollection<Action>();
+
+            // Dynamically get all of our action classes and load them into the viewmodel.
+            string @namespace = "Andromeda.Logic.Command";
+
+            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
+                    where t.IsClass && t.Namespace == @namespace
+                    select t;
+            q.ToList().ForEach(t => Console.WriteLine(t.Name));
+
+            foreach (var type in q)
             {
-                new SccmAppDeploymentSchedule(),
-                new FixCEDeviceID(),
-                new RunGpUpdate(),
-                new ForceLogOff(),
-                new ForceReboot(),
-                new GetLoggedOnUser(),
-                new GetPHPrintFile(),
-                new SccmHardwareInventoryCycle(),
-                new SccmMachinePolicyRetreivalCycle(),
-                new PingTest(),
-                new InstallTightVNC(),
-                new RemoveTightVNC(),
-                new RemoveHealthcast(),
-                new RunRemoteCommand(),
-                new SccmSoftwareInventoryCycle(),
-                new UninstallXceleraMonitor()
-            };
+                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+                var newinstance = Activator.CreateInstance(assemblyName, type.FullName).Unwrap();
+                Action action = newinstance as Action;
+                ActionsList.Add(action);
+            }// That's pretty fuckin' rad, right? I think so.
+
 
             _viewModels = new ObservableCollection<ViewModelBase>();
             _viewModels.Add(new ResultConsoleViewModel());
+
 
             ProgressData = new ProgressData();
             RunButtonText = "Run";
@@ -227,6 +260,7 @@ namespace Andromeda.ViewModel
                 ThreadPool.QueueUserWorkItem(
                     o =>
                     {
+                        Logger.Log("Starting action " + SelectedAction.ActionName);
                         SelectedAction.RunCommand(DeviceListString);
                         OnActionStarted(false);
                     });   
@@ -245,6 +279,7 @@ namespace Andromeda.ViewModel
 
         private void UpdateActionIcon(bool justStarted)
         {
+            Logger.Log("Updating action running state to " + justStarted);
             ActionRunning = justStarted;
 
             if (justStarted)

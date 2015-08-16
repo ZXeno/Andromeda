@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace Andromeda.Command
+﻿namespace Andromeda.Logic.Command
 {
-    public class SccmUserPolicyRetrievalCycle : SccmScheduleActionBase
+    public class UserPolicyRetrievalCycleSccm : SccmScheduleActionBase
     {
 
-        public SccmUserPolicyRetrievalCycle()
+        public UserPolicyRetrievalCycleSccm()
         {
             ActionName = "User Policy Retrieval Cycle";
             Description = "Forces SCCM to schedule a User Policy Retrieval check on the client.";

@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Management;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
-    public class RemoveTightVNC : Action
+    public class TightVNCRemove : Action
     {
         private ConnectionOptions _connOps;
         private CredToken _creds;
         private readonly string _processName = "tvnserver.exe";
         private const string RemoveVNCFailedList = "RemoveVNC_Failed_W#_Log.txt";
 
-        public RemoveTightVNC()
+        public TightVNCRemove()
         {
             ActionName = "Remove TightVNC";
             Description = "Removes TightVNC from the specified computers.[Requires Credentials]";

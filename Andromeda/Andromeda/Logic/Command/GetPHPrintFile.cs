@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class GetPHPrintFile : Action
     {

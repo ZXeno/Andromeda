@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Andromeda.Model;
-using Andromeda.ViewModel;
 
 namespace Andromeda
 {

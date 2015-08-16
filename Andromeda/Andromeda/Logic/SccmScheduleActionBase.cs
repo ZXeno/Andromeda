@@ -6,9 +6,9 @@ using System.Text;
 using System.Windows;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic
 {
-    public class SccmScheduleActionBase : Action
+    public class SccmScheduleActionBase : Logic.Action
     {
         protected ConnectionOptions Connection;
         protected string FailedLog = "sccm_schedule_failed_log.txt";

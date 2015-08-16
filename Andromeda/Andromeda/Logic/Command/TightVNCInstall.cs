@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Management;
-using System.Threading.Tasks;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
-    public class InstallTightVNC : Action
+    public class TightVNCInstall : Action
     {
         private ConnectionOptions _connOps;
         private CredToken _creds;
 
-        public InstallTightVNC()
+        public TightVNCInstall()
         {
             ActionName = "Install TightVNC";
             Description = "Installs the version of TightVNC from the components directory.[Requires Credentials]";

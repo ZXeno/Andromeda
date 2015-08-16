@@ -1,9 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Andromeda"
-                    xmlns:extensionProperties="clr-namespace:Andromeda.ViewModel"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:enum="clr-namespace:Andromeda.Command">
+                    xmlns:extensionProperties="clr-namespace:Andromeda.ViewModel">
 
     <Style TargetType="Button" >
         <Setter Property="Background" Value="#CC404040"/>
@@ -97,6 +94,24 @@
                         <ScrollViewer x:Name="PART_ContentHost" 
                                       VerticalAlignment="Center"/>
                     </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ListboxSelectedItem" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="Border" Property="Background"
+                                            Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

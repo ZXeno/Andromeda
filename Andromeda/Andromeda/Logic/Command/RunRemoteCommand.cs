@@ -5,7 +5,7 @@ using System.Windows;
 using Andromeda.Model;
 using Andromeda.ViewModel;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class RunRemoteCommand : Action
     {

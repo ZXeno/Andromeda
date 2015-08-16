@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace Andromeda.Command
+﻿namespace Andromeda.Logic.Command
 {
-    public class SccmMachinePolicyRetreivalCycle : SccmScheduleActionBase
+    public class MachinePolicyRetreivalCycleSccm : SccmScheduleActionBase
     {
-        public SccmMachinePolicyRetreivalCycle()
+        public MachinePolicyRetreivalCycleSccm()
         {
             ActionName = "Machine Policy Retreival Cycle";
             Description = "Forces SCCM to schedule a Machine Policy Retreival Cycle on the client.";

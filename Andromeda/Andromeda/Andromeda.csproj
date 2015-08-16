@@ -61,29 +61,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Logic\Command\RemoveHealthcast.cs" />
+    
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Logic\Command\Action.cs" />
-    <Compile Include="Logic\Command\ActionGroup.cs" />
-    <Compile Include="Logic\Command\RunGpUpdate.cs" />
-    <Compile Include="Logic\Command\sccmAppDeploymentSchedule.cs" />
+    <Compile Include="Logic\Action.cs" />
+    <Compile Include="Logic\ActionGroup.cs" />
+	<Compile Include="Logic\SccmScheduleActionBase.cs" />
+	<Compile Include="Logic\Command\AppDeploymentScheduleSccm.cs" />
     <Compile Include="Logic\Command\FixCEDeviceID.cs" />
     <Compile Include="Logic\Command\ForceLogOff.cs" />
     <Compile Include="Logic\Command\ForceReboot.cs" />
     <Compile Include="Logic\Command\GetLoggedOnUser.cs" />
     <Compile Include="Logic\Command\GetPHPrintFile.cs" />
-    <Compile Include="Logic\Command\InstallTightVNC.cs" />
+	<Compile Include="Logic\Command\GetSerialNumber.cs" />
+	<Compile Include="Logic\Command\HardwareInventoryCycleSccm.cs" />
+	<Compile Include="Logic\Command\MachinePolicyRetreivalCycleSccm.cs" />
     <Compile Include="Logic\Command\PingTest.cs" />
-    <Compile Include="Logic\Command\RemoveTightVNC.cs" />
-    <Compile Include="Logic\Command\RunRemoteCommand.cs" />
-    <Compile Include="Logic\Command\SccmHardwareInventoryCycle.cs" />
-    <Compile Include="Logic\Command\SccmMachinePolicyRetreivalCycle.cs" />
-    <Compile Include="Logic\Command\SccmScheduleActionBase.cs" />
-    <Compile Include="Logic\Command\SccmSoftwareInventoryCycle.cs" />
-    <Compile Include="Logic\Command\SccmUserPolicyRetrievalCycle.cs" />
+    <Compile Include="Logic\Command\RunGpUpdate.cs" />
+	<Compile Include="Logic\Command\RemoveHealthcast.cs" />
+	<Compile Include="Logic\Command\RunRemoteCommand.cs" />
+	<Compile Include="Logic\Command\SoftwareInventoryCycleSccm.cs" />
+	<Compile Include="Logic\Command\TightVNCInstall.cs" />
+	<Compile Include="Logic\Command\TightVNCRemove.cs" />
+    <Compile Include="Logic\Command\UserPolicyRetrievalCycleSccm.cs" />
     <Compile Include="Logic\Command\UninstallXceleraMonitor.cs" />
     <Compile Include="Logic\GetPingableDevices.cs" />
     <Compile Include="Logic\RunPSExecCommand.cs" />

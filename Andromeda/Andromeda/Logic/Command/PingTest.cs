@@ -1,9 +1,8 @@
 ﻿using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class PingTest : Action
     {

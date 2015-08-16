@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Management;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-
-namespace Andromeda.Command
+﻿namespace Andromeda.Logic.Command
 {
-    public class SccmAppDeploymentSchedule : SccmScheduleActionBase
+    public class AppDeploymentScheduleSccm : SccmScheduleActionBase
     {
 
-        public SccmAppDeploymentSchedule()
+        public AppDeploymentScheduleSccm()
         {
             ActionName = "Application Deployment Evaluation Cycle";
             Description = "Forces SCCM to schedule an Application Deployment check on the client.";

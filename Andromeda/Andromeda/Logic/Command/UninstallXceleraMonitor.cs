@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using Andromeda.Model;
 
-namespace Andromeda.Command
+namespace Andromeda.Logic.Command
 {
     public class UninstallXceleraMonitor : Action
     {
