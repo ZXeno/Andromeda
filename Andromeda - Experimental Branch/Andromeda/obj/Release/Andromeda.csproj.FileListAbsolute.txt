@@ -1,0 +1,44 @@
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.exe.config
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.exe
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.pdb
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\MainWindow.g.cs
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\View\CLI.g.cs
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\App.g.cs
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda_MarkupCompile.cache
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda_MarkupCompile.lref
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\MainWindow.baml
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\ResourceDictionary.baml
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\View\CLI.baml
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.g.resources
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.Properties.Resources.resources
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.csproj.GenerateResource.Cache
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.exe
+C:\Users\joncai\Documents\My Junk\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.pdb
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.exe.config
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.exe
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\bin\Release\Andromeda.pdb
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\MainWindow.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\View\CLI.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\App.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda_MarkupCompile.cache
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda_MarkupCompile.lref
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\MainWindow.baml
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\ResourceDictionary.baml
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\View\CLI.baml
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.g.resources
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.Properties.Resources.resources
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.csproj.GenerateResource.Cache
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.exe
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda\Andromeda\obj\Release\Andromeda.pdb
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\bin\Release\Andromeda.exe.config
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\Andromeda.exe
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\Andromeda.pdb
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\Andromeda.csprojResolveAssemblyReference.cache
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\MainWindow.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\View\CLI.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\App.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\Andromeda_MarkupCompile.cache
+C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\Andromeda\obj\Release\Andromeda_MarkupCompile.lref

@@ -1,0 +1,55 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Andromeda.ViewModel"
+        x:Class="Andromeda.MainWindow"
+        Height="750" Width="800">
+
+    <Window.Resources>
+        <ResourceDictionary Source="ResourceDictionary.xaml" />
+    </Window.Resources>
+
+    <Grid>
+        <Image Style="{StaticResource WindowBG}" />
+
+        
+        <Label Content="{Binding Domain}" Style="{StaticResource TextboxLabels}" Margin="0,11,187,0" />
+        <Label Content="Password:" Style="{StaticResource TextboxLabels}" Margin="0,35,187,0" />
+        <TextBox Style="{StaticResource White}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
+        <PasswordBox Style="{StaticResource PwdWhite}" x:Name="PasswordBox" vm:PasswordBoxAssistant.BindPassword="true" vm:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"  Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="" />
+
+        <TextBox x:Name="DEVICE_LIST_TEXTBOX" Text="{Binding DeviceListString}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="      "/>
+                        <TextBlock Text="{Binding ActionName}"  FontWeight="Bold" Foreground="#FFE0E0E0" ToolTip="{Binding Description}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Label Content="Available Actions:" Foreground="#FFE0E0E0" HorizontalAlignment="Left" Margin="156,77,0,0" VerticalAlignment="Top" Width="200" FontSize="16" Height="28" FontFamily="Lucida Console"/>
+        <Label Content="Computers:" HorizontalAlignment="Left" Margin="16,80,0,0" VerticalAlignment="Top" Width="100" FontFamily="Lucida Console" Height="23" Foreground="#FFE0E0E0"/>
+
+        <Label Content="{Binding Path=SelectedAction.Description}" Foreground="#FFE0E0E0" Background="#A5474747" Margin="0,0,86,202" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="552" Height="26"/>
+        <Button Content="{Binding Path=RunButtonText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,0,16,205" Width="65" Height="20" VerticalAlignment="Bottom" Command="{Binding RunCommand, UpdateSourceTrigger=PropertyChanged}"  />
+        <ProgressBar Margin="0,0,16,190" Visibility="{Binding ProgressBarVisible}" Maximum="{Binding ProgressTotal}" Minimum="0" Value="{Binding ProgressCurrent}" HorizontalAlignment="Right" Width="65" Height="10" VerticalAlignment="Bottom"/>
+        <TextBox Style="{StaticResource ResultConsole}" Text="{Binding ConsoleString, UpdateSourceTrigger=PropertyChanged}" Margin="16,0,16,35" Height="150" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
+            <TextBox.DataContext>
+                <vm:ResultConsoleViewModel/>
+            </TextBox.DataContext>
+        </TextBox>
+        <Image x:Name="image" Source="Assets/notification_warning.png" Visibility="{Binding ProgressBarVisible}" HorizontalAlignment="Right"  Margin="0,0,18,241" VerticalAlignment="Bottom" Width="24" Height="24"/>
+
+
+        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="16,0,0,10" />
+        <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="96,0,0,10" />
+
+    </Grid>
+
+</Window>
