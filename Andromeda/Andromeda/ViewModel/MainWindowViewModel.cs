@@ -45,6 +45,11 @@ namespace Andromeda.ViewModel
             get { return Program.VersionNumber; }
         }
 
+        public Visibility UpdateNotification
+        {
+            get { return (Program.UpdateAvailable) ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
         private string _runButtonText;
         public string RunButtonText
         {
@@ -175,17 +180,6 @@ namespace Andromeda.ViewModel
             {
                 _runCmd = value;
                 OnPropertyChanged("RunCommand");
-            }
-        }
-
-        private bool _updateNotification;
-        public bool UpdateNotification
-        {
-            get { return _updateNotification; }
-            set
-            {
-                _updateNotification = value;
-                OnPropertyChanged("UpdateNotification");
             }
         }
 

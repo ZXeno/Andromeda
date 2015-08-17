@@ -12,10 +12,11 @@
     </Window.Resources>
 
     <Grid>
-        <Image HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="800" Source="Assets/andromeda.jpg" Stretch="UniformToFill"/>
+        <Image Style="{StaticResource WindowBG}" />
 
-        <Label Content="{Binding Domain}" HorizontalContentAlignment="Right" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,11,187,0" VerticalAlignment="Top" Width="98" FontSize="12" Height="20" FontFamily="Lucida Console"/>
-        <Label Content="Password:" Foreground="#FFE0E0E0" HorizontalAlignment="Right" Margin="0,35,187,0" VerticalAlignment="Top" Width="74" FontSize="12" Height="20" FontFamily="Lucida Console"/>
+        
+        <Label Content="{Binding Domain}" Style="{StaticResource TextboxLabels}" Margin="0,11,187,0" />
+        <Label Content="Password:" Style="{StaticResource TextboxLabels}" Margin="0,35,187,0" />
         <TextBox Style="{StaticResource White}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
         <PasswordBox Style="{StaticResource PwdWhite}" x:Name="PasswordBox" vm:PasswordBoxAssistant.BindPassword="true" vm:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"  Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="" />
 
@@ -46,8 +47,8 @@
         <Image x:Name="image" Source="Assets/notification_warning.png" Visibility="{Binding ProgressBarVisible}" HorizontalAlignment="Right"  Margin="0,0,18,241" VerticalAlignment="Bottom" Width="24" Height="24"/>
 
 
-        <Label x:Name="label" Content="{Binding VersionNumber}" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Left" Foreground="#FFE0E0E0" FontSize="8"  Margin="16,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="20" Width="80" FontFamily="Lucida Console"/>
-
+        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="16,0,0,10" />
+        <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="96,0,0,10" />
 
     </Grid>
 
