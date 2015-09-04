@@ -1,5 +1,0 @@
-C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\infoint\obj\Release\infoint.csprojResolveAssemblyReference.cache
-C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\infoint\bin\Release\infoint.dll
-C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\infoint\bin\Release\infoint.pdb
-C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\infoint\obj\Release\infoint.dll
-C:\Users\zxeno\Documents\Projects Working\Andromeda\Andromeda - Experimental Branch\infoint\obj\Release\infoint.pdb
