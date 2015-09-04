@@ -82,9 +82,11 @@ namespace Andromeda.ViewModel
                 OnPropertyChanged("Username");
             }
         }
+
         
         public string Password
         {
+            get { return Program.CredentialManager.UserCredentials.GetInsecurePasswordString(); }
             set
             {
                 OnPropertyChanged("Password");
@@ -185,27 +187,6 @@ namespace Andromeda.ViewModel
 
         public MainWindowViewModel()
         {
-            //ActionsList = new ObservableCollection<Action>
-            //{
-            //    new SccmAppDeploymentSchedule(),
-            //    new FixCEDeviceID(),
-            //    new RunGpUpdate(),
-            //    new ForceLogOff(),
-            //    new ForceReboot(),
-            //    new GetLoggedOnUser(),
-            //    new GetPHPrintFile(),
-            //    new GetSerialNumber(),
-            //    new SccmHardwareInventoryCycle(),
-            //    new SccmMachinePolicyRetreivalCycle(),
-            //    new PingTest(),
-            //    new InstallTightVNC(),
-            //    new RemoveTightVNC(),
-            //    new RemoveHealthcast(),
-            //    new RunRemoteCommand(),
-            //    new SccmSoftwareInventoryCycle(),
-            //    new UninstallXceleraMonitor()
-            //};
-
             ActionsList = new ObservableCollection<Action>();
 
             // Dynamically get all of our action classes and load them into the viewmodel.

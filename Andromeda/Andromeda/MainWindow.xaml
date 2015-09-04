@@ -47,8 +47,8 @@
         <Image x:Name="image" Source="Assets/notification_warning.png" Visibility="{Binding ProgressBarVisible}" HorizontalAlignment="Right"  Margin="0,0,18,241" VerticalAlignment="Bottom" Width="24" Height="24"/>
 
 
-        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="16,0,0,10" />
-        <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="96,0,0,10" />
+        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="28,0,0,10" />
+        <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="16,0,0,10" />
 
     </Grid>
 
