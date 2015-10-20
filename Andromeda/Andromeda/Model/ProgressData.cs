@@ -24,5 +24,11 @@
 
         public int TotalCount { get; set; }
         public int Current { get; set; }
+
+        public void Reset()
+        {
+            TotalCount = 0;
+            Current = 0;
+        }
     }
 }

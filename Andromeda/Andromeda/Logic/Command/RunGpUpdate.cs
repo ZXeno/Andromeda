@@ -14,10 +14,14 @@ namespace Andromeda.Logic.Command
             Category = ActionGroup.Other;
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devlist);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
+
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -28,10 +32,15 @@ namespace Andromeda.Logic.Command
                 return;
             }
 
-            foreach (var d in successList)
+            foreach (var device in confirmedConnectionList)
             {
-                RunPSExecCommand.RunOnDeviceWithAuthentication(d, "cmd.exe /C gpupdate.exe /force", _creds);
+                RunPSExecCommand.RunOnDeviceWithAuthentication(device, "cmd.exe /C gpupdate.exe /force", _creds);
                 ProgressData.OnUpdateProgressBar(1);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

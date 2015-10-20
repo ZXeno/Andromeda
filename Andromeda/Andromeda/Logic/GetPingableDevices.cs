@@ -16,24 +16,24 @@ namespace Andromeda
 
         public static List<string> GetDevices(List<string> devlist)
         {
-            string destinationdirectory = Config.ResultsDirectory;
+            var destinationdirectory = Config.ResultsDirectory;
             var netConn = new NetworkConnections();
 
             List<string> successList = new List<string>();
             StringBuilder sb = new StringBuilder();
 
-            foreach (var d in devlist)
+            foreach (var device in devlist)
             {
                 bool didResolve;
                 IPHostEntry hostentry;
                 try
                 {
-                    hostentry = Dns.GetHostEntry(d);
+                    hostentry = Dns.GetHostEntry(device);
                     didResolve = true;
                 }
                 catch (Exception)
                 {
-                    var returnMsg = string.Format(d + " Connection Error: Could not resolve host.");
+                    var returnMsg = string.Format(device + " Connection Error: Could not resolve host. Added to failed list file.");
                     ResultConsole.Instance.AddConsoleLine(returnMsg);
                     sb.AppendLine(returnMsg);
                     didResolve = false;
@@ -43,7 +43,7 @@ namespace Andromeda
                 {
                     try
                     {
-                        var hostname = netConn.PingTest(d);
+                        var hostname = netConn.PingTest(device);
 
                         // If the ping reply isn't null...
                         if (hostname != null)
@@ -52,16 +52,132 @@ namespace Andromeda
                             switch (hostname.Status)
                             {
                                 case IPStatus.Success:
-                                    successList.Add(d);
+                                    successList.Add(device);
                                     break;
+
                                 case IPStatus.TimedOut:
-                                    sb.AppendLine(d);
-                                    ResultConsole.Instance.AddConsoleLine(d + " failed to connect: Timeout. Added to failed list file.");
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Timeout. Added to failed list file.");
                                     ProgressData.OnUpdateProgressBar(1);
                                     break;
+
+                                case IPStatus.BadDestination:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Bad Destination. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.BadHeader:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Bad Header. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.BadOption:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Bad Option. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.BadRoute:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Bad Route. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.DestinationHostUnreachable:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Destination Host Unreachable. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.DestinationNetworkUnreachable:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Destination Network Unreachable. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.DestinationPortUnreachable:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Destination Port Unreachable. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.DestinationProtocolUnreachable:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Destination Network Unreachable. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.DestinationScopeMismatch:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Destination Scope Mismatch. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.HardwareError:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Hardware Error. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.IcmpError:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: ICMP Error. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.NoResources:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: No Resources. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.TimeExceeded:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Time Exceeded. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.TtlExpired:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: TTL Expired. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.PacketTooBig:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Packet Too Big. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.SourceQuench:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Source Quench. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.TtlReassemblyTimeExceeded:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: TTL Reassembly Time Exceeded. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.ParameterProblem:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: IPSTATUS.PARAMETERPROBLEM . Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
+                                case IPStatus.UnrecognizedNextHeader:
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Unrecognized Next Header. Added to failed list file.");
+                                    ProgressData.OnUpdateProgressBar(1);
+                                    break;
+
                                 default:
-                                    sb.AppendLine(d);
-                                    ResultConsole.Instance.AddConsoleLine(d + " failed to connect. Added to failed list file.");
+                                    sb.AppendLine(device);
+                                    ResultConsole.Instance.AddConsoleLine(device + " failed to connect: Unknown reason. Added to failed list file.");
                                     ProgressData.OnUpdateProgressBar(1);
                                     break;
                             }
@@ -69,21 +185,21 @@ namespace Andromeda
                         else
                         {
                             // if it isn't null, but fails anyway, I'm not exactly certain why we would have an error.
-                            sb.AppendLine(d);
-                            ResultConsole.Instance.AddConsoleLine(d + " failed to connect. Added to failed list file.");
+                            sb.AppendLine(device);
+                            ResultConsole.Instance.AddConsoleLine(device + " failed to connect. Added to failed list file.");
                             ProgressData.OnUpdateProgressBar(1);
                         }
                     }
                     catch (PingException ex)
                     {
-                        var returnMsg = string.Format(d + " Connection Error: {0}", ex.Message + ": " + ex.InnerException);
+                        var returnMsg = string.Format(device + " threw exception - Connection Error: {0}", ex.Message + ": " + ex.InnerException + " Added to failed list file.");
                         sb.AppendLine(returnMsg);
                         ResultConsole.Instance.AddConsoleLine(returnMsg);
                         ProgressData.OnUpdateProgressBar(1);
                     }
                     catch (SocketException ex)
                     {
-                        var returnMsg = string.Format(d + " Connection Error: {0}", ex.Message + ": " + ex.InnerException);
+                        var returnMsg = string.Format(device + " threw exception - Connection Error: {0}", ex.Message + ": " + ex.InnerException + " Added to failed list file.");
                         sb.AppendLine(returnMsg);
                         ResultConsole.Instance.AddConsoleLine(returnMsg);
                         ProgressData.OnUpdateProgressBar(1);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Used from this answer on Stack Overflow for creating an automatic scrolling ScrollViewer: http://stackoverflow.com/a/21738508
+
+using System;
 using System.Windows;
 using System.Windows.Controls;
 

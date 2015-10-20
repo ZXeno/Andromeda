@@ -4,7 +4,6 @@ using System.Text;
 using System.Xml;
 using System.Windows;
 using Andromeda.Model;
-using Andromeda.ViewModel;
 
 namespace Andromeda
 {

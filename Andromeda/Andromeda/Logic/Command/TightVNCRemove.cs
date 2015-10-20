@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Management;
-using System.Text;
-using System.Windows;
 using Andromeda.Model;
 
 namespace Andromeda.Logic.Command
@@ -13,7 +10,6 @@ namespace Andromeda.Logic.Command
         private ConnectionOptions _connOps;
         private CredToken _creds;
         private readonly string _processName = "tvnserver.exe";
-        private const string RemoveVNCFailedList = "RemoveVNC_Failed_W#_Log.txt";
 
         public TightVNCRemove()
         {
@@ -26,8 +22,11 @@ namespace Andromeda.Logic.Command
         public override void RunCommand(string a)
         {
             List<string> devlist = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devlist);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
+            
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -42,9 +41,9 @@ namespace Andromeda.Logic.Command
             _connOps.SecurePassword = _creds.SecurePassword;
             _connOps.Impersonation = ImpersonationLevel.Impersonate;
 
-            foreach (var d in successList)
+            foreach (var device in confirmedConnectionList)
             {
-                var remote = WMIFuncs.ConnectToRemoteWMI(d, WMIFuncs.RootNamespace, _connOps);
+                var remote = WMIFuncs.ConnectToRemoteWMI(device, WMIFuncs.RootNamespace, _connOps);
                 if (remote != null)
                 {
                     var procquery = new SelectQuery("select * from Win32_process where name = '" + _processName + "'");
@@ -55,8 +54,8 @@ namespace Andromeda.Logic.Command
                         foreach (ManagementObject process in searcher.Get()) // this is the fixed line
                         {
                             process.InvokeMethod("Terminate", null);
-                            ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + d + ".");
-                            Logger.Log("Called process terminate (" + process["Name"] + ") on device " + d + ".");
+                            ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                            Logger.Log("Called process terminate (" + process["Name"] + ") on device " + device + ".");
                         }
                     }
 
@@ -65,16 +64,16 @@ namespace Andromeda.Logic.Command
                         foreach (ManagementObject product in searcher.Get()) // this is the fixed line
                         {
                             product.InvokeMethod("uninstall", null);
-                            ResultConsole.AddConsoleLine("Called uninstall on device " + d + ".");
-                            Logger.Log("Called uninstall on device " + d + ".");
+                            ResultConsole.AddConsoleLine("Called uninstall on device " + device + ".");
+                            Logger.Log("Called uninstall on device " + device + ".");
                         }
                     }
                 }
                 else
                 {
-                    ResultConsole.AddConsoleLine("Error connecting to WMI scope " + d + ". Process aborted for this device.");
-                    Logger.Log("Error connecting to WMI scope " + d + ". Process aborted for this device.");
-                    failedlist.Add(d);
+                    ResultConsole.AddConsoleLine("Error connecting to WMI scope " + device + ". Process aborted for this device.");
+                    Logger.Log("Error connecting to WMI scope " + device + ". Process aborted for this device.");
+                    failedlist.Add(device);
                 }
 
                 ProgressData.OnUpdateProgressBar(1);
@@ -82,33 +81,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                ResultConsole.AddConsoleLine("There were " + failedlist.Count + "computers that failed the process. They have been recorded in the log.");
-                StringBuilder sb = new StringBuilder();
-
-                if (File.Exists(Config.ResultsDirectory + "\\" + RemoveVNCFailedList))
-                {
-                    File.Delete(Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                    Logger.Log("Deleted file " + Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                }
-
-                foreach (var failed in failedlist)
-                {
-                    sb.AppendLine(failed);
-                }
-
-                using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + RemoveVNCFailedList, true))
-                {
-                    try
-                    {
-                        outfile.WriteAsync(sb.ToString());
-                        Logger.Log("Wrote \"Remove TightVNC Failed\" results to file " + Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log("Unable to write to " + RemoveVNCFailedList + ". \n" + e.InnerException);
-                        MessageBox.Show("Unable to write to " + RemoveVNCFailedList + ". \n" + e.InnerException);
-                    }
-                }
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

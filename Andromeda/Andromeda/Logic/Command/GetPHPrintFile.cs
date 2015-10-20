@@ -19,24 +19,27 @@ namespace Andromeda.Logic.Command
             _destinationDirectory = Config.ResultsDirectory + "\\" + "GetPHPrints\\";
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(a);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
+
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             ValidateDestinationExists();
 
-            List<string> successfulList = GetPingableDevices.GetDevices(devlist);
-
-            foreach (string d in successfulList)
+            foreach (string device in confirmedConnectionList)
             {
                 try
                 {
-                    if (ValidateFileExists(d))
+                    if (ValidateFileExists(device))
                     {
                         try
                         {
-                            if (CopyPHPrintFile(d))
+                            if (CopyPHPrintFile(device))
                             {
-                                ResultConsole.AddConsoleLine("Copied PHPrint from " + d + " to " + _destinationDirectory + "\\" + d + " - phprint.txt");
+                                ResultConsole.AddConsoleLine("Copied PHPrint from " + device + " to " + _destinationDirectory + "\\" + device + " - phprint.txt");
                             }
                         }
                         catch (Exception ex)
@@ -48,7 +51,7 @@ namespace Andromeda.Logic.Command
                     }
                     else
                     {
-                        ResultConsole.AddConsoleLine("Unable to validate phprint file on device: " + d);
+                        ResultConsole.AddConsoleLine("Unable to validate phprint file on device: " + device);
                         continue;
                     }
                 }
@@ -64,6 +67,11 @@ namespace Andromeda.Logic.Command
             if (Directory.Exists(_destinationDirectory))
             {
                 Process.Start("explorer.exe", _destinationDirectory);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
 

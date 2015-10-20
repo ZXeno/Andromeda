@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Management;
 using System.Windows;
 using Andromeda.Model;
 using Andromeda.ViewModel;
@@ -10,20 +9,22 @@ namespace Andromeda.Logic.Command
     public class RunRemoteCommand : Action
     {
         private CredToken _creds;
-        ConnectionOptions connOps;
 
         public RunRemoteCommand()
         {
             ActionName = "Run Command Remotely";
             Description = "Run any console command remotely, as specified credentials. (use /c with any CMD.exe commands)";
             Category = ActionGroup.Other;
-            connOps = new ConnectionOptions();
         }
 
         public override void RunCommand(string a)
         {
             List<string> devlist = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devlist);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
+
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -48,10 +49,15 @@ namespace Andromeda.Logic.Command
                     cmdToRun = newPrompt.TextBoxContents;
                     newPrompt = null;
 
-                    foreach (var d in successList)
+                    foreach (var device in confirmedConnectionList)
                     {
-                        RunOnDevice(d, cmdToRun);
+                        RunOnDevice(device, cmdToRun);
                         ProgressData.OnUpdateProgressBar(1);
+                    }
+
+                    if (failedlist.Count > 0)
+                    {
+                        WriteToFailedLog(ActionName, failedlist);
                     }
                 }
                 else //if (newPrompt.WasCanceled)

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Management;
-using System.Text;
-using System.Windows;
 using Andromeda.Model;
 
 namespace Andromeda.Logic
@@ -41,33 +37,7 @@ namespace Andromeda.Logic
 
             if (failedlist.Count > 0)
             {
-                ResultConsole.AddConsoleLine("There were " + failedlist.Count + "computers that failed the process. They have been recorded in the log.");
-                StringBuilder sb = new StringBuilder();
-
-                if (File.Exists(Config.ResultsDirectory + "\\" + FailedLog))
-                {
-                    File.Delete(Config.ResultsDirectory + "\\" + FailedLog);
-                    Logger.Log("Deleted file " + Config.ResultsDirectory + "\\" + FailedLog);
-                }
-
-                foreach (var failed in failedlist)
-                {
-                    sb.AppendLine(failed);
-                }
-
-                using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + FailedLog, true))
-                {
-                    try
-                    {
-                        outfile.WriteAsync(sb.ToString());
-                        Logger.Log("Wrote \"Remove TightVNC Failed\" results to file " + Config.ResultsDirectory + "\\" + FailedLog);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log("Unable to write to " + FailedLog + ". \n" + e.InnerException);
-                        MessageBox.Show("Unable to write to " + FailedLog + ". \n" + e.InnerException);
-                    }
-                }
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

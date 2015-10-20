@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Management;
 using Andromeda.Model;
 
@@ -17,10 +18,14 @@ namespace Andromeda.Logic.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devlist);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
+
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -34,10 +39,15 @@ namespace Andromeda.Logic.Command
             string cmdToRun = "MsiExec.exe /i " + Config.ComponentDirectory + "\\tightvnc-setup-64bit.msi" + @" /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS SET_REMOVEWALLPAPER=0";
             Logger.Log("Running TightVNC Install with following command line parameters: " + cmdToRun);
 
-            foreach (var d in successList)
+            foreach (var device in confirmedConnectionList)
             {
-                RunPSExecCommand.RunOnDeviceWithAuthentication(d, cmdToRun, _creds);
+                RunPSExecCommand.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
                 ProgressData.OnUpdateProgressBar(1);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

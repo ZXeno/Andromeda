@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Andromeda.Model;
 
 namespace Andromeda
@@ -77,11 +78,11 @@ namespace Andromeda
                 ResultConsole.Instance.AddConsoleLine(exceptionResult);
             }
         }
-
-        // Return a list of devices from the string list of the GUI
+        
         private static string RemoveEmptyLines(string str)
         {
             List<string> lineList = new List<string>(str.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            lineList = lineList.Where(x => x != " ").ToList();
             string result = "";
 
             foreach (var line in lineList)

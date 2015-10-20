@@ -27,17 +27,20 @@ namespace Andromeda.Logic.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
             string scope = "\\root\\cimv2";
             _connOps.EnablePrivileges = true;
 
-            List<string> devList = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devList);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
 
-            foreach (var d in successList)
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
+            foreach (var device in confirmedConnectionList)
             {
-                var remote = WMIFuncs.ConnectToRemoteWMI(d, scope, _connOps);
+                var remote = WMIFuncs.ConnectToRemoteWMI(device, scope, _connOps);
                 if (remote != null)
                 {
                     ObjectQuery query = new SelectQuery("Win32_OperatingSystem");
@@ -54,21 +57,33 @@ namespace Andromeda.Logic.Command
                         // Add the input parameters.
                         inParams["Flags"] = 4;
 
-                        // Execute the method and obtain the return values.
-                        ManagementBaseObject outParams = ro.InvokeMethod("Win32Shutdown", inParams, null);
+                        try
+                        {
+                            // Execute the method and obtain the return values.
+                            ManagementBaseObject outParams = ro.InvokeMethod("Win32Shutdown", inParams, null);
 
-                        ResultConsole.AddConsoleLine("Returned with value " + WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"])));
+                            ResultConsole.AddConsoleLine("Returned with value " + WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"])));
+                        }
+                        catch (Exception e)
+                        {
+                            ResultConsole.AddConsoleLine("Error running " + ActionName + " due to a .Net ManagementExcept error. There are likely no users logged on!");
+                            Logger.Log("Error running " + ActionName + " due to a .Net ManagementExcept error: " + e.Message);
+                        }
                     }
                 }
                 else
                 {
-                    Logger.Log("There was an error connecting to WMI namespace on " + d);
-                    ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + d);
+                    Logger.Log("There was an error connecting to WMI namespace on " + device);
+                    ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + device);
                 }
 
                 ProgressData.OnUpdateProgressBar(1);
             }
 
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
+            }
         }
     }
 }

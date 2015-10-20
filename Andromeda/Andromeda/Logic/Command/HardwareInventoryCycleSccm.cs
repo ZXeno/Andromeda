@@ -9,9 +9,9 @@
             Category = ActionGroup.SCCM;
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            RunScheduleTrigger(SccmClientFuncs.HardwareInventoryCycleScheduleId, a);
+            RunScheduleTrigger(SccmClientFuncs.HardwareInventoryCycleScheduleId, rawDeviceList);
         }
     }
 }

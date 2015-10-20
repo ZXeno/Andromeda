@@ -138,7 +138,7 @@
     </Style>
     
     <Style x:Key="Notification" TargetType="{x:Type Button}">
-        <Setter Property="Width" Value="12"/>
+        <Setter Property="Width" Value="18"/>
         <Setter Property="Height" Value="18"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -153,15 +153,15 @@
                             BorderThickness="1">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#3966F8" Offset="0" />
-                                <GradientStop Color="#0F38B7" Offset="1" />
+                                <GradientStop Color="#FFFF00" Offset="0" />
+                                <GradientStop Color="#D5D500" Offset="1" />
                             </LinearGradientBrush>
                         </Border.Background>
                         <ContentControl Content="!"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         FontWeight="Bold"
-                                        Foreground="#FFE0E0E0"
+                                        Foreground="#FF004064"
                                         FontSize="12"/>
                     </Border>
                 </ControlTemplate>

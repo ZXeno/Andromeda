@@ -61,9 +61,11 @@ namespace Andromeda.ViewModel
 
         public void OpenNewPrompt()
         {
-            newPrompt = new CLI_Prompt();
-            newPrompt.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            newPrompt.Owner = App.Current.MainWindow;
+            newPrompt = new CLI_Prompt
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = App.Current.MainWindow
+            };
             newPrompt.ShowDialog();
         }
 

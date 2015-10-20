@@ -17,16 +17,19 @@ namespace Andromeda.Logic.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
             string scope = "\\root\\cimv2";
 
-            List<string> devList = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devList);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
 
-            foreach (var d in successList)
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
+            foreach (var device in confirmedConnectionList)
             {
-                var remote = WMIFuncs.ConnectToRemoteWMI(d, scope, _connOps);
+                var remote = WMIFuncs.ConnectToRemoteWMI(device, scope, _connOps);
                 if (remote != null)
                 {
                     ObjectQuery query = new ObjectQuery("SELECT username FROM Win32_ComputerSystem");
@@ -36,11 +39,11 @@ namespace Andromeda.Logic.Command
 
                     foreach (var resultobject in queryCollection)
                     {
-                        var result = resultobject["username"] + " logged in to " + d;
+                        var result = resultobject["username"] + " logged in to " + device;
 
-                        if (result == " logged in to " + d || result == "  logged in to " + d)
+                        if (result == " logged in to " + device || result == "  logged in to " + device)
                         {
-                            result = "There are no users logged in to " + d + "!";
+                            result = "There are no users logged in to " + device + "!";
                         }
 
                         ResultConsole.AddConsoleLine(result);
@@ -48,11 +51,16 @@ namespace Andromeda.Logic.Command
                 }
                 else
                 {
-                    Logger.Log("There was an error connecting to WMI namespace on " + d);
-                    ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + d);
+                    Logger.Log("There was an error connecting to WMI namespace on " + device);
+                    ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + device);
                 }
 
                 ProgressData.OnUpdateProgressBar(1);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

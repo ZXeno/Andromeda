@@ -19,7 +19,7 @@ namespace Andromeda
             catch (Exception e)
             {
                 ResultConsole.Instance.AddConsoleLine("Failed to connect to WMI namespace" + "\\\\" + hostname + scope);
-                ResultConsole.Instance.AddConsoleLine("Exception: " + e.InnerException);
+                ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message + "Inner exception: " + e.InnerException);
                 Logger.Log("Error connecting to WMI namespace \\\\" + hostname + scope +
                     "\n Exception was caught: " + e.InnerException +
                     "\n Calling method: " + e.TargetSite);

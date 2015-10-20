@@ -1,6 +1,4 @@
-﻿using Andromeda;
-
-namespace Andromeda.ViewModel
+﻿namespace Andromeda.ViewModel
 {
     public class ResultConsoleViewModel : ViewModelBase
     {

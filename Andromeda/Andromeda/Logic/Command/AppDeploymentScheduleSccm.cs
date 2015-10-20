@@ -10,9 +10,9 @@
             Category = ActionGroup.SCCM;
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            RunScheduleTrigger(SccmClientFuncs.ApplicationDeploymentEvaluationCycleScheduleId, a);
+            RunScheduleTrigger(SccmClientFuncs.ApplicationDeploymentEvaluationCycleScheduleId, rawDeviceList);
         }
     }
 }

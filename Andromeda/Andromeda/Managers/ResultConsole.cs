@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Andromeda.Model;
 
-
 namespace Andromeda
 {
     public class ResultConsole
@@ -53,7 +52,7 @@ namespace Andromeda
             }
         }
 
-        public bool _isInitialized = false;
+        private bool _isInitialized;
         public bool IsInitialized { get { return _isInitialized; } }
 
         public void OnConsoleChange(string updateData)
@@ -117,7 +116,5 @@ namespace Andromeda
                 WriteToTextFile.AddLineToFile(filePath, line);
             }
         }
-
-        
     }
 }

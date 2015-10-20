@@ -1,10 +1,4 @@
-﻿using System;
-using System.Management;
-using System.Net;
-using System.Net.Sockets;
-using System.Net.NetworkInformation;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Net.NetworkInformation;
 
 namespace Andromeda
 {
@@ -20,18 +14,13 @@ namespace Andromeda
             
             pingOptions = new PingOptions();
             pingOptions.DontFragment = true;
-            
         }
 
         // Ping test for single machine.
         public PingReply PingTest(string hostname)
         {
-            PingReply pr = ping.Send(hostname);
+            PingReply pr = ping.Send(hostname, 3000);
             return pr;
         }
-
-        
-
-
     }
 }

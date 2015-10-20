@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Management;
-using System.Windows;
 
 namespace Andromeda
 {
@@ -44,7 +43,8 @@ namespace Andromeda
                 }
                 catch (ManagementException ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    ResultConsole.Instance.AddConsoleLine("Error performing SCCM Client Function due to a .Net ManagementExcept error: " + ex.Message);
+                    Logger.Log("Error performing SCCM Client Function due to following .Net ManagementExcept error: " + ex.Message);
                 }
             }
         }

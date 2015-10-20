@@ -230,6 +230,7 @@ namespace Andromeda.ViewModel
         {
             if (SelectedAction != null && RunCommandCanExecute())
             {
+                ProgressData.Reset();
                 OnActionStarted(true);
 
                 ThreadPool.QueueUserWorkItem(
@@ -238,6 +239,7 @@ namespace Andromeda.ViewModel
                         Logger.Log("Starting action " + SelectedAction.ActionName);
                         SelectedAction.RunCommand(DeviceListString);
                         OnActionStarted(false);
+                        ProgressData.Reset();
                     });   
             }
         }

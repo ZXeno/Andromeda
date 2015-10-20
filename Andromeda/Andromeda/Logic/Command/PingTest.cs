@@ -1,4 +1,6 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Andromeda.Model;
 
@@ -14,17 +16,29 @@ namespace Andromeda.Logic.Command
             netConn=new NetworkConnections();
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            var devlist = ParseDeviceList(a);
-            var successful = GetPingableDevices.GetDevices(devlist);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
 
-            foreach (string d in successful)
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
+            foreach (var device in confirmedConnectionList)
             {
-                if (d == "") { continue; }
+                if (device == "")
+                {
+                    ProgressData.OnUpdateProgressBar(1);
+                    continue;
+                }
 
-                ResultConsole.AddConsoleLine(ParseResponse(netConn.PingTest(d), d));
+                ResultConsole.AddConsoleLine(ParseResponse(netConn.PingTest(device), device));
                 ProgressData.OnUpdateProgressBar(1);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
 
@@ -66,9 +80,7 @@ namespace Andromeda.Logic.Command
             {
                 returnMsg = string.Format("Connection Error: {0}", ex.Message);
             }
-
             
-
             return returnMsg;
         }
     }

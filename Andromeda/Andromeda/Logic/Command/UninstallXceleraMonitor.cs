@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Management;
-using System.Text;
-using System.Windows;
 using Andromeda.Model;
 
 namespace Andromeda.Logic.Command
@@ -12,7 +9,6 @@ namespace Andromeda.Logic.Command
     {
         private ConnectionOptions _connOps;
         private CredToken _creds;
-        private const string RemoveVNCFailedList = "RemoveXceleraMonitor_Failed_W#_Log.txt";
 
         public UninstallXceleraMonitor()
         {
@@ -22,11 +18,14 @@ namespace Andromeda.Logic.Command
             _connOps = new ConnectionOptions();
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(a);
-            List<string> successList = GetPingableDevices.GetDevices(devlist);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
+
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -41,85 +40,68 @@ namespace Andromeda.Logic.Command
             _connOps.SecurePassword = _creds.SecurePassword;
             _connOps.Impersonation = ImpersonationLevel.Impersonate;
 
-            foreach (var d in successList)
+            foreach (var device in confirmedConnectionList)
             {
-                var remote = WMIFuncs.ConnectToRemoteWMI(d, WMIFuncs.RootNamespace, _connOps);
+                var remote = WMIFuncs.ConnectToRemoteWMI(device, WMIFuncs.RootNamespace, _connOps);
                 if (remote != null)
                 {
-                    var procquery1 = new SelectQuery("select * from Win32_process where name='XceleraMonitorService.exe'");
-                    var procquery2 = new SelectQuery("select * from Win32_process where name='XceleraMonitorUtility.exe'");
-                    var productquery = new SelectQuery("select * from Win32_product where name='Xcelera Monitor'");
-
-                    using (var searcher = new ManagementObjectSearcher(remote, procquery1))
+                    try
                     {
-                        foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                        var procquery1 = new SelectQuery("select * from Win32_process where name='XceleraMonitorService.exe'");
+                        var procquery2 = new SelectQuery("select * from Win32_process where name='XceleraMonitorUtility.exe'");
+                        var productquery = new SelectQuery("select * from Win32_product where name='Xcelera Monitor'");
+
+                        using (var searcher = new ManagementObjectSearcher(remote, procquery1))
                         {
-                            process.InvokeMethod("Terminate", null);
-                            ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + d + ".");
-                            Logger.Log("Called process terminate (" + process["Name"] + ") on device " + d + ".");
+                            foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                            {
+                                process.InvokeMethod("Terminate", null);
+                                ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                                Logger.Log("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                            }
+                        }
+
+                        using (var searcher = new ManagementObjectSearcher(remote, procquery2))
+                        {
+                            foreach (ManagementObject process in searcher.Get()) // this is the fixed line
+                            {
+                                process.InvokeMethod("Terminate", null);
+                                ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                                Logger.Log("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                            }
+                        }
+
+                        using (var searcher = new ManagementObjectSearcher(remote, productquery))
+                        {
+                            foreach (ManagementObject product in searcher.Get()) // this is the fixed line
+                            {
+                                product.InvokeMethod("uninstall", null);
+                                ResultConsole.AddConsoleLine("Called uninstall on device " + device + ".");
+                                Logger.Log("Called uninstall on device " + device + ".");
+                            }
                         }
                     }
-
-                    using (var searcher = new ManagementObjectSearcher(remote, procquery2))
+                    catch (Exception ex)
                     {
-                        foreach (ManagementObject process in searcher.Get()) // this is the fixed line
-                        {
-                            process.InvokeMethod("Terminate", null);
-                            ResultConsole.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + d + ".");
-                            Logger.Log("Called process terminate (" + process["Name"] + ") on device " + d + ".");
-                        }
+                        Logger.Log(ActionName + " threw exception " + ex.Message + ". With inner exception message: " + ex.InnerException);
+                        ResultConsole.AddConsoleLine(ActionName + " threw an exception: " + ex.Message);
+                        failedlist.Add(device);
                     }
-
-                    using (var searcher = new ManagementObjectSearcher(remote, productquery))
-                    {
-                        foreach (ManagementObject product in searcher.Get()) // this is the fixed line
-                        {
-                            product.InvokeMethod("uninstall", null);
-                            ResultConsole.AddConsoleLine("Called uninstall on device " + d + ".");
-                            Logger.Log("Called uninstall on device " + d + ".");
-                        }
-                    }
+                    
                 }
                 else
                 {
-                    ResultConsole.AddConsoleLine("Error connecting to WMI scope " + d + ". Process aborted for this device.");
-                    Logger.Log("Error connecting to WMI scope " + d + ". Process aborted for this device.");
-                    failedlist.Add(d);
+                    ResultConsole.AddConsoleLine("Error connecting to WMI scope " + device + ". Process aborted for this device.");
+                    Logger.Log("Error connecting to WMI scope " + device + ". Process aborted for this device.");
+                    failedlist.Add(device);
                 }
 
                 ProgressData.OnUpdateProgressBar(1);
-
             }
 
             if (failedlist.Count > 0)
             {
-                ResultConsole.AddConsoleLine("There were " + failedlist.Count + "computers that failed the process. They have been recorded in the log.");
-                StringBuilder sb = new StringBuilder();
-
-                if (File.Exists(Config.ResultsDirectory + "\\" + RemoveVNCFailedList))
-                {
-                    File.Delete(Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                    Logger.Log("Deleted file " + Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                }
-
-                foreach (var failed in failedlist)
-                {
-                    sb.AppendLine(failed);
-                }
-
-                using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + RemoveVNCFailedList, true))
-                {
-                    try
-                    {
-                        outfile.WriteAsync(sb.ToString());
-                        Logger.Log("Wrote \"Remove TightVNC Failed\" results to file " + Config.ResultsDirectory + "\\" + RemoveVNCFailedList);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log("Unable to write to " + RemoveVNCFailedList + ". \n" + e.InnerException);
-                        MessageBox.Show("Unable to write to " + RemoveVNCFailedList + ". \n" + e.InnerException);
-                    }
-                }
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

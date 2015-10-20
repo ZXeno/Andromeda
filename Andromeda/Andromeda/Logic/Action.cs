@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Windows;
 using Andromeda.Model;
 
 
@@ -16,10 +19,8 @@ namespace Andromeda.Logic
         public string Description { get; protected set; }
         public ActionGroup Category { get; protected set; }
 
-        public Action() { }
-
         // Single entry
-        public virtual void RunCommand(string a) {  }
+        public virtual void RunCommand(string rawDeviceList) {  }
 
         // Return results tied to device keys.
         public virtual Dictionary<string, string> RunDictionaryResultCommand(string a) { return null; }
@@ -49,7 +50,17 @@ namespace Andromeda.Logic
             return resultList;
         }
 
-        public bool ValidateCredentials(CredToken credentialToken)
+        protected void UpdateProgressBarForFailedConnections(List<string> deviceList, List<string> confirmedConnectionList)
+        {
+            var difflist = deviceList.Where(x => !confirmedConnectionList.Contains(x));
+
+            foreach (var diff in difflist)
+            {
+                ProgressData.OnUpdateProgressBar(1);
+            }
+        }
+
+        protected bool ValidateCredentials(CredToken credentialToken)
         {
             if (credentialToken == null||
                 credentialToken.User == "" || 
@@ -60,6 +71,84 @@ namespace Andromeda.Logic
             }
 
             return true;
+        }
+
+        protected void CleanDirectory(string device, string path)
+        {
+            var fullPath = "\\\\" + device + "\\C$" + path;
+
+            try
+            {
+                Directory.Delete(fullPath, true);
+                Logger.Log("Cleaned directory " + fullPath);
+            }
+            catch (Exception ex)
+            {
+                ResultConsole.AddConsoleLine("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message);
+                Logger.Log("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message + " Inner exception: " + ex.InnerException);
+            }
+        }
+
+        protected bool ValidateDirectoryExists(string device, string path)
+        {
+            try
+            {
+                return Directory.Exists("\\\\" + device + "\\C$\\" + path);
+            }
+            catch (Exception ex)
+            {
+                ResultConsole.AddConsoleLine("There was an exception when validating the directory" + path + " for machine: " + device);
+                ResultConsole.AddConsoleLine(ex.Message);
+                Logger.Log(ActionName + " failed to validate directory: \\\\" + device + "\\C$\\" + path);
+                return false;
+            }
+        }
+
+        protected bool ValidateFileExists(string device, string path)
+        {
+            try
+            {
+                return File.Exists("\\\\" + device + "\\C$" + path);
+            }
+            catch (Exception ex)
+            {
+                ResultConsole.AddConsoleLine("There was an exception when validating the file" + path + " for machine: " + device);
+                ResultConsole.AddConsoleLine(ex.Message);
+                Logger.Log(ActionName + " failed to validate file: \\\\" + device + "\\C$\\" + path);
+                return false;
+            }
+        }
+
+        protected void WriteToFailedLog(string actionName, List<string> failedList)
+        {
+            string logFile = actionName.Replace(" ", "_") + "_failed_log.txt";
+            StringBuilder sb = new StringBuilder();
+
+            if (File.Exists(Config.ResultsDirectory + "\\" + logFile))
+            {
+                File.Delete(Config.ResultsDirectory + "\\" + logFile);
+                Logger.Log("Deleted file " + Config.ResultsDirectory + "\\" + logFile);
+            }
+
+            foreach (var failed in failedList)
+            {
+                sb.AppendLine(failed);
+            }
+
+            using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + logFile, true))
+            {
+                try
+                {
+                    outfile.WriteAsync(sb.ToString());
+                    Logger.Log("Wrote \"" + actionName + "\" results to file " + Config.ResultsDirectory + "\\" + logFile);
+                    ResultConsole.AddConsoleLine("There were " + failedList.Count + "computers that failed the process. They have been recorded in the log.");
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("Unable to write to " + logFile + ". \n" + e.InnerException);
+                    ResultConsole.AddConsoleLine("There were " + failedList.Count + "computers that failed the process. However, there was an exception attempting to write to the failed log file.");
+                }
+            }
         }
     }
 }

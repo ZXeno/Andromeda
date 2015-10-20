@@ -9,6 +9,7 @@ namespace Andromeda.Logic.Command
 {
     public class FixCEDeviceID : Action
     {
+        private const string DeviceIdXmlFilePath = "\\IDX\\CW\\bin\\DeviceID.XML";
 
         public FixCEDeviceID()
         {
@@ -17,33 +18,35 @@ namespace Andromeda.Logic.Command
             Category = ActionGroup.Other;
         }
 
-        public override void RunCommand(string a)
+        public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(a);
+            List<string> devlist = ParseDeviceList(rawDeviceList);
+            List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
+            List<string> failedlist = new List<string>();
 
-            foreach (string d in devlist)
+            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
+
+            foreach (string device in confirmedConnectionList)
             {
                 try
                 {
-                    if (ValidateFileExists(d))
+                    if (ValidateFileExists(device, DeviceIdXmlFilePath))
                     {
                         try
                         {
-                            File.Delete(d);
-                            RepairXML("\\\\" + d + "\\C$\\IDX\\CW\\bin\\DeviceID.XML", d);
-                            ResultConsole.AddConsoleLine("DeviceID.XML on " + d + " has been repaired.");
+                            File.Delete(device);
+                            RepairXML("\\\\" + device + "\\C$\\IDX\\CW\\bin\\DeviceID.XML", device);
+                            ResultConsole.AddConsoleLine("DeviceID.XML on " + device + " has been repaired.");
                         }
                         catch (Exception ex)
                         {
                             ResultConsole.AddConsoleLine("There was a problem repairing the DeviceID.XML file.");
                             ResultConsole.AddConsoleLine(ex.Message);
-                            continue;
                         }
                     }
                     else
                     {
-                        ResultConsole.AddConsoleLine("Unable to validate DeviceID.XML on device: " + d);
-                        continue;
+                        ResultConsole.AddConsoleLine("Unable to validate DeviceID.XML on device: " + device);
                     }
                 }
                 catch (Exception ex)
@@ -54,19 +57,10 @@ namespace Andromeda.Logic.Command
 
                 ProgressData.OnUpdateProgressBar(1);
             }
-        }
 
-        private bool ValidateFileExists(string device)
-        {
-            try
+            if (failedlist.Count > 0)
             {
-                return File.Exists("\\\\" + device + "\\C$\\IDX\\CW\\bin\\DeviceID.XML");
-            }
-            catch (Exception ex)
-            {
-                ResultConsole.AddConsoleLine("There was an exception when validating the DeviceID.XML file for machine: " + device);
-                ResultConsole.AddConsoleLine(ex.Message);
-                return false;
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
 
