@@ -69,6 +69,8 @@
     <Compile Include="Logic\ActionGroup.cs" />
     <Compile Include="Logic\SccmScheduleActionBase.cs" />
     <Compile Include="Logic\Command\AppDeploymentScheduleSccm.cs" />
+    <Compile Include="Logic\Command\CleanComputerCaches.cs" />
+    <Compile Include="Logic\Command\DeleteGpoCache.cs" />
     <Compile Include="Logic\Command\FixCEDeviceID.cs" />
     <Compile Include="Logic\Command\ForceLogOff.cs" />
     <Compile Include="Logic\Command\ForceReboot.cs" />
