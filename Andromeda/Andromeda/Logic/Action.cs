@@ -22,10 +22,6 @@ namespace Andromeda.Logic
         // Single entry
         public virtual void RunCommand(string rawDeviceList) {  }
 
-        // Return results tied to device keys.
-        public virtual Dictionary<string, string> RunDictionaryResultCommand(string a) { return null; }
-        public virtual Dictionary<string, string> RunDictionaryResultCommand(List<string> a) { return null; }
-
         // Used for returning the name of the command to the GUI
         public override string ToString() { return ActionName; }
 
