@@ -9,6 +9,7 @@ namespace Andromeda
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
+        public static string DirectoryToCheckForUpdate = "\\\\melvin\\Andromeda\\";
 
         private Logger _logger;
 
@@ -43,11 +44,11 @@ namespace Andromeda
 
         private void CheckForNewVersion()
         {
-            if(Directory.Exists("\\\\melvin\\Andromeda\\"))
+            if(Directory.Exists(DirectoryToCheckForUpdate))
             {
-                if (File.Exists("\\\\melvin\\andromeda\\andromeda.exe"))
+                if (File.Exists(DirectoryToCheckForUpdate + "andromeda.exe"))
                 {
-                    var hostedAndromeda = File.GetLastWriteTimeUtc("\\\\melvin\\andromeda\\andromeda.exe");
+                    var hostedAndromeda = File.GetLastWriteTimeUtc(DirectoryToCheckForUpdate + "andromeda.exe");
                     var localAndromeda = File.GetLastWriteTimeUtc(WorkingPath + "\\andromeda.exe");
                     var result = hostedAndromeda.CompareTo(localAndromeda);
                     if (result > 0)
