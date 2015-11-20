@@ -233,14 +233,28 @@ namespace Andromeda.ViewModel
                 ProgressData.Reset();
                 OnActionStarted(true);
 
-                ThreadPool.QueueUserWorkItem(
-                    o =>
-                    {
-                        Logger.Log("Starting action " + SelectedAction.ActionName);
-                        SelectedAction.RunCommand(DeviceListString);
-                        OnActionStarted(false);
-                        ProgressData.Reset();
-                    });   
+                var thread = new Thread(
+                    new ThreadStart(
+                        () => {
+                                Logger.Log("Starting action " + SelectedAction.ActionName);
+                                SelectedAction.RunCommand(DeviceListString);
+                                OnActionStarted(false);
+                                ProgressData.Reset();
+                            }));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
+
+                thread.Start();
+
+                //ThreadPool.QueueUserWorkItem(
+                //    o => 
+                //    {
+                //        Logger.Log("Starting action " + SelectedAction.ActionName);
+                //        SelectedAction.RunCommand(DeviceListString);
+                //        OnActionStarted(false);
+                //        ProgressData.Reset();
+                //    }
+                //    , ApartmentState.STA);   
             }
         }
 

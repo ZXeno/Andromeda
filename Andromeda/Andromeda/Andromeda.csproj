@@ -61,6 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Logic\Command\ModifyWorkgroup.cs" />
+    <Compile Include="Logic\RegistryFunctions.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />
     <Compile Include="DelegateCommand.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Logic\Command\GetLoggedOnUser.cs" />
     <Compile Include="Logic\Command\GetPHPrintFile.cs" />
     <Compile Include="Logic\Command\GetSerialNumber.cs" />
+    <Compile Include="Logic\Command\GetSystemModel.cs" />
     <Compile Include="Logic\Command\HardwareInventoryCycleSccm.cs" />
     <Compile Include="Logic\Command\MachinePolicyRetreivalCycleSccm.cs" />
     <Compile Include="Logic\Command\PingTest.cs" />
@@ -104,8 +107,8 @@
     <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
     <Compile Include="ViewModel\ScrollViewerExtensions.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\CLI.xaml.cs">
-      <DependentUpon>CLI.xaml</DependentUpon>
+    <Compile Include="View\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="WriteToTextFile.cs" />
     <Compile Include="XMLImport.cs" />
@@ -125,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CLI.xaml">
+    <Page Include="View\Prompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,6 +12,7 @@ namespace Andromeda.Logic.Command
         private const string UserTemp = "\\AppData\\Local\\Temp";
         private const string UserTempInternetFiles = "\\AppData\\Local\\Microsoft\\Windows\\Temporary Internet Files";
         private const string WindowsTemp = "\\Windows\\Temp";
+        private const string JavaCache = "\\AppData\\LocalLow\\Sun\\Java\\Deployment\\cache";
 
         public CleanComputerCaches()
         {
@@ -37,7 +38,7 @@ namespace Andromeda.Logic.Command
 
                 if (ValidateDirectoryExists(device, WindowsTemp))
                 {
-                    CleanDirectory(device, CcmCachePath);
+                    CleanDirectory(device, WindowsTemp);
                 }
 
                 List<string> userDirPaths = Directory.EnumerateDirectories("\\\\" + device + "\\C$" + UsersDirectory).ToList();
@@ -54,7 +55,7 @@ namespace Andromeda.Logic.Command
                 {
                     if (ValidateDirectoryExists(device, userFolder))
                     {
-                        // Validate and Clean User Temp Folder at "c:\users\[user]\appdata\local\temp"
+                        // Validate and Clean User Temp Folder at "C:\users\[user]\appdata\local\temp"
                         if (ValidateDirectoryExists(device, userFolder + UserTemp))
                         {
                             CleanDirectory(device, userFolder + UserTemp);
@@ -63,7 +64,13 @@ namespace Andromeda.Logic.Command
                         // Validate and Clean User Temporary Internet Files at "C:\Users\[user]\AppData\Local\Microsoft\Windows\Temporary Internet Files"
                         if (ValidateDirectoryExists(device, userFolder + UserTempInternetFiles))
                         {
-                            CleanDirectory(device, userFolder + UserTemp);
+                            CleanDirectory(device, userFolder + UserTempInternetFiles);
+                        }
+
+                        // Validate and Clean User Java Cache Files at "C:\Users\[user]\AppData\Local\Microsoft\Windows\Temporary Internet Files"
+                        if (ValidateDirectoryExists(device, userFolder + JavaCache))
+                        {
+                            CleanDirectory(device, userFolder + JavaCache);
                         }
                     }
                 }

@@ -74,8 +74,6 @@ namespace Andromeda.Logic.Command
             }
 
             _creds = null;
-            newPrompt.Dispose();
-            newPrompt = null;
         }
 
         private void RunOnDevice(string device, string commandline)
