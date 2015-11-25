@@ -61,11 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-<<<<<<< HEAD
-    
-=======
+
     <Compile Include="Logic\Command\ModifyWorkgroup.cs" />
->>>>>>> e6126d7828065f238a70d12e97056df14523ff28
     <Compile Include="Logic\RegistryFunctions.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />

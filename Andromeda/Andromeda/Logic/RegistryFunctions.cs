@@ -54,8 +54,7 @@ namespace Andromeda.Logic
                 return null;
             }
         }
-
-<<<<<<< HEAD
+        
         public static void DeleteSubkeyTree(string targetDevice, RegistryHive baseKey, string targetSubKey)
         {
             if (string.IsNullOrEmpty(targetSubKey))
@@ -76,8 +75,5 @@ namespace Andromeda.Logic
             ResultConsole.Instance.AddConsoleLine("Unable to remove remote registry subkey tree on device " + targetDevice + ". Unable to find subkey: " + baseKey + "\\" + targetSubKey);
             Logger.Log("targetSubKey value must not be null or empty. DeleteSubkeyTree(" + targetDevice + ", " + baseKey + ", " + targetSubKey + ") call contains an empty subkey.");
         }
-=======
-        
->>>>>>> e6126d7828065f238a70d12e97056df14523ff28
     }
 }
