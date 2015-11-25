@@ -13,7 +13,7 @@ namespace Andromeda.Logic.Command
         public RunRemoteCommand()
         {
             ActionName = "Run Command Remotely";
-            Description = "Run any console command remotely, as specified credentials. (use /c with any CMD.exe commands)";
+            Description = "Run any console command remotely. (use /c with any CMD.exe commands) [Requires Credentials]";
             Category = ActionGroup.Other;
         }
 
@@ -74,8 +74,6 @@ namespace Andromeda.Logic.Command
             }
 
             _creds = null;
-            newPrompt.Dispose();
-            newPrompt = null;
         }
 
         private void RunOnDevice(string device, string commandline)

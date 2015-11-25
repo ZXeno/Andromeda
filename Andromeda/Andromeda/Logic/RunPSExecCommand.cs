@@ -21,6 +21,7 @@ namespace Andromeda
                 psi.RedirectStandardInput = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
                 psi.CreateNoWindow = true;
+                // For whatever reason, making everything a string literal fixed a problem with making this work correctly
                 psi.Arguments = @"\\" + device + @" -u " + creds.Domain + @"\" + creds.User + @" -p " + creds.GetInsecurePasswordString() + @" " + commandline;
                 var loggableArguments = @"\\" + device + @" -u " + creds.Domain + @"\" + creds.User + @" -p [REDACTED] " + commandline;
                 process.StartInfo = psi;
@@ -56,6 +57,7 @@ namespace Andromeda
                 psi.RedirectStandardInput = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
                 psi.CreateNoWindow = true;
+                // For whatever reason, making everything a string literal fixed a problem with making this work correctly
                 psi.Arguments = @"\\" + device + @" " + commandline;
                 var loggableArguments = @"\\" + device + @" -u peacehealth\!joncai -i " + commandline;
                 process.StartInfo = psi;
