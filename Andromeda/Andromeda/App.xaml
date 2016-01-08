@@ -5,7 +5,7 @@
     
     <Application.Resources>
 
-        
+        <ResourceDictionary Source="ResourceDictionary.xaml" />
 
     </Application.Resources>
 </Application>

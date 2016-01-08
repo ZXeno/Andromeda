@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Andromeda.Logic.Command;
+using Andromeda.Infrastructure;
 using Andromeda.Model;
-using Andromeda.MVVM;
 using Action = Andromeda.Logic.Action;
 
 namespace Andromeda.ViewModel
@@ -86,7 +84,7 @@ namespace Andromeda.ViewModel
         
         public string Password
         {
-            get { return Program.CredentialManager.UserCredentials.GetInsecurePasswordString(); }
+            get { return SecureStringHelper.GetInsecureString(Program.CredentialManager.UserCredentials.SecurePassword); }
             set
             {
                 OnPropertyChanged("Password");
@@ -195,7 +193,7 @@ namespace Andromeda.ViewModel
             var q = from t in Assembly.GetExecutingAssembly().GetTypes()
                     where t.IsClass && t.Namespace == @namespace
                     select t;
-            q.ToList().ForEach(t => Console.WriteLine(t.Name));
+            q = q.OrderBy(x => x.Name).ToList();
 
             foreach (var type in q)
             {
@@ -203,7 +201,9 @@ namespace Andromeda.ViewModel
                 var newinstance = Activator.CreateInstance(assemblyName, type.FullName).Unwrap();
                 Action action = newinstance as Action;
                 ActionsList.Add(action);
-            }// That's pretty fuckin' rad, right? I think so.
+                
+            }
+            // That's pretty fuckin' rad, right? I think so.
 
 
             _viewModels = new ObservableCollection<ViewModelBase>();
@@ -233,14 +233,28 @@ namespace Andromeda.ViewModel
                 ProgressData.Reset();
                 OnActionStarted(true);
 
-                ThreadPool.QueueUserWorkItem(
-                    o =>
-                    {
-                        Logger.Log("Starting action " + SelectedAction.ActionName);
-                        SelectedAction.RunCommand(DeviceListString);
-                        OnActionStarted(false);
-                        ProgressData.Reset();
-                    });   
+                var thread = new Thread(
+                    new ThreadStart(
+                        () => {
+                                Logger.Log("Starting action " + SelectedAction.ActionName);
+                                SelectedAction.RunCommand(DeviceListString);
+                                OnActionStarted(false);
+                                ProgressData.Reset();
+                            }));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
+
+                thread.Start();
+
+                //ThreadPool.QueueUserWorkItem(
+                //    o => 
+                //    {
+                //        Logger.Log("Starting action " + SelectedAction.ActionName);
+                //        SelectedAction.RunCommand(DeviceListString);
+                //        OnActionStarted(false);
+                //        ProgressData.Reset();
+                //    }
+                //    , ApartmentState.STA);   
             }
         }
 

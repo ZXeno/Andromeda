@@ -33,31 +33,5 @@ namespace Andromeda.Model
             _pw = Password;
             _canImpersonate = canimpersonate;
         }
-
-        public SecureString BuildSecureString(string strPassword)
-        {
-            SecureString secureStr = new SecureString();
-
-            if (strPassword.Length > 0)
-            {
-                foreach (var c in strPassword.ToCharArray()) secureStr.AppendChar(c);
-            }
-
-            return secureStr;
-        }
-
-        public string GetInsecurePasswordString()
-        {
-            IntPtr unmanagedString = IntPtr.Zero;
-            try
-            {
-                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(_pw);
-                return Marshal.PtrToStringUni(unmanagedString);
-            }
-            finally
-            {
-                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
-            }
-        }
     }
 }

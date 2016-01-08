@@ -61,10 +61,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\SecureStringHelper.cs" />
+    <Compile Include="Logic\Command\Testtest.cs" />
+    <Compile Include="Logic\RegistryFunctions.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />
-    <Compile Include="DelegateCommand.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Infrastructure\DelegateCommand.cs" />
+    <Compile Include="Infrastructure\Logger.cs" />
     <Compile Include="Logic\Action.cs" />
     <Compile Include="Logic\ActionGroup.cs" />
     <Compile Include="Logic\SccmScheduleActionBase.cs" />
@@ -77,10 +80,13 @@
     <Compile Include="Logic\Command\GetLoggedOnUser.cs" />
     <Compile Include="Logic\Command\GetPHPrintFile.cs" />
     <Compile Include="Logic\Command\GetSerialNumber.cs" />
+    <Compile Include="Logic\Command\GetSystemModel.cs" />
     <Compile Include="Logic\Command\HardwareInventoryCycleSccm.cs" />
     <Compile Include="Logic\Command\MachinePolicyRetreivalCycleSccm.cs" />
+    <Compile Include="Logic\Command\ModifyWorkgroup.cs" />
     <Compile Include="Logic\Command\PingTest.cs" />
     <Compile Include="Logic\Command\RunGpUpdate.cs" />
+    <Compile Include="Logic\Command\RemoteWsDeactivate.cs" />
     <Compile Include="Logic\Command\RemoveHealthcast.cs" />
     <Compile Include="Logic\Command\RunRemoteCommand.cs" />
     <Compile Include="Logic\Command\SoftwareInventoryCycleSccm.cs" />
@@ -95,20 +101,20 @@
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\CredToken.cs" />
     <Compile Include="Model\ProgressData.cs" />
-    <Compile Include="NetworkConnections.cs" />
+    <Compile Include="Infrastructure\NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
+    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Managers\ResultConsole.cs" />
     <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
-    <Compile Include="ViewModel\ScrollViewerExtensions.cs" />
+    <Compile Include="Infrastructure\ScrollViewerExtensions.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\CLI.xaml.cs">
-      <DependentUpon>CLI.xaml</DependentUpon>
+    <Compile Include="View\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WriteToTextFile.cs" />
-    <Compile Include="XMLImport.cs" />
+    <Compile Include="Infrastructure\WriteToTextFile.cs" />
+    <Compile Include="Infrastructure\XMLImport.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -125,7 +131,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CLI.xaml">
+    <Page Include="View\Prompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -158,9 +164,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\andromeda.jpg" />
     <Resource Include="Assets\check.png" />
-    <Resource Include="Assets\cli_bg.png" />
     <Resource Include="Assets\notification_warning.png" />
     <Resource Include="Assets\red-x.png" />
     <Resource Include="Assets\sagan_tyson.png" />

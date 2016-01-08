@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
+using Andromeda.Infrastructure;
 using Andromeda.Model;
 
 namespace Andromeda
@@ -242,7 +243,11 @@ namespace Andromeda
                         sce.AppendLine(sc);
                     }
 
-                    try { outfile.WriteAsync(sce.ToString()); }
+                    try
+                    {
+                        outfile.WriteAsync(sce.ToString());
+                        outfile.Close();
+                    }
                     catch (Exception e)
                     {
                         MessageBox.Show("Unable to write to " + Config.SuccessfulConnectionListFile + ". \n" + e.InnerException);

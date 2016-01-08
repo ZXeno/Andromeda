@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Andromeda.MVVM;
+using Andromeda.Infrastructure;
+using Andromeda.View;
 
 namespace Andromeda.ViewModel
 {
     public class CliViewModel : ViewModelBase
     {
-        private CLI_Prompt newPrompt;
+        private Prompt newPrompt;
 
         private ICommand _okayCmd;
         public ICommand OkayCommand
@@ -61,11 +62,11 @@ namespace Andromeda.ViewModel
 
         public void OpenNewPrompt()
         {
-            newPrompt = new CLI_Prompt
+            newPrompt = new Prompt
             {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = App.Current.MainWindow
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
+            newPrompt.DataContext = this;
             newPrompt.ShowDialog();
         }
 

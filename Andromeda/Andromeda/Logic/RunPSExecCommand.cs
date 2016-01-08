@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Andromeda.Infrastructure;
 using Andromeda.Model;
 
 namespace Andromeda
@@ -21,7 +22,8 @@ namespace Andromeda
                 psi.RedirectStandardInput = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
                 psi.CreateNoWindow = true;
-                psi.Arguments = @"\\" + device + @" -u " + creds.Domain + @"\" + creds.User + @" -p " + creds.GetInsecurePasswordString() + @" " + commandline;
+                // For whatever reason, making everything a string literal fixed a problem with making this work correctly
+                psi.Arguments = @"\\" + device + @" -u " + creds.Domain + @"\" + creds.User + @" -p " + SecureStringHelper.GetInsecureString(creds.SecurePassword) + @" " + commandline;
                 var loggableArguments = @"\\" + device + @" -u " + creds.Domain + @"\" + creds.User + @" -p [REDACTED] " + commandline;
                 process.StartInfo = psi;
 
@@ -56,6 +58,7 @@ namespace Andromeda
                 psi.RedirectStandardInput = true;
                 psi.WindowStyle = ProcessWindowStyle.Minimized;
                 psi.CreateNoWindow = true;
+                // For whatever reason, making everything a string literal fixed a problem with making this work correctly
                 psi.Arguments = @"\\" + device + @" " + commandline;
                 var loggableArguments = @"\\" + device + @" -u peacehealth\!joncai -i " + commandline;
                 process.StartInfo = psi;

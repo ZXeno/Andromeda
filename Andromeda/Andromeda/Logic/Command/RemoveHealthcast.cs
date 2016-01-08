@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Management;
+using Andromeda.Infrastructure;
 using Andromeda.Model;
+using Microsoft.Win32;
 
 namespace Andromeda.Logic.Command
 {
@@ -10,11 +12,12 @@ namespace Andromeda.Logic.Command
     {
         private ConnectionOptions _connOps;
         private CredToken _creds;
+        private const string HealthCastRegPath = "SOFTWARE\\HealthCast";
 
         public RemoveHealthcast()
         {
             ActionName = "Remove Healthcast";
-            Description = "Removes Healthcast from the specified computer(s).[Requires Credentials]";
+            Description = "Removes Healthcast from the specified computer(s). [Requires Credentials]";
             Category = ActionGroup.Other;
             _connOps = new ConnectionOptions();
         }
@@ -139,6 +142,12 @@ namespace Andromeda.Logic.Command
                                 ResultConsole.AddConsoleLine("There was an exception trying to delete the Healthcast \"ProgramData\" directory on " + device + ": " + e.Message);
                                 ResultConsole.AddConsoleLine("See log for more details.");
                             }
+                        }
+
+                        // Check and clean registry
+                        if (RegistryFunctions.ValidateKeyExists(device, RegistryHive.LocalMachine, HealthCastRegPath))
+                        {
+                            RegistryFunctions.DeleteSubkeyTree(device, RegistryHive.LocalMachine, HealthCastRegPath);
                         }
 
                         // REBOOT!
