@@ -14,7 +14,7 @@ The program relies on external products for some actions to work (namely "Instal
 
 * Program written in Visual Studio 2015 w/ Resharper
 * This application is meant to help automate various tasks for IT Desktop Analysts
-* Current version: .2
+* Current version: .4
 
 ### How do I get set up? ###
 
