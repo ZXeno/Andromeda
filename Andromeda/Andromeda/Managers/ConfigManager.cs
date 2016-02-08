@@ -25,14 +25,17 @@ namespace Andromeda
 
         public const string ConfigFileName = "config.dat";
 
+        private const string SaveFileVersion = "002";
         private bool _saveOfflineComputers = true;
         private bool _saveOnlineComputers = true;
         private readonly string _resultsDirectory;
-        private bool _alwaysDumpConsoleHistory = true;
+        private bool _alwaysDumpConsoleHistory = false;
         private readonly string _configFilePath = "";
         private string _componentsDirectory = "\\\\melvin\\Andromeda\\components";
         private const string _failedConnectListFile = "failed_to_connect.txt";
         private const string _successfulConnectionListFile = "connection_succeeded_list.txt";
+        private bool _firstTimeAutoFixWmiCheck = true;
+        private bool _automaticallyFixWmi = false;
 
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
@@ -58,6 +61,25 @@ namespace Andromeda
             CreateNewConfigFile();
         }
 
+        private bool ValidateConfigFileVersion(XmlNode versionNode)
+        {
+            if (versionNode == null || versionNode.InnerText != SaveFileVersion)
+            {
+                Logger.Log("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
+                ResultConsole.Instance.AddConsoleLine("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
+
+                if (File.Exists(_configFilePath))
+                {
+                    File.Delete(_configFilePath);
+                }
+
+                CreateNewConfigFile();
+                return false;
+            }
+
+            return true;
+        }
+
         public void LoadConfig()
         {
             Logger.Log("Beginning config file load.");
@@ -66,6 +88,12 @@ namespace Andromeda
                 configFileDat = XMLImport.GetXMLFileData(_configFilePath);
 
                 // "config" node
+
+                var saveFileVersionNode = configFileDat.SelectSingleNode("config/settings/savefileversion");
+                if (!ValidateConfigFileVersion(saveFileVersionNode))
+                {
+                    return;
+                }
 
                 var saveOfflineNode = configFileDat.SelectSingleNode("config/settings/saveofflinecomputers");
                 if (saveOfflineNode != null)
@@ -127,6 +155,30 @@ namespace Andromeda
                     CurrentConfig.ComponentDirectory = _componentsDirectory;
                 }
 
+                var firstTimeWmiCheckNode = configFileDat.SelectSingleNode("config/settings/firsttimewmicheckflag");
+                if (firstTimeWmiCheckNode != null)
+                {
+                    CurrentConfig.FirstTimeAutoFixWmiCheck   = StringToBool(firstTimeWmiCheckNode.InnerText);
+                }
+                else
+                {
+                    Logger.Log("Problem loading \"firsttimewmicheckflag\" node from config file. Using default.");
+                    ResultConsole.Instance.AddConsoleLine("Problem loading \"firsttimewmicheckflag\" node from config file. Using default: TRUE");
+                    CurrentConfig.FirstTimeAutoFixWmiCheck = true;
+                }
+
+                var autoFixWmiNode = configFileDat.SelectSingleNode("config/settings/autofixwmiflag");
+                if (autoFixWmiNode != null)
+                {
+                    CurrentConfig.AutomaticallyFixWmi = StringToBool(autoFixWmiNode.InnerText);
+                }
+                else
+                {
+                    Logger.Log("Problem loading \"autofixwmiflag\" node from config file. Using default.");
+                    ResultConsole.Instance.AddConsoleLine("Problem loading \"autofixwmiflag\" node from config file. Using default: FALSE");
+                    CurrentConfig.AutomaticallyFixWmi = false;
+                }
+
                 ValidateDirectoryExists(CurrentConfig.ResultsDirectory);
                 ValidateDirectoryExists(CurrentConfig.ComponentDirectory);
 
@@ -162,6 +214,8 @@ namespace Andromeda
                 //Program Settings Category
                 _xwriter.WriteStartElement("settings");
 
+                CreateUnattributedElement("savefileversion", SaveFileVersion);
+
                 // Save Offline Computers
                 CreateUnattributedElement("saveofflinecomputers", _saveOfflineComputers.ToString());
 
@@ -176,6 +230,12 @@ namespace Andromeda
 
                 // Components Directory
                 CreateUnattributedElement("componentsDirectory", _componentsDirectory);
+
+                // First Time Wmi Auto Fix Check Flag
+                CreateUnattributedElement("firsttimewmicheckflag", _firstTimeAutoFixWmiCheck.ToString());
+
+                // Wmi Auto Fix Flag
+                CreateUnattributedElement("autofixwmiflag", _automaticallyFixWmi.ToString());
 
                 // Close <settings>
                 _xwriter.WriteEndElement();
@@ -243,7 +303,6 @@ namespace Andromeda
                     Logger.Log("There was an error creating directory " + path + "\\. Exception: " + e.InnerException);
                     ResultConsole.Instance.AddConsoleLine("There was a problem validating a directory during configuration loading. See the log file.");
                 }
-                
             }
         }
 

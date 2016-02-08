@@ -1,0 +1,27 @@
+﻿<Window x:Class="Andromeda.View.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Andromeda.View"
+        xmlns:infrastructure="clr-namespace:Andromeda.Infrastructure"
+        mc:Ignorable="d"
+        Title="Enter Credentials" Height="150" Width="300" Style="{StaticResource WindowBG}">
+
+
+    <Grid>
+        <Label Content="{Binding Domain}" Style="{StaticResource TextboxLabels}" Margin="0,11,187,0" />
+        <Label Content="Password:" Style="{StaticResource TextboxLabels}" Margin="0,35,187,0" />
+        <TextBox Style="{StaticResource White}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
+        <PasswordBox Style="{StaticResource PwdWhite}" x:Name="PasswordBox" infrastructure:PasswordBoxAssistant.BindPassword="true" infrastructure:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"  Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="">
+            <PasswordBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding LoginCommand, UpdateSourceTrigger=PropertyChanged}"></KeyBinding>
+            </PasswordBox.InputBindings>
+        </PasswordBox>
+        <Button x:Name="LoginButton" Content="Login" Command="{Binding LoginCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="30,95,0,0" VerticalAlignment="Top" Width="75" />
+        <Button x:Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}" HorizontalAlignment="Left" Margin="201,95,0,0" VerticalAlignment="Top" Width="75" />
+        <Label x:Name="label" Style="{StaticResource ErrorMessage}" Content="{Binding ErrorMessage}" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="272" Height="30"/>
+
+    </Grid>
+    
+</Window>

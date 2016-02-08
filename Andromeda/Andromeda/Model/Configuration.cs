@@ -10,5 +10,7 @@
         public string ComponentDirectory { get; set; }
         public string FailedConnectListFile { get; set; }
         public string SuccessfulConnectionListFile { get; set; }
+        public bool FirstTimeAutoFixWmiCheck { get; set; }
+        public bool AutomaticallyFixWmi { get; set; }
     }
 }

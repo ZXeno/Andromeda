@@ -69,6 +69,7 @@ namespace Andromeda.Infrastructure
                 }
 
                 WriteToTextFile.WriteToLogFile(_fullLogPath, sb.ToString());
+                queueCopy.Clear();
             }
         }
 

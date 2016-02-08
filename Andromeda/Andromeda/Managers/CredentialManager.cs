@@ -12,6 +12,7 @@ namespace Andromeda
 
         private CredToken _creds;
         public CredToken UserCredentials { get { return _creds; } }
+        public bool CredentialsAreValid { get; set; }
 
         public CredentialManager()
         {
@@ -35,22 +36,13 @@ namespace Andromeda
 
             return secureStr;
         }
-
-        public bool DoesUserExistInActiveDirectory(string userName)
+        
+        public bool ValidateCredentials(string domain, string user, string pass)
         {
-            try
+            using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain))
             {
-                using (var domainContext = new PrincipalContext(ContextType.Domain, Environment.UserDomainName))
-                {
-                    using (var foundUser = UserPrincipal.FindByIdentity(domainContext, IdentityType.SamAccountName, userName))
-                    {
-                        return foundUser != null;
-                    }
-                }
-            }
-            catch
-            {
-                return false;
+                // validate the credentials
+                return context.ValidateCredentials(user, pass);
             }
         }
 

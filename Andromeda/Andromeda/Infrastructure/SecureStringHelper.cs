@@ -6,13 +6,13 @@ namespace Andromeda.Infrastructure
 {
     public static class SecureStringHelper
     {
-        public static SecureString BuildSecureString(string strPassword)
+        public static SecureString BuildSecureString(string insecureString)
         {
             SecureString secureStr = new SecureString();
 
-            if (strPassword.Length > 0)
+            if (insecureString.Length > 0)
             {
-                foreach (var c in strPassword.ToCharArray()) secureStr.AppendChar(c);
+                foreach (var c in insecureString.ToCharArray()) secureStr.AppendChar(c);
             }
 
             return secureStr;

@@ -71,5 +71,27 @@ namespace Andromeda.Infrastructure
             }
             else { return; }
         }
+
+        // Create Remote Text File
+        public async static void CreateRemoteTextFile(string filepath, string contents)
+        {
+            if (!File.Exists(filepath))
+            {
+                using (StreamWriter outfile = new StreamWriter(filepath, true))
+                {
+                    try
+                    {
+                        await outfile.WriteAsync(contents);
+                        outfile.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log("Unable to create remote file " + filepath + " Exception: " + e.Message);
+                        ResultConsole.Instance.AddConsoleLine("Unable to create remote file " + filepath + " Exception: " + e.Message);
+                    }
+                }
+            }
+            else { return; }
+        }
     }
 }

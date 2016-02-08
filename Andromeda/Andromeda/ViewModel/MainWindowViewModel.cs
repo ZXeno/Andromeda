@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using Andromeda.Infrastructure;
 using Andromeda.Model;
+using Andromeda.View;
 using Action = Andromeda.Logic.Action;
 
 namespace Andromeda.ViewModel
@@ -38,6 +39,23 @@ namespace Andromeda.ViewModel
             }
         }
 
+        public bool CredentialsValid
+        {
+            get { return Program.CredentialManager.CredentialsAreValid; }
+        }
+
+        public string Username
+        {
+            get
+            {
+                if (Program.CredentialManager.CredentialsAreValid)
+                {
+                    return (Program.CredentialManager.UserCredentials.Domain + "\\" + Program.CredentialManager.UserCredentials.User).ToUpper();
+                }
+                return @"NO USER Please log in";
+            }
+        }
+
         public string VersionNumber
         {
             get { return Program.VersionNumber; }
@@ -59,38 +77,6 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private string _domain;
-        public string Domain
-        {
-            get { return _domain; }
-            set
-            {
-                _domain = value;
-                OnPropertyChanged("Domain");
-            }
-        }
-
-        private string _username;
-        public string Username
-        {
-            get { return _username; }
-            set
-            {
-                _username = value;
-                OnPropertyChanged("Username");
-            }
-        }
-
-        
-        public string Password
-        {
-            get { return SecureStringHelper.GetInsecureString(Program.CredentialManager.UserCredentials.SecurePassword); }
-            set
-            {
-                OnPropertyChanged("Password");
-                Program.CredentialManager.SetCredentials(Domain, Username, Program.CredentialManager.BuildSecureString(value));                
-            }
-        }
 
         private string _deviceListString;
         public string DeviceListString
@@ -126,45 +112,6 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private ProgressData _progressData;
-        public ProgressData ProgressData
-        {
-            get { return _progressData; }
-            set
-            {
-                _progressData = value;
-                OnPropertyChanged("ProgressData");
-                OnPropertyChanged("ProgressBarVisible");
-            }
-        }
-
-        public int ProgressTotal
-        {
-            get { return _progressData.TotalCount; }
-            set
-            {
-                _progressData.TotalCount = value;
-                OnPropertyChanged("ProgressTotal");
-                OnPropertyChanged("ProgressBarVisible");
-            }
-        }
-
-        public int ProgressCurrent
-        {
-            get { return _progressData.Current; }
-            set
-            {
-                _progressData.Current = value;
-                OnPropertyChanged("ProgressCurrent");
-                OnPropertyChanged("ProgressBarVisible");
-            }
-        }
-
-        public Visibility ProgressBarVisible
-        {
-            get { return (ProgressCurrent < ProgressTotal && ActionRunning) ? Visibility.Visible : Visibility.Collapsed; }
-        }
-
         private ICommand _runCmd;
         public ICommand RunCommand
         {
@@ -181,6 +128,29 @@ namespace Andromeda.ViewModel
                 _runCmd = value;
                 OnPropertyChanged("RunCommand");
             }
+        }
+
+        private ICommand _loginCommand;
+        public ICommand LoginCommand
+        {
+            get
+            {
+                if (_loginCommand == null)
+                {
+                    LoginCommand = new DelegateCommand(param => LoginCommandExecute(), param => LoginCommandCanExecute());
+                }
+                return _loginCommand;
+            }
+            set
+            {
+                _loginCommand = value;
+                OnPropertyChanged("LoginCommand");
+            }
+        }
+
+        public Visibility LoginButtonVisibility
+        {
+            get { return (!Program.CredentialManager.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public MainWindowViewModel()
@@ -209,15 +179,10 @@ namespace Andromeda.ViewModel
             _viewModels = new ObservableCollection<ViewModelBase>();
             _viewModels.Add(new ResultConsoleViewModel());
 
-
-            ProgressData = new ProgressData();
             RunButtonText = "Run";
-            Domain = Environment.UserDomainName;
             ActionRunning = false;
 
             ActionStart += UpdateActionIcon;
-            ProgressData.SetTotal += SetProgressTotal;
-            ProgressData.SetChange += SetProgressChange;
         }
 
         protected override void OnDispose()
@@ -230,16 +195,15 @@ namespace Andromeda.ViewModel
         {
             if (SelectedAction != null && RunCommandCanExecute())
             {
-                ProgressData.Reset();
                 OnActionStarted(true);
 
                 var thread = new Thread(
                     new ThreadStart(
                         () => {
                                 Logger.Log("Starting action " + SelectedAction.ActionName);
+                                ResultConsole.Instance.AddConsoleLine("Starting action " + SelectedAction.ActionName);
                                 SelectedAction.RunCommand(DeviceListString);
                                 OnActionStarted(false);
-                                ProgressData.Reset();
                             }));
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.IsBackground = true;
@@ -268,6 +232,44 @@ namespace Andromeda.ViewModel
             return true;
         }
 
+        public bool LoginCommandCanExecute()
+        {
+            if (!Program.CredentialManager.CredentialsAreValid)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void LoginCommandExecute()
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            var loginWindowViewModel = new LoginWindowViewModel();
+            loginWindowViewModel.SuccessAction = new System.Action(() => loginWindow.DialogResult = true);
+            loginWindowViewModel.CancelAction = new System.Action(() => loginWindow.DialogResult = false);
+            loginWindow.DataContext = loginWindowViewModel;
+
+            // Show login prompt
+            loginWindow.ShowDialog();
+
+            if (loginWindowViewModel.WasCanceled)
+            {
+                // program is closing if the window was canceled.
+                return;
+            }
+
+            loginWindow = null;
+            OnPropertyChanged("Username");
+            OnPropertyChanged("LoginButtonVisibility");
+        }
+
+        public void UpdateLoginProperties()
+        {
+            OnPropertyChanged("Username");
+            OnPropertyChanged("LoginButtonVisibility");
+        }
+
         private void UpdateActionIcon(bool justStarted)
         {
             Logger.Log("Updating action running state to " + justStarted);
@@ -280,16 +282,6 @@ namespace Andromeda.ViewModel
             }
 
             RunButtonText = "Run";
-        }
-
-        private void SetProgressTotal(int total)
-        {
-            ProgressTotal = total;
-        }
-
-        private void SetProgressChange(int change)
-        {
-            ProgressCurrent += change;
         }
     }
 }

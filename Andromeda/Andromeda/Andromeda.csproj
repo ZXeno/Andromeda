@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>andromeda.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,7 +62,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\SecureStringHelper.cs" />
-    <Compile Include="Logic\Command\Testtest.cs" />
+    <Compile Include="Logic\Command\NetFrameworkFix.cs" />
+    <Compile Include="Logic\Command\RepairWmi.cs" />
     <Compile Include="Logic\RegistryFunctions.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />
@@ -74,42 +75,39 @@
     <Compile Include="Logic\Command\AppDeploymentScheduleSccm.cs" />
     <Compile Include="Logic\Command\CleanComputerCaches.cs" />
     <Compile Include="Logic\Command\DeleteGpoCache.cs" />
-    <Compile Include="Logic\Command\FixCEDeviceID.cs" />
     <Compile Include="Logic\Command\ForceLogOff.cs" />
     <Compile Include="Logic\Command\ForceReboot.cs" />
     <Compile Include="Logic\Command\GetLoggedOnUser.cs" />
-    <Compile Include="Logic\Command\GetPHPrintFile.cs" />
     <Compile Include="Logic\Command\GetSerialNumber.cs" />
     <Compile Include="Logic\Command\GetSystemModel.cs" />
     <Compile Include="Logic\Command\HardwareInventoryCycleSccm.cs" />
     <Compile Include="Logic\Command\MachinePolicyRetreivalCycleSccm.cs" />
-    <Compile Include="Logic\Command\ModifyWorkgroup.cs" />
     <Compile Include="Logic\Command\PingTest.cs" />
     <Compile Include="Logic\Command\RunGpUpdate.cs" />
-    <Compile Include="Logic\Command\RemoteWsDeactivate.cs" />
-    <Compile Include="Logic\Command\RemoveHealthcast.cs" />
     <Compile Include="Logic\Command\RunRemoteCommand.cs" />
     <Compile Include="Logic\Command\SoftwareInventoryCycleSccm.cs" />
     <Compile Include="Logic\Command\TightVNCInstall.cs" />
     <Compile Include="Logic\Command\TightVNCRemove.cs" />
     <Compile Include="Logic\Command\UserPolicyRetrievalCycleSccm.cs" />
-    <Compile Include="Logic\Command\UninstallXceleraMonitor.cs" />
     <Compile Include="Logic\GetPingableDevices.cs" />
     <Compile Include="Logic\RunPSExecCommand.cs" />
     <Compile Include="Logic\SccmClientFuncs.cs" />
     <Compile Include="Logic\WMIFuncs.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\CredToken.cs" />
-    <Compile Include="Model\ProgressData.cs" />
     <Compile Include="Infrastructure\NetworkConnections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
+    <Compile Include="ViewModel\LoginWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Managers\ResultConsole.cs" />
     <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
     <Compile Include="Infrastructure\ScrollViewerExtensions.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
@@ -128,6 +126,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,13 +167,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\check.png" />
-    <Resource Include="Assets\notification_warning.png" />
     <Resource Include="Assets\red-x.png" />
     <Resource Include="Assets\sagan_tyson.png" />
     <Resource Include="Assets\tgb.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="andromeda.ico" />
+    <Resource Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

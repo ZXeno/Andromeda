@@ -7,12 +7,6 @@
         Height="750" Width="800" Style="{StaticResource WindowBG}">
 
     <Grid>
-        
-        <Label Content="{Binding Domain}" Style="{StaticResource TextboxLabels}" Margin="0,11,187,0" />
-        <Label Content="Password:" Style="{StaticResource TextboxLabels}" Margin="0,35,187,0" />
-        <TextBox Style="{StaticResource White}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Height="20" Margin="0,10,16,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="166"/>
-        <PasswordBox Style="{StaticResource PwdWhite}" x:Name="PasswordBox" inf:PasswordBoxAssistant.BindPassword="true" inf:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right"  Margin="0,35,16,0" Width="166" Height="20" VerticalAlignment="Top" Password="" />
-
         <TextBox x:Name="DEVICE_LIST_TEXTBOX" Text="{Binding DeviceListString}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Background="#A5474747" Foreground="#FFE0E0E0" Height="419" VerticalAlignment="Top" AcceptsReturn="True" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
         <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,239" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
@@ -40,6 +34,8 @@
 
         <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="38,0,0,10" />
         <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="16,0,0,10" />
+        <Label Style="{StaticResource TextboxLabels}"  x:Name="UserLabel" Content="{Binding Username}" HorizontalAlignment="Right" Margin="0,10,16,0" Width="190"/>
+        <Button x:Name="LoginButton" Content="Login" Visibility="{Binding LoginButtonVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding LoginCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="701,35,0,0" VerticalAlignment="Top" Width="75"/>
 
     </Grid>
 

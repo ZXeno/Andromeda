@@ -23,10 +23,21 @@
         <Setter Property="Height" Value="20"/>
         <Setter Property="Width" Value="100"></Setter>
     </Style>
-    
+
+    <Style x:Key="ErrorMessage" TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="#FFAA5555"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="FontFamily" Value="Lucida Console"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Width" Value="100"></Setter>
+    </Style>
+
     <Style TargetType="Button" >
         <Setter Property="Background" Value="#CC404040"/>
-        <Setter Property="Foreground" Value="#FF878585" />
+        <Setter Property="Foreground" Value="#FFC9C9C9" />
         <Setter Property="FontFamily" Value="Lucida Console" />
 
         <Setter Property="Template">
