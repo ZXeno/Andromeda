@@ -37,8 +37,6 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             foreach (var device in confirmedConnectionList)
             {
                 var remote = WMIFuncs.ConnectToRemoteWMI(device, scope, _connOps);
@@ -77,8 +75,6 @@ namespace Andromeda.Logic.Command
                     Logger.Log("There was an error connecting to WMI namespace on " + device);
                     ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + device);
                 }
-
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

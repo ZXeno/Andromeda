@@ -22,8 +22,6 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             foreach (var device in confirmedConnectionList)
             {
                 if (ValidateDirectoryExists(device, GpoCacheDir))
@@ -48,8 +46,7 @@ namespace Andromeda.Logic.Command
                 {
                     ResultConsole.AddConsoleLine("Unable to validate the directory for the GPO cache. Please delete manually.");
                 }
-
-                ProgressData.OnUpdateProgressBar(1);
+                
             }
 
             if (failedlist.Count > 0)

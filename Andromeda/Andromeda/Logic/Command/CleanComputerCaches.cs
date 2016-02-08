@@ -18,7 +18,7 @@ namespace Andromeda.Logic.Command
         {
             ActionName = "Clean Computer Temp/Cache Files";
             Description = "Cleans the temp and caches files on a remote device.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.Maintenance;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -26,9 +26,7 @@ namespace Andromeda.Logic.Command
             List<string> devlist = ParseDeviceList(rawDeviceList);
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
-
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
+            
             foreach (var device in confirmedConnectionList)
             {
                 if (ValidateDirectoryExists(device, CcmCachePath))
@@ -74,8 +72,7 @@ namespace Andromeda.Logic.Command
                         }
                     }
                 }
-
-                ProgressData.OnUpdateProgressBar(1);
+                
             }
 
             if (failedlist.Count > 0)

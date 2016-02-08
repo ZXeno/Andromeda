@@ -28,8 +28,6 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             foreach (var d in confirmedConnectionList)
             {
                 var remote = WMIFuncs.ConnectToRemoteWMI(d, scope, _connOps);
@@ -49,7 +47,6 @@ namespace Andromeda.Logic.Command
                     {
                         Logger.Log("QueryCollection returned with exception " + e.Message);
                         ResultConsole.AddConsoleLine("QueryCollection returned with exception " + e.Message);
-                        ProgressData.OnUpdateProgressBar(1);
                         continue;
                     }
 
@@ -58,7 +55,6 @@ namespace Andromeda.Logic.Command
                     {
                         Logger.Log("Query returned null or empty result list for device " + d);
                         ResultConsole.AddConsoleLine("Query returned null or empty result list for device " + d);
-                        ProgressData.OnUpdateProgressBar(1);
                         continue;
                     }
 
@@ -74,8 +70,6 @@ namespace Andromeda.Logic.Command
                     Logger.Log("There was an error connecting to WMI namespace on " + d);
                     ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + d);
                 }
-
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

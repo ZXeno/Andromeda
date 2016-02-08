@@ -25,15 +25,13 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             _creds = Program.CredentialManager.UserCredentials;
 
-            if (!ValidateCredentials(_creds))
+            if (!Program.CredentialManager.CredentialsAreValid)
             {
-                ResultConsole.AddConsoleLine("You must enter your USERNAME and PASSWORD above for this command to work.");
+                ResultConsole.AddConsoleLine("You must login for this command to work.");
                 ResultConsole.AddConsoleLine("Install TightVNC Command was canceled due to improper credentials.");
-                Logger.Log("Invalid credentials entered. Action canceled.");
+                Logger.Log("Invalid credentials. Action: " + ActionName + " canceled.");
                 return;
             }
 
@@ -43,7 +41,6 @@ namespace Andromeda.Logic.Command
             foreach (var device in confirmedConnectionList)
             {
                 RunPSExecCommand.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

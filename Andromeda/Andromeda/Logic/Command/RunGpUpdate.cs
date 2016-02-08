@@ -19,12 +19,9 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             foreach (var device in confirmedConnectionList)
             {
                 RunPSExecCommand.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C gpupdate.exe /force");
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

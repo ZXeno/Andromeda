@@ -60,7 +60,7 @@ namespace Andromeda
                 psi.CreateNoWindow = true;
                 // For whatever reason, making everything a string literal fixed a problem with making this work correctly
                 psi.Arguments = @"\\" + device + @" " + commandline;
-                var loggableArguments = @"\\" + device + @" -u peacehealth\!joncai -i " + commandline;
+                var loggableArguments = @"\\" + device + @" " + commandline;
                 process.StartInfo = psi;
 
                 Logger.Log("Beginning PsExec (NO AUTH) attempt on " + device + " with following command line options: " + loggableArguments);

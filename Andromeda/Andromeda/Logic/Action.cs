@@ -40,19 +40,7 @@ namespace Andromeda.Logic
                 resultList.Add(t);
             }
 
-            ProgressData.OnStartProgressBar(resultList.Count);
-
             return resultList;
-        }
-
-        protected void UpdateProgressBarForFailedConnections(List<string> deviceList, List<string> confirmedConnectionList)
-        {
-            var difflist = deviceList.Where(x => !confirmedConnectionList.Contains(x));
-
-            foreach (var diff in difflist)
-            {
-                ProgressData.OnUpdateProgressBar(1);
-            }
         }
 
         protected bool ValidateCredentials(CredToken credentialToken)

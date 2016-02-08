@@ -24,8 +24,6 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             _creds = Program.CredentialManager.UserCredentials;
 
             if (!ValidateCredentials(_creds))
@@ -53,7 +51,6 @@ namespace Andromeda.Logic.Command
                     foreach (var device in confirmedConnectionList)
                     {
                         RunOnDevice(device, cmdToRun);
-                        ProgressData.OnUpdateProgressBar(1);
                     }
 
                     if (failedlist.Count > 0)

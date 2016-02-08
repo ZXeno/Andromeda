@@ -23,18 +23,14 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            UpdateProgressBarForFailedConnections(devlist, confirmedConnectionList);
-
             foreach (var device in confirmedConnectionList)
             {
                 if (device == "")
                 {
-                    ProgressData.OnUpdateProgressBar(1);
                     continue;
                 }
 
                 ResultConsole.AddConsoleLine(ParseResponse(netConn.PingTest(device), device));
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)

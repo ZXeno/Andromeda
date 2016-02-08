@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management;
+using System.Text;
 using Andromeda.Infrastructure;
-using Andromeda.Model;
 
 namespace Andromeda
 {
@@ -20,30 +20,20 @@ namespace Andromeda
             catch (Exception e)
             {
                 ResultConsole.Instance.AddConsoleLine("Failed to connect to WMI namespace" + "\\\\" + hostname + scope);
-                ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message + "Inner exception: " + e.InnerException);
+                //ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message + "Inner exception: " + e.InnerException); // removed inner exception information, left for later reference
+                ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message);
                 Logger.Log("Error connecting to WMI namespace \\\\" + hostname + scope +
                     "\n Exception was caught: " + e.InnerException +
                     "\n Calling method: " + e.TargetSite);
 
+                if (ConfigManager.CurrentConfig.AutomaticallyFixWmi)
+                {
+                    RepairRemoteWmi(hostname);
+                }
+
                 return null;
             }
             
-        }
-
-        public static bool CheckWMIAccessible(string hostname, string scope, ConnectionOptions options)
-        {
-            ManagementScope wmiscope = ConnectToRemoteWMI(hostname, scope, options);
-
-            if (wmiscope.IsConnected)
-            {
-                ResultConsole.Instance.AddConsoleLine("Connected to WMI scope " + wmiscope.Path);
-            }
-            else
-            {
-                ResultConsole.Instance.AddConsoleLine("Connection to WMI scope " + wmiscope.Path + " failed.");
-            }
-
-            return wmiscope.IsConnected;
         }
 
         public static ManagementScope ConnectToSCCMscope(string hostname, ConnectionOptions options)
@@ -69,63 +59,93 @@ namespace Andromeda
                     return "9 – Path not found";
                 case 21:
                     return "21 – Invalid parameter.";
+                case 1115:
+                    return "1115 - A system shutdown is in progress.";
+                case 1603:
+                    return "1603 - ERROR_INSTALL_FAILURE: Fatal error during installation.";
             }
 
             return retval.ToString() + " – This return value is unknown.";
         }
 
-
-        public static void RunCommand(string device, string processToRun, CredToken creds) 
+        public static bool RepairRemoteWmi(string hostname)
         {
-            string scope = "\\root\\cimv2";
-            var connOps = new ConnectionOptions();
+            Logger.Log("Attempting to repair WMI on device " + hostname);
+            ResultConsole.Instance.AddConsoleLine("Attempting to repair WMI on device " + hostname);
 
+            string remoteBatchPath = "\\\\" + hostname + "\\C$\\windows\\temp\\fixwmi.bat";
+            string commandline = @"-i cmd /c %windir%\temp\fixwmi.bat"; // -i flag is required fore PSExec to push the command through successfully.
+            var batchFileContent = CreateWmiRepairBatchConent();
 
-            connOps.Username = creds.User;
-            connOps.SecurePassword = creds.SecurePassword;
-            connOps.Impersonation = ImpersonationLevel.Impersonate;
-         
-            ManagementScope deviceWMI = new ManagementScope();
-            string result = "";
-            
             try
             {
-                if (CheckWMIAccessible(device, scope, connOps))
-                {
-                    deviceWMI = ConnectToRemoteWMI(device, scope, connOps);
-                    ManagementPath p = new ManagementPath("Win32_Process");
-                    ManagementClass wmiProcess = new ManagementClass(deviceWMI, p, null);
-                    ManagementClass startupSettings = new ManagementClass("Win32_ProcessStartup");
-
-                    startupSettings.Scope = deviceWMI;
-                    startupSettings["CreateFlags"] = 0x01000000; // 0x01000000 is CREATE_BREAKAWAY_FROM_JOB creation flag, or "not a child process"
-
-                    ManagementBaseObject inParams = wmiProcess.GetMethodParameters("Create");
-                    inParams["CommandLine"] = processToRun;
-                    inParams["ProcessStartupInformation"] = startupSettings;
-                    ManagementBaseObject outValue = wmiProcess.InvokeMethod("Create", inParams, null);
-
-                    if (outValue != null)
-                    {
-                        result = device + " returned exit code: " + GetProcessReturnValueText(Convert.ToInt32(outValue["ReturnValue"]));
-                    }
-                    else
-                    {
-                        result = "outValue was null.";
-                    }
-                }
-                else
-                {
-                    result = "Unable to connect to device " + device + ".";
-                }
+                Logger.Log("Creating remote batch file");
+                WriteToTextFile.CreateRemoteTextFile(remoteBatchPath, batchFileContent);
+                
             }
             catch (Exception ex)
             {
-                result = "WMIC RUN ON DEVICE " + device + " FAILED WITH EXCEPTION \n" + ex.Message; 
+                Logger.Log("Error creating remote WMI repair batch file. Exception thrown: " + ex.Message);
+                ResultConsole.Instance.AddConsoleLine("Error creating remote WMI repair batch file. Exception thrown: " + ex.Message);
+                return false;
             }
 
-            Logger.Log(result);
-            ResultConsole.Instance.AddConsoleLine(result);
+            try
+            {
+                Logger.Log("Run WMI repair batch on remote device " + hostname);
+                RunPSExecCommand.RunOnDeviceWithAuthentication(hostname, commandline, Program.CredentialManager.UserCredentials);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error running remote batch file on device " + hostname + "\n Exception: " + ex.Message);
+                ResultConsole.Instance.AddConsoleLine("Error running remote batch file on device " + hostname + "\n Exception: " + ex.Message);
+                return false;
+            }
+        }
+
+        private static string CreateWmiRepairBatchConent()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(@"net stop winmgmt /y");
+            sb.AppendLine(@"net stop wmiapsrv /y");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"PUSHD ""%windir%\system32\wbem""");
+            sb.AppendLine(@"for %%i in (*.dll) do regsvr32 -s %%i");
+            sb.AppendLine(@"mofcomp.exe /RegServer");
+            sb.AppendLine(@"scrcons.exe /RegServer");
+            sb.AppendLine(@"unsecapp.exe /RegServer");
+            sb.AppendLine(@"winmgmt.exe /RegServer");
+            sb.AppendLine(@"wmiadap.exe /RegServer");
+            sb.AppendLine(@"wmiapsrv.exe /RegServer");
+            sb.AppendLine(@"wmiprvse.exe /RegServer");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"PUSHD ""%windir%\SysWOW64\wbem""");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"for %%i in (*.dll) do regsvr32 -s %%i");
+            sb.AppendLine(@"mofcomp.exe /RegServer");
+            sb.AppendLine(@"scrcons.exe /RegServer");
+            sb.AppendLine(@"unsecapp.exe /RegServer");
+            sb.AppendLine(@"winmgmt.exe /RegServer");
+            sb.AppendLine(@"wmiadap.exe /RegServer");
+            sb.AppendLine(@"wmiapsrv.exe /RegServer");
+            sb.AppendLine(@"wmiprvse.exe /RegServer");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"POPD");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"""%windir%\system32\wbem\winmgmt.exe"" /resetrepository");
+            sb.AppendLine(@"");
+            sb.AppendLine(@"net start ccmexec");
+            sb.AppendLine(@"net start winmgmt");
+            sb.AppendLine(@"net start wmiapsrv");
+            sb.AppendLine(@"gpupdate /force");
+            sb.AppendLine(@"POPD");
+            sb.AppendLine(@"Shutdown -f -r -t 0");
+            sb.AppendLine(@"DEL /F /Q ""%windir%\temp\fixwmi.bat""");
+            sb.AppendLine(@"EXIT");
+
+            return sb.ToString();
         }
     }
 }

@@ -33,7 +33,6 @@ namespace Andromeda.Logic
                     failedlist.Add(d);
                 }
 
-                ProgressData.OnUpdateProgressBar(1);
             }
 
             if (failedlist.Count > 0)
