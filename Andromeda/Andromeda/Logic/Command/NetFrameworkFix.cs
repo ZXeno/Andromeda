@@ -30,7 +30,7 @@ namespace Andromeda.Logic.Command
 
             foreach (var device in confirmedConnectionList)
             {
-                if (ValidateDirectoryExists(device, RemoteAdminDir))
+                if (FileAndFolderFunctions.ValidateDirectoryExists(device, RemoteAdminDir, ActionName))
                 {
                     if (!File.Exists("\\\\" + device + "\\C$\\" + RemoteAdminDir + "\\" + NetFxRepairToolExecutable))
                     {
@@ -62,7 +62,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

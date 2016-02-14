@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Andromeda.Model;
+using Andromeda.Infrastructure;
 
 namespace Andromeda.Logic.Command
 {
@@ -26,7 +26,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

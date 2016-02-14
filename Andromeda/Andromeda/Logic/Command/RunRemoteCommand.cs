@@ -9,8 +9,6 @@ namespace Andromeda.Logic.Command
 {
     public class RunRemoteCommand : Action
     {
-        private CredToken _creds;
-
         public RunRemoteCommand()
         {
             ActionName = "Run Command Remotely";
@@ -24,16 +22,14 @@ namespace Andromeda.Logic.Command
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
 
-            _creds = Program.CredentialManager.UserCredentials;
-
-            if (!ValidateCredentials(_creds))
+            if (!Program.CredentialManager.CredentialsAreValid)
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
-                ResultConsole.AddConsoleLine("Run Remote Command was canceled due to improper credentials.");
-                Logger.Log("Invalid credentials entered.");
+                ResultConsole.AddConsoleLine(ActionName + "was canceled due to invalid credentials.");
+                Logger.Log("Tried to run " + ActionName + " but there were no credentials added.");
                 return;
             }
-
+            
             string cmdToRun = "";
             var newPrompt = new CliViewModel();
             newPrompt.OpenNewPrompt();
@@ -55,7 +51,7 @@ namespace Andromeda.Logic.Command
 
                     if (failedlist.Count > 0)
                     {
-                        WriteToFailedLog(ActionName, failedlist);
+                        Logger.WriteToFailedLog(ActionName, failedlist);
                     }
                 }
                 else //if (newPrompt.WasCanceled)
@@ -70,13 +66,11 @@ namespace Andromeda.Logic.Command
                 MessageBox.Show("There was an error running this command. \n " + ex.Message);
                 ResultConsole.AddConsoleLine("Command failed with exception error caught: \n" + ex.Message);
             }
-
-            _creds = null;
         }
 
         private void RunOnDevice(string device, string commandline)
         {
-            RunPSExecCommand.RunOnDeviceWithAuthentication(device, commandline, _creds);
+            RunPSExecCommand.RunOnDeviceWithAuthentication(device, commandline, Program.CredentialManager.UserCredentials);
         }
 
     }

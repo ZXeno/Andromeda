@@ -73,6 +73,38 @@ namespace Andromeda.Infrastructure
             }
         }
 
+        public static void WriteToFailedLog(string actionName, List<string> failedList)
+        {
+            string logFile = actionName.Replace(" ", "_") + "_failed_log.txt";
+            StringBuilder sb = new StringBuilder();
+
+            if (File.Exists(ConfigManager.CurrentConfig.ResultsDirectory + "\\" + logFile))
+            {
+                File.Delete(ConfigManager.CurrentConfig.ResultsDirectory + "\\" + logFile);
+                Logger.Log("Deleted file " + ConfigManager.CurrentConfig.ResultsDirectory + "\\" + logFile);
+            }
+
+            foreach (var failed in failedList)
+            {
+                sb.AppendLine(failed);
+            }
+
+            using (StreamWriter outfile = new StreamWriter(ConfigManager.CurrentConfig.ResultsDirectory + "\\" + logFile, true))
+            {
+                try
+                {
+                    outfile.WriteAsync(sb.ToString());
+                    Logger.Log("Wrote \"" + actionName + "\" results to file " + ConfigManager.CurrentConfig.ResultsDirectory + "\\" + logFile);
+                    ResultConsole.Instance.AddConsoleLine("There were " + failedList.Count + "computers that failed the process. They have been recorded in the log.");
+                }
+                catch (Exception e)
+                {
+                    Logger.Log("Unable to write to " + logFile + ". \n" + e.InnerException);
+                    ResultConsole.Instance.AddConsoleLine("There were " + failedList.Count + "computers that failed the process. However, there was an exception attempting to write to the failed log file.");
+                }
+            }
+        }
+
         public void Flush()
         {
             while (!_waiting)

@@ -74,7 +74,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

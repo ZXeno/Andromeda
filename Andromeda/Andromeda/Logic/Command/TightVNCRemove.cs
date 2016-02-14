@@ -9,7 +9,6 @@ namespace Andromeda.Logic.Command
     public class TightVNCRemove : Action
     {
         private ConnectionOptions _connOps;
-        private CredToken _creds;
         private readonly string _processName = "tvnserver.exe";
 
         public TightVNCRemove()
@@ -25,19 +24,17 @@ namespace Andromeda.Logic.Command
             List<string> devlist = ParseDeviceList(a);
             List<string> confirmedConnectionList = GetPingableDevices.GetDevices(devlist);
             List<string> failedlist = new List<string>();
-            
-            _creds = Program.CredentialManager.UserCredentials;
 
-            if (!ValidateCredentials(_creds))
+            if (!Program.CredentialManager.CredentialsAreValid)
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
-                ResultConsole.AddConsoleLine("Remove TightVNC was canceled due to improper credentials.");
-                Logger.Log("Invalid credentials entered. Action canceled.");
+                ResultConsole.AddConsoleLine(ActionName + "was canceled due to invalid credentials.");
+                Logger.Log("Tried to run " + ActionName + " but there were no credentials added.");
                 return;
             }
 
-            _connOps.Username = _creds.User;
-            _connOps.SecurePassword = _creds.SecurePassword;
+            _connOps.Username = Program.CredentialManager.UserCredentials.User;
+            _connOps.SecurePassword = Program.CredentialManager.UserCredentials.SecurePassword;
             _connOps.Impersonation = ImpersonationLevel.Impersonate;
 
             foreach (var device in confirmedConnectionList)
@@ -79,7 +76,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

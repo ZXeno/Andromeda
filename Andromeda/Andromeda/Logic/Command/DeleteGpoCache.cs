@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Andromeda.Model;
+using Andromeda.Infrastructure;
 
 namespace Andromeda.Logic.Command
 {
@@ -24,7 +24,7 @@ namespace Andromeda.Logic.Command
 
             foreach (var device in confirmedConnectionList)
             {
-                if (ValidateDirectoryExists(device, GpoCacheDir))
+                if (FileAndFolderFunctions.ValidateDirectoryExists(device, GpoCacheDir, ActionName))
                 {
                     List<string> dirtyContents = Directory.EnumerateDirectories("\\\\" + device + "\\C$" + GpoCacheDir).ToList();
                     List<string> contents = new List<string>();
@@ -37,7 +37,7 @@ namespace Andromeda.Logic.Command
 
                     foreach (var dir in contents)
                     {
-                        CleanDirectory(device, dir);
+                        FileAndFolderFunctions.CleanDirectory(device, dir);
                     }
 
                     RunPSExecCommand.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C gpupdate.exe /force");
@@ -51,7 +51,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

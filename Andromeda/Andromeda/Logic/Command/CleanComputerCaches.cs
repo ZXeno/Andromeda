@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Andromeda.Infrastructure;
 using Andromeda.Model;
 
 namespace Andromeda.Logic.Command
@@ -29,14 +30,14 @@ namespace Andromeda.Logic.Command
             
             foreach (var device in confirmedConnectionList)
             {
-                if (ValidateDirectoryExists(device, CcmCachePath))
+                if (FileAndFolderFunctions.ValidateDirectoryExists(device, CcmCachePath, ActionName))
                 {
-                    CleanDirectory(device, CcmCachePath);
+                    FileAndFolderFunctions.CleanDirectory(device, CcmCachePath);
                 }
 
-                if (ValidateDirectoryExists(device, WindowsTemp))
+                if (FileAndFolderFunctions.ValidateDirectoryExists(device, WindowsTemp, ActionName))
                 {
-                    CleanDirectory(device, WindowsTemp);
+                    FileAndFolderFunctions.CleanDirectory(device, WindowsTemp);
                 }
 
                 List<string> userDirPaths = Directory.EnumerateDirectories("\\\\" + device + "\\C$" + UsersDirectory).ToList();
@@ -51,24 +52,24 @@ namespace Andromeda.Logic.Command
 
                 foreach (var userFolder in userFolders)
                 {
-                    if (ValidateDirectoryExists(device, userFolder))
+                    if (FileAndFolderFunctions.ValidateDirectoryExists(device, userFolder, ActionName))
                     {
                         // Validate and Clean User Temp Folder at "C:\users\[user]\appdata\local\temp"
-                        if (ValidateDirectoryExists(device, userFolder + UserTemp))
+                        if (FileAndFolderFunctions.ValidateDirectoryExists(device, userFolder + UserTemp, ActionName))
                         {
-                            CleanDirectory(device, userFolder + UserTemp);
+                            FileAndFolderFunctions.CleanDirectory(device, userFolder + UserTemp);
                         }
 
                         // Validate and Clean User Temporary Internet Files at "C:\Users\[user]\AppData\Local\Microsoft\Windows\Temporary Internet Files"
-                        if (ValidateDirectoryExists(device, userFolder + UserTempInternetFiles))
+                        if (FileAndFolderFunctions.ValidateDirectoryExists(device, userFolder + UserTempInternetFiles, ActionName))
                         {
-                            CleanDirectory(device, userFolder + UserTempInternetFiles);
+                            FileAndFolderFunctions.CleanDirectory(device, userFolder + UserTempInternetFiles);
                         }
 
                         // Validate and Clean User Java Cache Files at "C:\Users\[user]\AppData\Local\Microsoft\Windows\Temporary Internet Files"
-                        if (ValidateDirectoryExists(device, userFolder + JavaCache))
+                        if (FileAndFolderFunctions.ValidateDirectoryExists(device, userFolder + JavaCache, ActionName))
                         {
-                            CleanDirectory(device, userFolder + JavaCache);
+                            FileAndFolderFunctions.CleanDirectory(device, userFolder + JavaCache);
                         }
                     }
                 }
@@ -77,7 +78,7 @@ namespace Andromeda.Logic.Command
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
     }

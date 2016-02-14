@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Management;
 using Andromeda.Infrastructure;
-using Andromeda.Model;
 
 namespace Andromeda.Logic
 {
-    public class SccmScheduleActionBase : Logic.Action
+    public class SccmScheduleActionBase : Action
     {
         protected ConnectionOptions Connection;
         protected string FailedLog = "sccm_schedule_failed_log.txt";
         protected string Scope = "\\root\\ccm:SMS_Client";
+
+        public override void RunCommand(string rawDeviceList)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public virtual void RunScheduleTrigger(string scheduleId, string deviceList)
         {
@@ -37,8 +41,10 @@ namespace Andromeda.Logic
 
             if (failedlist.Count > 0)
             {
-                WriteToFailedLog(ActionName, failedlist);
+                Logger.WriteToFailedLog(ActionName, failedlist);
             }
         }
+
+        
     }
 }
