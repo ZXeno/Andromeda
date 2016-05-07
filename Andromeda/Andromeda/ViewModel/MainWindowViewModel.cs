@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Andromeda.Infrastructure;
-using Andromeda.Model;
+using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.Infrastructure;
 using Andromeda.View;
-using Action = Andromeda.Logic.Action;
+using Andromeda_Actions_Core.ViewModel;
+using Action = Andromeda_Actions_Core.Action;
+
 
 namespace Andromeda.ViewModel
 {
@@ -18,12 +21,11 @@ namespace Andromeda.ViewModel
         public static event ActionsStarted ActionStart;
         public void OnActionStarted(bool justStarted)
         {
-            if (ActionStart != null)
-            {
-                ActionStart(justStarted);
-            }
+            ActionStart?.Invoke(justStarted);
         }
 
+
+#region Properties
         public ObservableCollection<Action> ActionsList { get; private set; }
         private ObservableCollection<ViewModelBase> _viewModels; 
         public ObservableCollection<ViewModelBase> ViewModels
@@ -39,31 +41,18 @@ namespace Andromeda.ViewModel
             }
         }
 
-        public bool CredentialsValid
-        {
-            get { return Program.CredentialManager.CredentialsAreValid; }
-        }
+        public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
 
         public string Username
         {
             get
             {
-                if (Program.CredentialManager.CredentialsAreValid)
+                if (CredentialManager.Instance.CredentialsAreValid)
                 {
-                    return (Program.CredentialManager.UserCredentials.Domain + "\\" + Program.CredentialManager.UserCredentials.User).ToUpper();
+                    return (CredentialManager.Instance.UserCredentials.Domain + "\\" + CredentialManager.Instance.UserCredentials.User).ToUpper();
                 }
                 return @"NO USER Please log in";
             }
-        }
-
-        public string VersionNumber
-        {
-            get { return Program.VersionNumber; }
-        }
-
-        public Visibility UpdateNotification
-        {
-            get { return (Program.UpdateAvailable) ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         private string _runButtonText;
@@ -112,6 +101,17 @@ namespace Andromeda.ViewModel
             }
         }
 
+        private bool _runInParallelWindow;
+        public bool RunInParallelWindow
+        {
+            get { return _runInParallelWindow; }
+            set
+            {
+                _runInParallelWindow = value;
+                OnPropertyChanged("RunInParallelWindow");
+            }
+        }
+
         private ICommand _runCmd;
         public ICommand RunCommand
         {
@@ -148,32 +148,40 @@ namespace Andromeda.ViewModel
             }
         }
 
-        public Visibility LoginButtonVisibility
-        {
-            get { return (!Program.CredentialManager.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed; }
-        }
+        public string VersionNumber => Program.VersionNumber;
+        public Visibility UpdateNotification => (Program.UpdateAvailable) ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
+        #endregion
 
+
+
+        #region Constructor
         public MainWindowViewModel()
         {
             ActionsList = new ObservableCollection<Action>();
+            var actionImportList = new List<Action>();
 
             // Dynamically get all of our action classes and load them into the viewmodel.
-            string @namespace = "Andromeda.Logic.Command";
-
-            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-                    where t.IsClass && t.Namespace == @namespace
+            string @corenamespace = "Andromeda_Actions_Core.Command";
+            var assembly = Assembly.LoadFile(Program.WorkingPath + "\\Andromeda-Actions-Core.dll");
+            var q = from t in assembly.GetTypes()
+                    where t.IsClass && t.Namespace == @corenamespace
                     select t;
-            q = q.OrderBy(x => x.Name).ToList();
-
+            
             foreach (var type in q)
             {
-                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+                var assemblyName = assembly.GetName().Name;
                 var newinstance = Activator.CreateInstance(assemblyName, type.FullName).Unwrap();
                 Action action = newinstance as Action;
-                ActionsList.Add(action);
-                
+                actionImportList.Add(action);
             }
-            // That's pretty fuckin' rad, right? I think so.
+
+            actionImportList = actionImportList.OrderBy(x => x.ActionName).ToList();
+
+            foreach (var action in actionImportList)
+            {
+                ActionsList.Add(action);
+            }
 
 
             _viewModels = new ObservableCollection<ViewModelBase>();
@@ -184,6 +192,7 @@ namespace Andromeda.ViewModel
 
             ActionStart += UpdateActionIcon;
         }
+#endregion
 
         protected override void OnDispose()
         {
@@ -193,33 +202,40 @@ namespace Andromeda.ViewModel
 
         public void RunCommandExecute()
         {
-            if (SelectedAction != null && RunCommandCanExecute())
+            if (SelectedAction == null && !RunCommandCanExecute()) { return; }
+
+            if (RunInParallelWindow)
             {
-                OnActionStarted(true);
+                var dataContext = new ParallelActionWindowViewModel(SelectedAction, DeviceListString);
+                var newWindow = new ParallelActionWindow
+                {
+                    DataContext = dataContext
+                };
+                
+                dataContext.Begin();
+                
 
-                var thread = new Thread(
-                    new ThreadStart(
-                        () => {
-                                Logger.Log("Starting action " + SelectedAction.ActionName);
-                                ResultConsole.Instance.AddConsoleLine("Starting action " + SelectedAction.ActionName);
-                                SelectedAction.RunCommand(DeviceListString);
-                                OnActionStarted(false);
-                            }));
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.IsBackground = true;
-
-                thread.Start();
-
-                //ThreadPool.QueueUserWorkItem(
-                //    o => 
-                //    {
-                //        Logger.Log("Starting action " + SelectedAction.ActionName);
-                //        SelectedAction.RunCommand(DeviceListString);
-                //        OnActionStarted(false);
-                //        ProgressData.Reset();
-                //    }
-                //    , ApartmentState.STA);   
+                newWindow.Show();
+                return;
             }
+
+            OnActionStarted(true);
+
+            var thread = new Thread(
+                new ThreadStart(
+                    () =>
+                    {
+                        var thisAction = SelectedAction;
+                        Logger.Log("Starting action " + thisAction.ActionName);
+                        ResultConsole.Instance.AddConsoleLine("Starting action " + thisAction.ActionName);
+                        thisAction.RunCommand(DeviceListString);
+                        ResultConsole.Instance.AddConsoleLine("Action " + thisAction.ActionName + " completed.");
+                        OnActionStarted(false);
+                    }));
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+
+            thread.Start();
         }
 
         public bool RunCommandCanExecute()
@@ -234,7 +250,7 @@ namespace Andromeda.ViewModel
 
         public bool LoginCommandCanExecute()
         {
-            if (!Program.CredentialManager.CredentialsAreValid)
+            if (!CredentialManager.Instance.CredentialsAreValid)
             {
                 return true;
             }

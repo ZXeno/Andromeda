@@ -1,0 +1,14 @@
+﻿<src:ApplicationWindowBase x:Class="Andromeda.View.ParallelActionWindow"
+        xmlns:src="clr-namespace:Andromeda_Actions_Core.ViewModel;assembly=Andromeda-Actions-Core"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Andromeda.ViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Path=ActionTitle}" Height="100" Width="350" Style="{StaticResource WindowBG}">
+    <Grid>
+        <Label x:Name="label" Style="{StaticResource TextboxLabels}" Content="{Binding Path=WindowMessage}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,10,10,25" Width="322" Height="35"/>
+        <Button x:Name="button" Content="Cancel Action" Command="{Binding CancelCommand, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,10" HorizontalAlignment="Right" Width="120" Height="15" VerticalAlignment="Bottom"/>
+    </Grid>
+</src:ApplicationWindowBase>

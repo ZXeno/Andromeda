@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -12,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jonathan Cain")]
 [assembly: AssemblyProduct("Andromeda")]
-[assembly: AssemblyCopyright("Copyright © Jonathan Cain 2015")]
+[assembly: AssemblyCopyright("Copyright © Jonathan Cain 2015 - 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

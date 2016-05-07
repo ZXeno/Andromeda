@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Security;
 using System.Windows.Input;
-using Andromeda.Infrastructure;
+using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.Infrastructure;
+using Andromeda_Actions_Core.ViewModel;
 
 namespace Andromeda.ViewModel
 {
     public class LoginWindowViewModel : ViewModelBase
     {
-        private CredentialManager _credManager { get { return Program.CredentialManager; } }
+        private CredentialManager _credManager { get { return CredentialManager.Instance; } }
         
-        public Action SuccessAction { get; set; }
-        public Action CancelAction { get; set; }
+        public System.Action SuccessAction { get; set; }
+        public System.Action CancelAction { get; set; }
 
         private string _domain;
         public string Domain

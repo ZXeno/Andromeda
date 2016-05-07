@@ -1,4 +1,7 @@
-﻿namespace Andromeda.ViewModel
+﻿using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.ViewModel;
+
+namespace Andromeda.ViewModel
 {
     public class ResultConsoleViewModel : ViewModelBase
     {

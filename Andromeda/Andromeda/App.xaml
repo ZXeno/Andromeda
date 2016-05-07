@@ -1,11 +1,12 @@
 ﻿<Application x:Class="Andromeda.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Andromeda">
+             xmlns:local="clr-namespace:Andromeda"
+             xmlns:core="Andromeda_Actions_Core">
     
     <Application.Resources>
 
-        <ResourceDictionary Source="ResourceDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Andromeda-Actions-Core;component/View/ResourceDictionary.xaml" />
 
     </Application.Resources>
 </Application>

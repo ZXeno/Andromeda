@@ -1,32 +1,24 @@
 ﻿using System;
 using System.IO;
-using Andromeda.Infrastructure;
+using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.Infrastructure;
 
 namespace Andromeda
 {
     public class Program
     {
-        public const string VersionNumber = "Version 0.4";
+        public const string VersionNumber = "Version 0.5 --EXPERIMENTAL--";
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
         public static string DirectoryToCheckForUpdate = "\\\\melvin\\Andromeda\\";
 
-        private Logger _logger;
+        private readonly Logger _logger;
+        private readonly CredentialManager _credman;
+        private readonly ResultConsole _resultConsole;
 
-        private static CredentialManager _credman;
-        public static CredentialManager CredentialManager
-        {
-            get { return _credman; }
-            set { _credman = value; }
-        }
-
-        public static ResultConsole ResultConsole { get; private set; }
-
-        private static ConfigManager _configMan;
-        public static ConfigManager ConfigManager { get { return _configMan; } }
-        private static bool _updateAvailable;
-        public static bool UpdateAvailable { get { return _updateAvailable; } }
+        public static ConfigManager ConfigManager { get; private set; }
+        public static bool UpdateAvailable { get; private set; }
 
         public Program()
         {
@@ -35,10 +27,10 @@ namespace Andromeda
                 Directory.CreateDirectory(UserFolder);
             }
 
-            _logger = new Logger();
+            _logger = new Logger(UserFolder);
             _credman = new CredentialManager();
-            _configMan = new ConfigManager();
-            ResultConsole = ResultConsole.Instance;
+            ConfigManager = new ConfigManager(UserFolder);
+            _resultConsole = ResultConsole.Instance;
 
             CheckForNewVersion();
         }
@@ -54,7 +46,26 @@ namespace Andromeda
                     var result = hostedAndromeda.CompareTo(localAndromeda);
                     if (result > 0)
                     {
-                        _updateAvailable = true;
+                        UpdateAvailable = true;
+                    }
+                }
+
+                if (File.Exists(DirectoryToCheckForUpdate + "Andromeda-Actions-Core.dll"))
+                {
+                    if (File.Exists(WorkingPath + "\\Andromeda-Actions-Core.dll"))
+                    {
+                        var hostedAndromeda =
+                            File.GetLastWriteTimeUtc(DirectoryToCheckForUpdate + "Andromeda-Actions-Core.dll");
+                        var localAndromeda = File.GetLastWriteTimeUtc(WorkingPath + "\\Andromeda-Actions-Core.dll");
+                        var result = hostedAndromeda.CompareTo(localAndromeda);
+                        if (result > 0)
+                        {
+                            UpdateAvailable = true;
+                        }
+                    }
+                    else
+                    {
+                        UpdateAvailable = true;
                     }
                 }
             }

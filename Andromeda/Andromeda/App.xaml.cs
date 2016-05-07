@@ -14,7 +14,7 @@ namespace Andromeda
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            // Being program back-end
+            // Begin program back-end
             Program = new Program();
 
             // set up login window
