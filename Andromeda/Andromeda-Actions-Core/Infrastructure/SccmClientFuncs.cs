@@ -44,7 +44,7 @@ namespace Andromeda_Actions_Core
                 }
                 catch (Exception ex)
                 {
-                    ResultConsole.Instance.AddConsoleLine("Error performing SCCM Client Function due to an error: " + ex.Message);
+                    ResultConsole.Instance.AddConsoleLine("Error performing SCCM Client Function due to an error.");
                     Logger.Log("Error performing SCCM Client Function due to the following error: " + ex.Message);
                 }
             }

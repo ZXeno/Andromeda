@@ -73,8 +73,7 @@ namespace Andromeda_Actions_Core.Command
                 }
                 else
                 {
-                    // if it isn't null, but fails anyway, I'm not exactly certain why we would have an error.
-                    returnMsg = "Connection failed for an unknown reason.";
+                    returnMsg = "Connection failed for an unknown reason. Likely, the host name is not known.";
                 }
             }
             catch (PingException ex)

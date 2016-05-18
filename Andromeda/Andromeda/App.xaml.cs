@@ -16,23 +16,29 @@ namespace Andromeda
         {
             // Begin program back-end
             Program = new Program();
+            Program.Initialize();
 
             // set up login window
-            LoginWindow loginWindow = new LoginWindow();
-            var loginWindowViewModel = new LoginWindowViewModel();
-            loginWindowViewModel.SuccessAction = new Action(() => loginWindow.DialogResult = true);
-            loginWindowViewModel.CancelAction = new Action(() => loginWindow.DialogResult = false);
+            var loginWindow = new LoginWindow();
+            var loginWindowViewModel = new LoginWindowViewModel
+            {
+                SuccessAction = () => loginWindow.DialogResult = true,
+                CancelAction = () => loginWindow.DialogResult = false
+            };
             loginWindow.DataContext = loginWindowViewModel;
             
             // Initialize Main Window
-            MainWindow window = new MainWindow();
-            var viewModel = new MainWindowViewModel();
-            window.DataContext = viewModel;
-            window.Title = "Andromeda";
-            window.Height = 750;
-            window.Width = 800;
-            window.ResizeMode = ResizeMode.CanMinimize;
-
+            var mainWindowViewModel = new MainWindowViewModel();
+            mainWindowViewModel.LoadActionsCollection(Program.LoadActions());
+            MainWindow window = new MainWindow
+            {
+                Title = "Andromeda",
+                Height = 750,
+                Width = 800,
+                ResizeMode = ResizeMode.CanMinimize,
+                DataContext = mainWindowViewModel
+            };
+            
             // Show login prompt
             loginWindow.ShowDialog();
 
@@ -42,9 +48,9 @@ namespace Andromeda
                 Application.Current.Shutdown();
                 return;
             }
-
-            loginWindow = null;
-            viewModel.UpdateLoginProperties();
+            
+            
+            mainWindowViewModel?.UpdateLoginProperties();
 
             // show main window
             window.Show();

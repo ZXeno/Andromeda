@@ -10,8 +10,7 @@ namespace Andromeda_Actions_Core.Command
 {
     public class TightVNCInstall : Action
     {
-        private ConnectionOptions _connOps;
-        private CredToken _creds;
+        private CredToken _creds => CredentialManager.Instance.UserCredentials;
         private const string DestinationDirectory = "\\C$\\temp\\";
         private const string TightVncInstallerFileName = "tightvnc-setup-64bit.msi";
 
@@ -20,15 +19,12 @@ namespace Andromeda_Actions_Core.Command
             ActionName = "TightVNC Install";
             Description = "Installs the version of TightVNC from the components directory. [Requires Credentials]";
             Category = ActionGroup.Other;
-            _connOps = new ConnectionOptions();
         }
 
         public override void RunCommand(string rawDeviceList)
         {
             List<string> devlist = ParseDeviceList(rawDeviceList);
             List<string> failedlist = new List<string>();
-
-            _creds = CredentialManager.Instance.UserCredentials;
 
             if (!CredentialManager.Instance.CredentialsAreValid)
             {

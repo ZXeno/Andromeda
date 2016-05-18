@@ -11,15 +11,13 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Repair WMI";
             Description = "Repairs the WMI of the device(s).";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.WindowsManagement;
         }
 
         public override void RunCommand(string rawDeviceList)
         {
             List<string> devlist = ParseDeviceList(rawDeviceList);
             List<string> failedlist = new List<string>();
-
-            var failedList = new List<string>();
 
             try
             {
@@ -30,8 +28,7 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device +
-                                                              " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
                         continue;
                     }
 
@@ -39,12 +36,12 @@ namespace Andromeda_Actions_Core.Command
 
                     if (!result)
                     {
-                        failedList.Add(device);
+                        failedlist.Add(device);
                     }
 
-                    if (failedList.Count > 0)
+                    if (failedlist.Count > 0)
                     {
-                        WriteToFailedLog(ActionName, failedList);
+                        WriteToFailedLog(ActionName, failedlist);
                     }
                 }
             }

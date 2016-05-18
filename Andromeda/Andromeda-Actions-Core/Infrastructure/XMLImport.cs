@@ -1,10 +1,4 @@
-﻿/*
- * This class handles importing XML files and returning them in a parsable format to other classes.
- * 
- */
-
-using System;
-using System.Windows;
+﻿using System;
 using System.Xml;
 using System.IO;
 
@@ -12,7 +6,6 @@ namespace Andromeda_Actions_Core.Infrastructure
 {
     public class XMLImport
     {
-
         public static XmlDocument GetXMLFileData(string path)
         {
             XmlDocument xdoc;
@@ -35,16 +28,8 @@ namespace Andromeda_Actions_Core.Infrastructure
                     return xdoc;
                 }
             }
-            else
-            {
-                return null;
-            }
-        }
 
-        public static bool FileExists(string path)
-        {
-            return File.Exists(path);
+            return null;
         }
-
     }
 }

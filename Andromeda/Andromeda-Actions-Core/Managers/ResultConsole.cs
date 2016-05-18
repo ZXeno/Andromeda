@@ -33,7 +33,7 @@ namespace Andromeda_Actions_Core
             }
         }
 
-        public List<string> History { get; private set; }
+        public List<string> History { get; }
 
         private string _consoleString;
         public string ConsoleString
@@ -55,7 +55,6 @@ namespace Andromeda_Actions_Core
 
         private readonly Queue<string> _queue = new Queue<string>();
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
-        private volatile bool _waiting;
 
         public ResultConsole()
         {
@@ -85,9 +84,7 @@ namespace Andromeda_Actions_Core
         {
             while (true)
             {
-                _waiting = true;
                 _hasNewItems.WaitOne(100, true);
-                _waiting = false;
 
                 Queue<string> queueCopy;
                 lock (_queue)

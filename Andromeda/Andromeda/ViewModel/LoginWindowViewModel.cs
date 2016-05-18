@@ -9,8 +9,8 @@ namespace Andromeda.ViewModel
 {
     public class LoginWindowViewModel : ViewModelBase
     {
-        private CredentialManager _credManager { get { return CredentialManager.Instance; } }
-        
+        private CredentialManager _credManager => CredentialManager.Instance;
+
         public System.Action SuccessAction { get; set; }
         public System.Action CancelAction { get; set; }
 

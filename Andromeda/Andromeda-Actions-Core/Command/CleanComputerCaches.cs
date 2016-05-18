@@ -36,8 +36,7 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device +
-                                                              " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
                         continue;
                     }
 
@@ -51,8 +50,7 @@ namespace Andromeda_Actions_Core.Command
                         FileAndFolderFunctions.CleanDirectory(device, WindowsTemp);
                     }
 
-                    List<string> userDirPaths =
-                        Directory.EnumerateDirectories("\\\\" + device + "\\C$" + UsersDirectory).ToList();
+                    List<string> userDirPaths = Directory.EnumerateDirectories("\\\\" + device + "\\C$" + UsersDirectory).ToList();
                     List<string> userFolders = new List<string>();
 
                     // Create useable paths

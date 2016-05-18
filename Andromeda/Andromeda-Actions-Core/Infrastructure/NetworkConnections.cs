@@ -10,28 +10,22 @@ namespace Andromeda_Actions_Core.Infrastructure
     public static class NetworkConnections
     {
         /// <summary>
-        /// Ping test for single machine.
+        /// Ping test for single machine. 
+        /// 
+        /// If exception is caught, returns null.
         /// </summary>
         /// <param name="hostname"></param>
         /// <returns></returns>
         public static PingReply PingTest(string hostname)
         {
-            PingReply pr = new Ping().Send(hostname, 3000);
-            return pr;
-        }
-
-        /// <summary>
-        /// Asynchronous Ping Test
-        /// </summary>
-        /// <param name="deviceList"></param>
-        /// <returns>PingReply list</returns>
-        public static async Task<List<PingReply>> PingTestAsync(List<string> deviceList)
-        {
-            Ping pingSender = new Ping();
-            var tasks = deviceList.Select(ip => pingSender.SendPingAsync(ip, 2000));
-            var results = await Task.WhenAll(tasks);
-
-            return results.ToList();
+            try
+            {
+                return new Ping().Send(hostname, 3000);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static bool DnsResolvesSuccessfully(string device)
