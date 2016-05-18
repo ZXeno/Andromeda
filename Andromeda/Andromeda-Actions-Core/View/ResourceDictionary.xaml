@@ -14,7 +14,7 @@
     </Style>
     
     <Style x:Key="TextboxLabels" TargetType="{x:Type Label}">
-        <Setter Property="Foreground" Value="#FF878585"/>
+        <Setter Property="Foreground" Value="#FFC9C9C9"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="FontFamily" Value="Lucida Console"/>
@@ -198,7 +198,7 @@
     </Style>
     
     <Style x:Key="Checkbox" TargetType="{x:Type CheckBox}">
-        <Setter Property="Foreground" Value="#FFE0E0E0"/>
+        <Setter Property="Foreground" Value="#FFC9C9C9"/>
         <Setter Property="FontFamily" Value="Lucida Console" />
         <Setter Property="Height" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -208,7 +208,7 @@
     <Style x:Key="VersionNumber" TargetType="{x:Type Label}">
         <Setter Property="VerticalContentAlignment" Value="Bottom" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="Foreground" Value="#FFE0E0E0" />
+        <Setter Property="Foreground" Value="#FFC9C9C9" />
         <Setter Property="FontSize" Value="10" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
