@@ -52,6 +52,7 @@
     <Compile Include="Command\AppDeploymentScheduleSccm.cs" />
     <Compile Include="Command\CleanComputerCaches.cs" />
     <Compile Include="Command\DeleteGpoCache.cs" />
+    <Compile Include="Command\FileCopy.cs" />
     <Compile Include="Command\ForceLogOff.cs" />
     <Compile Include="Command\ForceReboot.cs" />
     <Compile Include="Command\GetLoggedOnUser.cs" />
@@ -68,8 +69,8 @@
     <Compile Include="Command\UserPolicyRetrievalCycleSccm.cs" />
     <Compile Include="Infrastructure\DelegateCommand.cs" />
     <Compile Include="Infrastructure\FileAndFolderFunctions.cs" />
-    <Compile Include="Infrastructure\GetPingableDevices.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
+    <Compile Include="ViewModel\FileCopyPromptViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
     <Compile Include="Infrastructure\Logger.cs" />
     <Compile Include="Infrastructure\NetworkConnections.cs" />
@@ -89,12 +90,19 @@
     <Compile Include="RunPSExecCommand.cs" />
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
+    <Compile Include="View\FileCopyPrompt.xaml.cs">
+      <DependentUpon>FileCopyPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\FileCopyPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
