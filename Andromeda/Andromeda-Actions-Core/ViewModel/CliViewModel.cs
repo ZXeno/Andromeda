@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using Andromeda_Actions_Core.Infrastructure;
-using Andromeda_Actions_Core.View;
 
 namespace Andromeda_Actions_Core.ViewModel
 {
-    public class CliViewModel : ViewModelBase
+    public class CliViewModel : ViewModelBase, IRequestCloseViewModel
     {
-        private Prompt newPrompt;
+        public event EventHandler RequestClose;
+        private void OnRequestClose(EventArgs e)
+        {
+            RequestClose?.Invoke(this, e);
+        }
 
         private ICommand _okayCmd;
         public ICommand OkayCommand
@@ -24,7 +26,6 @@ namespace Andromeda_Actions_Core.ViewModel
         }
 
         private ICommand _cancelCmd;
-
         public ICommand CancelCommand
         {
             get
@@ -37,19 +38,29 @@ namespace Andromeda_Actions_Core.ViewModel
             }
         }
 
-        private string boxContents;
-        private bool _result;
-
-        public string TextBoxContents
+        private string _textboxLabel;
+        public string TextBoxLabel
         {
-            get { return boxContents; }
+            get { return _textboxLabel; }
             set
             {
-                boxContents = value;
+                _textboxLabel = value;
+                OnPropertyChanged("TextBoxLabel");
+            }
+        }
+
+        private string _boxContents;
+        public string TextBoxContents
+        {
+            get { return _boxContents; }
+            set
+            {
+                _boxContents = value;
                 OnPropertyChanged("TextBoxContents");
             }
         }
 
+        private bool _result;
         public bool Result
         {
             get { return _result; }
@@ -60,35 +71,21 @@ namespace Andromeda_Actions_Core.ViewModel
             }
         }
 
-        public void OpenNewPrompt()
+        public CliViewModel(string promptMessage)
         {
-            newPrompt = new Prompt
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen
-            };
-            newPrompt.DataContext = this;
-            newPrompt.ShowDialog();
+            TextBoxLabel = promptMessage;
         }
 
         public void OkayClose()
         {
             _result = true;
-            newPrompt.Close();
-            newPrompt = null;
+            OnRequestClose(EventArgs.Empty);
         }
 
         public void CancelClose()
         {
             _result = false;
-            newPrompt.Close();
-            newPrompt = null;
-        }
-
-
-        protected override void OnDispose()
-        {
-            newPrompt = null;
-            boxContents = "";
+            OnRequestClose(EventArgs.Empty);
         }
     }
 }
