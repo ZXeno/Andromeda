@@ -20,11 +20,8 @@ namespace Andromeda_Actions_Core
             catch (Exception e)
             {
                 ResultConsole.Instance.AddConsoleLine("Failed to connect to WMI namespace" + "\\\\" + hostname + scope);
-                //ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message + "Inner exception: " + e.InnerException); // removed inner exception information, left for later reference
                 ResultConsole.Instance.AddConsoleLine("Exception message: " + e.Message);
-                Logger.Log("Error connecting to WMI namespace \\\\" + hostname + scope +
-                    "\n Exception was caught: " + e.InnerException +
-                    "\n Calling method: " + e.TargetSite);
+                Logger.Log("Error connecting to WMI namespace \\\\" + hostname + scope + " Exception was caught: " + e.Message + " Inner exception: " + e.InnerException);
 
                 if (ConfigManager.CurrentConfig.AutomaticallyFixWmi)
                 {
@@ -65,7 +62,7 @@ namespace Andromeda_Actions_Core
                     return "1603 - ERROR_INSTALL_FAILURE: Fatal error during installation.";
             }
 
-            return retval.ToString() + " – This return value is unknown.";
+            return retval + " – This return value is unknown.";
         }
 
         public static bool RepairRemoteWmi(string hostname)
@@ -74,7 +71,7 @@ namespace Andromeda_Actions_Core
             ResultConsole.Instance.AddConsoleLine("Attempting to repair WMI on device " + hostname);
 
             string remoteBatchPath = "\\\\" + hostname + "\\C$\\windows\\temp\\fixwmi.bat";
-            string commandline = @"-i cmd /c %windir%\temp\fixwmi.bat"; // -i flag is required fore PSExec to push the command through successfully.
+            string commandline = @"-i cmd /c %windir%\temp\fixwmi.bat"; // -i flag is required for PSExec to push the command through successfully.
             var batchFileContent = CreateWmiRepairBatchConent();
 
             try
@@ -101,6 +98,153 @@ namespace Andromeda_Actions_Core
                 Logger.Log("Error running remote batch file on device " + hostname + "\n Exception: " + ex.Message);
                 ResultConsole.Instance.AddConsoleLine("Error running remote batch file on device " + hostname + "\n Exception: " + ex.Message);
                 return false;
+            }
+        }
+
+        public static bool KillRemoteProcessByName(string device, string procName, ManagementScope remote)
+        {
+            if (remote == null)
+            {
+                Logger.Log("Cannot kill process on null management scope.");
+                ResultConsole.Instance.AddConsoleLine("Unable to kill process" + procName + " on remote host " + device);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(device) ||
+                string.IsNullOrWhiteSpace(procName))
+            {
+                Logger.Log("Device or process name arguments are invalid. Cannot attempt to kill process.");
+                ResultConsole.Instance.AddConsoleLine("Unable to kill process" + procName + " on remote host " + device);
+                return false;
+            }
+
+            try
+            {
+                var procquery1 = new SelectQuery("select * from Win32_process where name='" + procName + "'");
+
+                using (var searcher = new ManagementObjectSearcher(remote, procquery1))
+                {
+                    var result = searcher.Get();
+                    foreach (ManagementObject process in result)
+                    {
+                        process.InvokeMethod("Terminate", null);
+                        ResultConsole.Instance.AddConsoleLine("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                        Logger.Log("Called process terminate (" + process["Name"] + ") on device " + device + ".");
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("There was an error trying to kill process " + procName + ". Error: " + e.Message);
+                ResultConsole.Instance.AddConsoleLine("Unable to kill process" + procName + " on remote host " + device + " Error: " + e.Message);
+                return false;
+            }
+        }
+
+        public static bool PerformRemoteUninstallByName(string device, string prodName, ManagementScope remote)
+        {
+            if (remote == null)
+            {
+                Logger.Log("Cannot call product uninstall on null management scope.");
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodName + " on remote host " + device);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(device) ||
+                string.IsNullOrWhiteSpace(prodName))
+            {
+                Logger.Log("Device or product name arguments are invalid. Cannot attempt to call product uninstall.");
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodName + " on remote host " + device);
+                return false;
+            }
+
+            try
+            {
+                var productquery = new SelectQuery("select * from Win32_product where name='" + prodName + "'");
+
+                using (var searcher = new ManagementObjectSearcher(remote, productquery))
+                {
+                    foreach (ManagementObject product in searcher.Get()) // this is the fixed line
+                    {
+                        Logger.Log("Calling uninstall on device " + device + ".");
+                        product.InvokeMethod("uninstall", null);
+                        ResultConsole.Instance.AddConsoleLine("Called uninstall on device " + device + ".");
+                        Logger.Log("Called uninstall on device " + device + ".");
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("There was an error trying to call product uninstall " + prodName + ". Error: " + e.Message);
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodName + " on remote host " + device + " Error: " + e.Message);
+                return false;
+            }
+        }
+
+        public static bool PerformRemoteUninstallByProductId(string device, string prodId, ManagementScope remote)
+        {
+            if (remote == null)
+            {
+                Logger.Log("Cannot call product uninstall on null management scope.");
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodId + " on remote host " + device);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(device) ||
+                string.IsNullOrWhiteSpace(prodId))
+            {
+                Logger.Log("Device or product name arguments are invalid. Cannot attempt to call product uninstall.");
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodId + " on remote host " + device);
+                return false;
+            }
+
+            try
+            {
+                var productquery = new SelectQuery("select * from Win32_product where identifyingnumber='" + prodId + "'");
+
+                using (var searcher = new ManagementObjectSearcher(remote, productquery))
+                {
+                    foreach (ManagementObject product in searcher.Get()) // this is the fixed line
+                    {
+                        Logger.Log("Calling uninstall on device " + device + ".");
+                        product.InvokeMethod("uninstall", null);
+                        ResultConsole.Instance.AddConsoleLine("Called uninstall on device " + device + ".");
+                        Logger.Log("Called uninstall on device " + device + ".");
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("There was an error trying to call product uninstall " + prodId + ". Error: " + e.Message);
+                ResultConsole.Instance.AddConsoleLine("Unable to call product uninstall" + prodId + " on remote host " + device + " Error: " + e.Message);
+                return false;
+            }
+        }
+
+        public static void ForceRebootRemoteDevice(string device, ManagementScope remote)
+        {
+            ObjectQuery rebootQuery = new SelectQuery("Win32_OperatingSystem");
+
+            using (var searcher = new ManagementObjectSearcher(remote, rebootQuery))
+            {
+                foreach (ManagementObject ro in searcher.Get()) // this is the fixed line
+                {
+                    ManagementBaseObject inParams = ro.GetMethodParameters("Win32Shutdown");
+
+                    // Add the input parameters.
+                    inParams["Flags"] = 6;
+
+                    // Execute the method and obtain the return values.
+                    ManagementBaseObject outParams = ro.InvokeMethod("Win32Shutdown", inParams, null);
+
+                    ResultConsole.Instance.AddConsoleLine("Reboot returned with value " + WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"])));
+                }
             }
         }
 
