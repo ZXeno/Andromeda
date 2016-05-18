@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -27,21 +24,10 @@ namespace Andromeda.ViewModel
 
 #region Properties
         public ObservableCollection<Action> ActionsList { get; private set; }
-        private ObservableCollection<ViewModelBase> _viewModels; 
-        public ObservableCollection<ViewModelBase> ViewModels
-        {
-            get
-            {
-                if (ViewModels == null)
-                {
-                    _viewModels = new ObservableCollection<ViewModelBase>();
-                }
-
-                return _viewModels;
-            }
-        }
-
         public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
+
+        private ObservableCollection<ViewModelBase> _viewModels;
+        public ObservableCollection<ViewModelBase> ViewModels => _viewModels ?? (_viewModels = new ObservableCollection<ViewModelBase>());
 
         public string Username
         {
@@ -75,6 +61,7 @@ namespace Andromeda.ViewModel
             {
                 _deviceListString = value;
                 OnPropertyChanged("DeviceListString");
+                RunCommand = new DelegateCommand(param => RunCommandExecute(), param => RunCommandCanExecute());
             }
         }
 
@@ -158,34 +145,7 @@ namespace Andromeda.ViewModel
         #region Constructor
         public MainWindowViewModel()
         {
-            ActionsList = new ObservableCollection<Action>();
-            var actionImportList = new List<Action>();
-
-            // Dynamically get all of our action classes and load them into the viewmodel.
-            string @corenamespace = "Andromeda_Actions_Core.Command";
-            var assembly = Assembly.LoadFile(Program.WorkingPath + "\\Andromeda-Actions-Core.dll");
-            var q = from t in assembly.GetTypes()
-                    where t.IsClass && t.Namespace == @corenamespace
-                    select t;
-            
-            foreach (var type in q)
-            {
-                var assemblyName = assembly.GetName().Name;
-                var newinstance = Activator.CreateInstance(assemblyName, type.FullName).Unwrap();
-                Action action = newinstance as Action;
-                actionImportList.Add(action);
-            }
-
-            actionImportList = actionImportList.OrderBy(x => x.ActionName).ToList();
-
-            foreach (var action in actionImportList)
-            {
-                ActionsList.Add(action);
-            }
-
-
-            _viewModels = new ObservableCollection<ViewModelBase>();
-            _viewModels.Add(new ResultConsoleViewModel());
+            _viewModels = new ObservableCollection<ViewModelBase> { new ResultConsoleViewModel() };
 
             RunButtonText = "Run";
             ActionRunning = false;
@@ -193,6 +153,16 @@ namespace Andromeda.ViewModel
             ActionStart += UpdateActionIcon;
         }
 #endregion
+
+        public void LoadActionsCollection(ObservableCollection<Action> collection)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection),"Actions collection cannot be null");
+            }
+
+            ActionsList = new ObservableCollection<Action>(collection);
+        }
 
         protected override void OnDispose()
         {
@@ -240,44 +210,30 @@ namespace Andromeda.ViewModel
 
         public bool RunCommandCanExecute()
         {
-            if (_actionRunning)
-            {
-                return false;
-            }
-
-            return true;
+            return !_actionRunning && !string.IsNullOrWhiteSpace(DeviceListString);
         }
 
         public bool LoginCommandCanExecute()
         {
-            if (!CredentialManager.Instance.CredentialsAreValid)
-            {
-                return true;
-            }
-
-            return false;
+            return !CredentialManager.Instance.CredentialsAreValid;
         }
 
         public void LoginCommandExecute()
         {
-            LoginWindow loginWindow = new LoginWindow();
-            var loginWindowViewModel = new LoginWindowViewModel();
-            loginWindowViewModel.SuccessAction = new System.Action(() => loginWindow.DialogResult = true);
-            loginWindowViewModel.CancelAction = new System.Action(() => loginWindow.DialogResult = false);
+            var loginWindow = new LoginWindow();
+            var loginWindowViewModel = new LoginWindowViewModel
+            {
+                SuccessAction = () => loginWindow.DialogResult = true,
+                CancelAction = () => loginWindow.DialogResult = false
+            };
             loginWindow.DataContext = loginWindowViewModel;
 
             // Show login prompt
             loginWindow.ShowDialog();
 
-            if (loginWindowViewModel.WasCanceled)
-            {
-                // program is closing if the window was canceled.
-                return;
-            }
+            if (loginWindowViewModel.WasCanceled) { return; }
 
-            loginWindow = null;
-            OnPropertyChanged("Username");
-            OnPropertyChanged("LoginButtonVisibility");
+            UpdateLoginProperties();
         }
 
         public void UpdateLoginProperties()
