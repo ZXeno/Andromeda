@@ -12,24 +12,29 @@ namespace Andromeda
 {
     public class Program
     {
-        public const string VersionNumber = "Version 0.5";
+        public const string VersionNumber = "Version 0.6";
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
-        public static string DirectoryToCheckForUpdate = "\\\\PATH\\TO\\ANDROMEDA\\FILES\\";
+        public static string PluginFolder = UserFolder + "\\Plugins";
 
         private readonly Logger _logger;
         private readonly CredentialManager _credman;
         private readonly ResultConsole _resultConsole;
 
         public static ConfigManager ConfigManager { get; private set; }
-        public static bool UpdateAvailable { get; private set; }
+        private static ICollection<Action> _pluginActions;
 
         public Program()
         {
             if (!Directory.Exists(UserFolder))
             {
                 Directory.CreateDirectory(UserFolder);
+            }
+
+            if (!Directory.Exists(PluginFolder))
+            {
+                Directory.CreateDirectory(PluginFolder);
             }
 
             _logger = new Logger(UserFolder);
@@ -40,7 +45,7 @@ namespace Andromeda
 
         public void Initialize()
         {
-            CheckForNewVersion();
+            _pluginActions = LoadPlugins();
         }
 
         public ObservableCollection<Action> LoadActions()
@@ -50,7 +55,7 @@ namespace Andromeda
 
             // Dynamically get all of our action classes and load them into the viewmodel.
             string @corenamespace = "Andromeda_Actions_Core.Command";
-            var assembly = Assembly.LoadFile(Program.WorkingPath + "\\Andromeda-Actions-Core.dll");
+            var assembly = Assembly.LoadFile(WorkingPath + "\\Andromeda-Actions-Core.dll");
             var q = from t in assembly.GetTypes()
                     where t.IsClass && t.Namespace == @corenamespace
                     select t;
@@ -76,40 +81,60 @@ namespace Andromeda
             return actionsList;
         }
 
-        private void CheckForNewVersion()
+        private ICollection<Action> LoadPlugins()
         {
-            if(Directory.Exists(DirectoryToCheckForUpdate))
-            {
-                if (File.Exists(DirectoryToCheckForUpdate + "andromeda.exe"))
-                {
-                    var hostedAndromeda = File.GetLastWriteTimeUtc(DirectoryToCheckForUpdate + "andromeda.exe");
-                    var localAndromeda = File.GetLastWriteTimeUtc(WorkingPath + "\\andromeda.exe");
-                    var result = hostedAndromeda.CompareTo(localAndromeda);
-                    if (result > 0)
-                    {
-                        UpdateAvailable = true;
-                    }
-                }
+            Logger.Log($"Loading plugins from folder path: {PluginFolder}");
 
-                if (File.Exists(DirectoryToCheckForUpdate + "Andromeda-Actions-Core.dll"))
+            string[] dllFileNames = null;
+
+            if (!Directory.Exists(PluginFolder))
+            {
+                Logger.Log("Unable to find plugins directory. Creating...");
+                Directory.CreateDirectory(PluginFolder);
+
+                return new List<Action>();
+            }
+
+            dllFileNames = Directory.GetFiles(PluginFolder, "*.dll");
+
+            var assemblies = new List<Assembly>(dllFileNames.Length);
+            foreach (var dllFile in dllFileNames)
+            {
+                var an = AssemblyName.GetAssemblyName(dllFile);
+                var assembly = Assembly.Load(an);
+                assemblies.Add(assembly);
+            }
+
+            var pluginType = typeof (Action);
+            var pluginTypes = new List<Type>();
+            foreach (var assembly in assemblies)
+            {
+                if (assembly == null) { continue; }
+
+                var types = assembly.GetTypes();
+
+                foreach (var type in types)
                 {
-                    if (File.Exists(WorkingPath + "\\Andromeda-Actions-Core.dll"))
+                    if (type.IsInterface || type.IsAbstract)
                     {
-                        var hostedAndromeda =
-                            File.GetLastWriteTimeUtc(DirectoryToCheckForUpdate + "Andromeda-Actions-Core.dll");
-                        var localAndromeda = File.GetLastWriteTimeUtc(WorkingPath + "\\Andromeda-Actions-Core.dll");
-                        var result = hostedAndromeda.CompareTo(localAndromeda);
-                        if (result > 0)
-                        {
-                            UpdateAvailable = true;
-                        }
+                        continue;
                     }
-                    else
+
+                    if (type.GetInterface(pluginType.FullName) != null)
                     {
-                        UpdateAvailable = true;
+                        pluginTypes.Add(type);
                     }
                 }
             }
+
+            var plugins = new List<Action>(pluginTypes.Count);
+            foreach (var type in pluginTypes)
+            {
+                var plugin = (Action) Activator.CreateInstance(type);
+                plugins.Add(plugin);
+            }
+
+            return plugins;
         }
     }
 }

@@ -136,7 +136,6 @@ namespace Andromeda.ViewModel
         }
 
         public string VersionNumber => Program.VersionNumber;
-        public Visibility UpdateNotification => (Program.UpdateAvailable) ? Visibility.Visible : Visibility.Collapsed;
         public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
         #endregion
 

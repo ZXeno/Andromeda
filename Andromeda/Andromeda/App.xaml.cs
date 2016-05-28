@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Andromeda.View;
 using Andromeda.ViewModel;
 
@@ -16,7 +15,6 @@ namespace Andromeda
         {
             // Begin program back-end
             Program = new Program();
-            Program.Initialize();
 
             // set up login window
             var loginWindow = new LoginWindow();
