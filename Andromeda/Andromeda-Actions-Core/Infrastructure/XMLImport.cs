@@ -8,28 +8,23 @@ namespace Andromeda_Actions_Core.Infrastructure
     {
         public static XmlDocument GetXMLFileData(string path)
         {
-            XmlDocument xdoc;
-            if (File.Exists(path))
-            {
-                xdoc = new XmlDocument();
-                try 
-                { 
-                    xdoc.Load(path);
-                    return xdoc;
-                }
-                catch (Exception e) 
-                {
-                    Logger.Log("Error! Something went wrong in XMLImport. Exception information: \n" + e.ToString());
-                    if (ResultConsole.Instance.IsInitialized)
-                    {
-                        ResultConsole.Instance.AddConsoleLine("Cannot open file: " + path);
-                    }
-                    xdoc = null;
-                    return xdoc;
-                }
-            }
+            if (!File.Exists(path)) return null;
 
-            return null;
+            var xdoc = new XmlDocument();
+            try
+            {
+                xdoc.Load(path);
+                return xdoc;
+            }
+            catch (Exception e) 
+            {
+                Logger.Log($"Something went wrong in XMLImport. Exception information: {e.Message}");
+                if (ResultConsole.Instance.IsInitialized)
+                {
+                    ResultConsole.Instance.AddConsoleLine($"Cannot open file: {path}");
+                }
+                return null;
+            }
         }
     }
 }

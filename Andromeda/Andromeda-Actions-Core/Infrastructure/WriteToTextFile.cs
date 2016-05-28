@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Andromeda_Actions_Core.Infrastructure
 {
-    class WriteToTextFile
+    internal class WriteToTextFile
     {
         // write to one-time log file. Does not check for previous file of same name and will overwrite it!
         public static void WriteToLogFile(string filepath, string contents)
@@ -17,7 +17,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                 try { outfile.WriteAsync(sb.ToString()); }
                 catch (Exception e)
                 {
-                    Logger.Log("Unable to write to log file. \n" + e.HResult);
+                    Logger.Log($"Unable to write to log file. {e.Message}");
                     ResultConsole.Instance.AddConsoleLine("Unable to write to log file.");
                 }
             }
@@ -34,23 +34,23 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             else
             {
-                ResultConsole.Instance.AddConsoleLine("Strangely, there is no file at: (" + filepath + ") \n A new file will be created.");
+                ResultConsole.Instance.AddConsoleLine($"No file found at: {filepath} \n A new file will be created.");
                 CreateNewLogFile(filepath);
                 sb.Append(ResultConsole.Instance.ConsoleString);
             }
 
-            using (StreamWriter outfile = new StreamWriter(filepath, true))
+            using (var outfile = new StreamWriter(filepath, true))
             {
                 try { outfile.WriteAsync(sb.ToString()); }
                 catch (Exception e)
                 {
-                    throw new Exception("Unable to write to file. \n" + e.Message);
+                    throw new Exception($"Unable to write to file. Error: {e.Message}");
                 }
             }
         }
 
         // Create new empty log file
-        public async static void CreateNewLogFile(string filepath)
+        public static async void CreateNewLogFile(string filepath)
         {
             if (!File.Exists(filepath))
             {
@@ -61,14 +61,14 @@ namespace Andromeda_Actions_Core.Infrastructure
                     try { await outfile.WriteAsync(""); }
                     catch (Exception e)
                     {
-                        throw new Exception("Unable to create log file. \n Returned error: " + e.Message);
+                        throw new Exception($"Unable to create log file. Error: {e.Message}");
                     }
                 }
             }
         }
 
         // Create Remote Text File
-        public async static void CreateRemoteTextFile(string filepath, string contents)
+        public static async void CreateRemoteTextFile(string filepath, string contents)
         {
             if (!File.Exists(filepath))
             {
@@ -81,8 +81,8 @@ namespace Andromeda_Actions_Core.Infrastructure
                     }
                     catch (Exception e)
                     {
-                        Logger.Log("Unable to create remote file " + filepath + " Exception: " + e.Message);
-                        ResultConsole.Instance.AddConsoleLine("Unable to create remote file " + filepath + " Exception: " + e.Message);
+                        Logger.Log($"Unable to create remote file {filepath} Exception: {e.Message}");
+                        ResultConsole.Instance.AddConsoleLine($"Unable to create remote file {filepath} Exception: {e.Message}");
                     }
                 }
             }

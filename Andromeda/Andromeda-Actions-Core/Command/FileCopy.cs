@@ -33,14 +33,14 @@ namespace Andromeda_Actions_Core.Command
 
             if (!fileCopyContext.Result)
             {
-                Logger.Log("Action " + ActionName + " canceled by user.");
-                ResultConsole.AddConsoleLine("Action " + ActionName + " canceled by user.");
+                Logger.Log($"Action {ActionName} canceled by user.");
+                ResultConsole.AddConsoleLine($"Action {ActionName} canceled by user.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(fileCopyContext.FilePath))
             {
-                Logger.Log("Action " + ActionName + " aborted: source path was empty.");
+                Logger.Log($"Action {ActionName} aborted: source path was empty.");
                 ResultConsole.AddConsoleLine("Aborting: Source path is empty.");
                 return;
             }
@@ -56,7 +56,7 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         return;
                     }
 
@@ -65,7 +65,7 @@ namespace Andromeda_Actions_Core.Command
                     string destPath;
                     if (string.IsNullOrWhiteSpace(fileCopyContext.DestinationPath))
                     {
-                        destPath = "\\\\" + device + "\\C$\\";
+                        destPath = $"\\\\{device}\\C$\\";
                     }
                     else
                     {
@@ -76,24 +76,24 @@ namespace Andromeda_Actions_Core.Command
 
                         if (fileCopyContext.DestinationPath.EndsWith("\\"))
                         {
-                            fileCopyContext.DestinationPath = fileCopyContext.DestinationPath.Remove(fileCopyContext.DestinationPath.Length -1, 1);
+                            fileCopyContext.DestinationPath = fileCopyContext.DestinationPath.Remove(fileCopyContext.DestinationPath.Length - 1, 1);
                         }
 
-                        destPath = "\\\\" + device + "\\C$\\" + fileCopyContext.DestinationPath + "\\";
+                        destPath = $"\\\\{device}\\C$\\{fileCopyContext.DestinationPath}\\";
                     }
                     
-                    ResultConsole.AddConsoleLine("Copying file " + fileName + " to device " + device);
+                    ResultConsole.AddConsoleLine($"Copying file {fileName} to device {device}");
 
                     try
                     {
                         if (ValidateDirectoryExists(device, fileCopyContext.DestinationPath))
                         {
                             File.Copy(fileCopyContext.FilePath, destPath + fileName, fileCopyContext.Overwrite);
-                            Logger.Log("Copied file " + fileName + "to " + destPath);
+                            Logger.Log($"Copied file {fileName} to {destPath}");
                         }
                         else if (fileCopyContext.CreateDestination)
                         {
-                            Logger.Log("Directory " + fileCopyContext.DestinationPath);
+                            Logger.Log($"Creating directory {fileCopyContext.DestinationPath}");
                             Directory.CreateDirectory(destPath);
 
                             Thread.Sleep(100);
@@ -108,15 +108,15 @@ namespace Andromeda_Actions_Core.Command
                     }
                     catch (Exception e)
                     {
-                        ResultConsole.AddConsoleLine("Unable to copy file " + fileName + ". Error: " + e.Message);
-                        Logger.Log("Unable to copy file " + fileName + ". Error: " + e.Message);
+                        ResultConsole.AddConsoleLine($"Unable to copy file {fileName}. Error: {e.Message}");
+                        Logger.Log($"Unable to copy file {fileName}. Error: {e.Message}");
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
 

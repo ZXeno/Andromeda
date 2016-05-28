@@ -14,8 +14,8 @@ namespace Andromeda_Actions_Core
 
         public virtual void RunScheduleTrigger(string scheduleId, string deviceList)
         {
-            List<string> devlist = ParseDeviceList(deviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(deviceList);
+            var failedlist = new List<string>();
             Connection = new ConnectionOptions { EnablePrivileges = true };
 
             try
@@ -27,12 +27,12 @@ namespace Andromeda_Actions_Core
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         return;
                     }
 
                     ManagementScope remote = null;
-                    string remoteConnectExceptionMsg = "";
+                    var remoteConnectExceptionMsg = "";
 
                     try
                     {
@@ -49,16 +49,16 @@ namespace Andromeda_Actions_Core
                     }
                     else
                     {
-                        ResultConsole.AddConsoleLine("Error connecting to WMI scope " + device + ". Process aborted for this device.");
-                        Logger.Log("Error connecting to WMI scope " + device + ". Process aborted for this device. Exception message: " + remoteConnectExceptionMsg);
+                        ResultConsole.AddConsoleLine($"Error connecting to WMI scope {device}. Process aborted for this device.");
+                        Logger.Log($"Error connecting to WMI scope {device}. Process aborted for this device. Exception message: {remoteConnectExceptionMsg}");
                         failedlist.Add(device);
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
             catch (Exception) { }

@@ -39,7 +39,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             catch (Exception)
             {
-                ResultConsole.Instance.AddConsoleLine(string.Format(device + " Connection Error: Could not resolve host."));
+                ResultConsole.Instance.AddConsoleLine($"Connection Error: Could not resolve host {device}. ");
                 didResolve = false;
             }
 

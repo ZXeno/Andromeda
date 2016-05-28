@@ -10,7 +10,7 @@ using Andromeda_Actions_Core.Model;
 
 namespace Andromeda_Actions_Core
 {
-    public abstract class Action
+    public abstract class Action : IAction
     {
         protected ResultConsole ResultConsole => ResultConsole.Instance;
         protected Configuration Config => ConfigManager.CurrentConfig;
@@ -37,17 +37,17 @@ namespace Andromeda_Actions_Core
         public override string ToString() { return ActionName; }
 
         // Return a list of devices from the string list of the GUI
-        public List<string> ParseDeviceList(string list)
+        protected List<string> ParseDeviceList(string list)
         {
-            List<string> devList = new List<string>(list.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+            var devList = new List<string>(list.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
 
-            List<string> resultList = new List<string>();
+            var resultList = new List<string>();
 
             foreach (var d in devList)
             {
                 var t = d;
 
-                t = new string(t.ToCharArray().Where(c => !Char.IsWhiteSpace(c)).ToArray());
+                t = new string(t.ToCharArray().Where(c => !char.IsWhiteSpace(c)).ToArray());
 
                 resultList.Add(t);
             }
@@ -76,17 +76,17 @@ namespace Andromeda_Actions_Core
 
         protected void CleanDirectory(string device, string path)
         {
-            var fullPath = "\\\\" + device + "\\C$" + path;
+            var fullPath = $"\\\\{device}\\C${path}";
 
             try
             {
                 Directory.Delete(fullPath, true);
-                Logger.Log("Cleaned directory " + fullPath);
+                Logger.Log($"Cleaned directory {fullPath}");
             }
             catch (Exception ex)
             {
-                ResultConsole.AddConsoleLine("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message);
-                Logger.Log("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message + " Inner exception: " + ex.InnerException);
+                ResultConsole.AddConsoleLine($"Failed to clean directory {fullPath}. Due to exception {ex.Message}");
+                Logger.Log($"Failed to clean directory {fullPath}. Due to exception {ex.Message} Inner exception: {ex.InnerException}");
             }
         }
 
@@ -94,13 +94,13 @@ namespace Andromeda_Actions_Core
         {
             try
             {
-                return Directory.Exists("\\\\" + device + "\\C$\\" + path);
+                return Directory.Exists($"\\\\{device}\\C$\\{path}");
             }
             catch (Exception ex)
             {
-                ResultConsole.AddConsoleLine("There was an exception when validating the directory" + path + " for machine: " + device);
+                ResultConsole.AddConsoleLine($"There was an exception when validating the directory {path} for machine: {device}");
                 ResultConsole.AddConsoleLine(ex.Message);
-                Logger.Log(ActionName + " failed to validate directory: \\\\" + device + "\\C$\\" + path);
+                Logger.Log($"{ActionName} failed to validate directory: \\\\{device}\\C$\\{path}");
                 return false;
             }
         }
@@ -109,13 +109,13 @@ namespace Andromeda_Actions_Core
         {
             try
             {
-                return File.Exists("\\\\" + device + "\\C$" + path);
+                return File.Exists($"\\\\{device}\\C${path}");
             }
             catch (Exception ex)
             {
-                ResultConsole.AddConsoleLine("There was an exception when validating the file" + path + " for machine: " + device);
+                ResultConsole.AddConsoleLine($"There was an exception when validating the file {path} for machine: {device}");
                 ResultConsole.AddConsoleLine(ex.Message);
-                Logger.Log(ActionName + " failed to validate file: \\\\" + device + "\\C$\\" + path);
+                Logger.Log($"{ActionName} failed to validate file: \\\\{device}\\C$\\{path}");
                 return false;
             }
         }
@@ -123,13 +123,13 @@ namespace Andromeda_Actions_Core
         protected void WriteToFailedLog(string actionName, List<string> failedList)
         {
             var logFile = actionName.Replace(" ", "_") + "_failed_log.txt";
-            var path = Config.ResultsDirectory + "\\" + logFile;
-            StringBuilder sb = new StringBuilder();
+            var path = $"{Config.ResultsDirectory}\\{logFile}";
+            var sb = new StringBuilder();
 
             if (File.Exists(path))
             {
                 File.Delete(path);
-                Logger.Log("Deleted file " + path);
+                Logger.Log($"Deleted file {path}");
             }
 
             foreach (var failed in failedList)
@@ -137,18 +137,18 @@ namespace Andromeda_Actions_Core
                 sb.AppendLine(failed);
             }
 
-            using (StreamWriter outfile = new StreamWriter(Config.ResultsDirectory + "\\" + logFile, true))
+            using (var outfile = new StreamWriter(Config.ResultsDirectory + "\\" + logFile, true))
             {
                 try
                 {
                     outfile.WriteAsync(sb.ToString());
-                    Logger.Log("Wrote \"" + actionName + "\" results to file " + path);
-                    ResultConsole.AddConsoleLine("There were " + failedList.Count + " computers that failed the process. They have been recorded in the log at " + path);
+                    Logger.Log($"Wrote \"{actionName}\" results to file {path}");
+                    ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. They have been recorded in the log at {path}");
                 }
                 catch (Exception e)
                 {
-                    Logger.Log("Unable to write to " + path + ". \n" + e.Message);
-                    ResultConsole.AddConsoleLine("There were " + failedList.Count + " computers that failed the process. However, there was an exception attempting to write to the failed log file.");
+                    Logger.Log($"Unable to write to {path}. Error: {e.Message}");
+                    ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. However, there was an exception attempting to write to the failed log file.");
                 }
             }
         }

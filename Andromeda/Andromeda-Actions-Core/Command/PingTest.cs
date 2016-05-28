@@ -17,8 +17,8 @@ namespace Andromeda_Actions_Core.Command
 
         public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             try
             {
@@ -36,8 +36,8 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
 
@@ -61,13 +61,13 @@ namespace Andromeda_Actions_Core.Command
                     switch (hostname.Status)
                     {
                         case IPStatus.Success:
-                            returnMsg = string.Format("Reply from {0} with address {1}", device, hostname.Address);
+                            returnMsg = $"Reply from {device} with address {hostname.Address}";
                             break;
                         case IPStatus.TimedOut:
                             returnMsg = "Connection has timed out.";
                             break;
                         default:
-                            returnMsg = string.Format("Ping to {0} failed with message: {1}", device, NetworkConnections.GetIpStatusMessage(hostname.Status));
+                            returnMsg = $"Ping to {device} failed with message {NetworkConnections.GetIpStatusMessage(hostname.Status)}";
                             break;
                     }
                 }
@@ -78,11 +78,11 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (PingException ex)
             {
-                returnMsg = string.Format("Connection Error: {0}", ex.Message);
+                returnMsg = $"Connection Error: {ex.Message}";
             }
             catch (SocketException ex)
             {
-                returnMsg = string.Format("Connection Error: {0}", ex.Message);
+                returnMsg = $"Connection Error: {ex.Message}";
             }
 
             return returnMsg;

@@ -12,8 +12,8 @@ namespace Andromeda_Actions_Core.Infrastructure
         private static string _logFileName;
         private static string _fullLogPath;
 
-        private static Queue<string> _queue = new Queue<string>();
-        private static AutoResetEvent _hasNewItems = new AutoResetEvent(false);
+        private static readonly Queue<string> _queue = new Queue<string>();
+        private static readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
         private static volatile bool _waiting = false;
 
         public Logger(string userFolder)
@@ -41,12 +41,12 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             lock (_queue)
             {
-                _queue.Enqueue(DateTime.Now + " " + line);
+                _queue.Enqueue($"{DateTime.Now} {line}");
             }
             _hasNewItems.Set();
         }
 
-        void ProcessQueue()
+        private void ProcessQueue()
         {
             while (true)
             {
@@ -61,7 +61,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                     _queue.Clear();
                 }
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
                 foreach (var line in queueCopy)
                 {

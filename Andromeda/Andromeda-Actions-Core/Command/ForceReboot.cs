@@ -18,23 +18,24 @@ namespace Andromeda_Actions_Core.Command
         //' 8 - Power off
         //' 12 - Forced power off 
 
-        private readonly ConnectionOptions _connOps;
+        private const string Scope = "\\root\\cimv2";
 
         public ForceReboot()
         {
             ActionName = "Force Reboot";
             Description = "Force reboots the remote computer.";
             Category = ActionGroup.Other;
-            _connOps = new ConnectionOptions();
         }
 
         public override void RunCommand(string rawDeviceList)
         {
-            string scope = "\\root\\cimv2";
-            _connOps.EnablePrivileges = true;
+            var connOps = new ConnectionOptions
+            {
+                EnablePrivileges = true
+            };
 
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             try
             {
@@ -45,26 +46,26 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         return;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, scope, _connOps);
+                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, connOps);
                     if (remote != null)
                     {
                         WMIFuncs.ForceRebootRemoteDevice(device, remote);
                     }
                     else
                     {
-                        Logger.Log("There was an error connecting to WMI namespace on " + device);
-                        ResultConsole.AddConsoleLine("There was an error connecting to WMI namespace on " + device);
+                        Logger.Log($"There was an error connecting to WMI namespace on {device}");
+                        ResultConsole.AddConsoleLine($"There was an error connecting to WMI namespace on {device}");
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
 

@@ -23,8 +23,8 @@ namespace Andromeda_Actions_Core.Command
 
         public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             if (!CredentialManager.Instance.CredentialsAreValid)
             {
@@ -34,9 +34,8 @@ namespace Andromeda_Actions_Core.Command
                 return;
             }
 
-            string cmdToRun = "MsiExec.exe /i C:\\temp\\" + TightVncInstallerFileName +
-                @" /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS SET_REMOVEWALLPAPER=1 VALUE_OF_REMOVEWALLPAPER=0";
-            Logger.Log("Running TightVNC Install with following command line parameters: " + cmdToRun);
+            string cmdToRun = $"MsiExec.exe /i C:\\temp\\{TightVncInstallerFileName} /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS SET_REMOVEWALLPAPER=1 VALUE_OF_REMOVEWALLPAPER=0";
+            Logger.Log($"Running TightVNC Install with following command line parameters: {cmdToRun}");
 
             try
             {
@@ -47,34 +46,34 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device + " failed connection verification. Added to failed list.");
-                        Logger.Log("Device " + device + " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
+                        Logger.Log($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    if (!File.Exists("\\\\" + device + DestinationDirectory + TightVncInstallerFileName))
+                    if (!File.Exists($"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}"))
                     {
-                        if (!Directory.Exists("\\\\" + device + DestinationDirectory))
+                        if (!Directory.Exists($"\\\\{device}{DestinationDirectory}"))
                         {
-                            Directory.CreateDirectory("\\\\" + device + DestinationDirectory);
+                            Directory.CreateDirectory($"\\\\{device}{DestinationDirectory}");
                         }
 
-                        File.Copy(Config.ComponentDirectory + "\\" + TightVncInstallerFileName, "\\\\" + device + DestinationDirectory + TightVncInstallerFileName);
+                        File.Copy($"{Config.ComponentDirectory}\\{TightVncInstallerFileName}", $"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}");
                     }
 
                     RunPsExecCommand.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
 
                     Thread.Sleep(500);
 
-                    File.Delete("\\\\" + device + DestinationDirectory + TightVncInstallerFileName);
+                    File.Delete($"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}");
 
                     Thread.Sleep(500);
                 }
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
 

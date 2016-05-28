@@ -63,7 +63,7 @@ namespace Andromeda_Actions_Core
             _consoleString = "";
             IsInitialized = true;
 
-            Thread loggingThread = new Thread(new ThreadStart(ProcessQueue));
+            var loggingThread = new Thread(new ThreadStart(ProcessQueue));
             loggingThread.IsBackground = true;
             loggingThread.Start();
         }
@@ -103,7 +103,7 @@ namespace Andromeda_Actions_Core
                         if (Config.AlwaysDumpConsoleHistory)
                         {
                             AddLineToHistoryDumpFile(str);
-                            Logger.Log("History dump at " + DateTime.Now + ". Contents: " + str);
+                            Logger.Log($"History dump at {DateTime.Now}. Contents: {str}");
                         }
                     }
                 }
@@ -121,13 +121,13 @@ namespace Andromeda_Actions_Core
                 historydump += entry;
             }
 
-            var filepath = Config.ResultsDirectory + DateTime.Now + "_console_dump.txt";
+            var filepath = $"{Config.ResultsDirectory}{DateTime.Now}_console_dump.txt";
             WriteToTextFile.WriteToLogFile(filepath, historydump);
         }
 
         private void AddLineToHistoryDumpFile(string line)
         {
-            var filePath = Config.ResultsDirectory + "\\_history_dump_file.txt";
+            var filePath = $"{Config.ResultsDirectory}\\_history_dump_file.txt";
 
             if (!File.Exists(filePath))
             {

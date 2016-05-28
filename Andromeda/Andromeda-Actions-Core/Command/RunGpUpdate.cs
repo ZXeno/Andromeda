@@ -15,8 +15,8 @@ namespace Andromeda_Actions_Core.Command
 
         public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             try
             {
@@ -27,8 +27,7 @@ namespace Andromeda_Actions_Core.Command
                     if (!VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
-                        ResultConsole.Instance.AddConsoleLine("Device " + device +
-                                                              " failed connection verification. Added to failed list.");
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
@@ -37,8 +36,8 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine("Operation " + ActionName + " canceled.");
-                Logger.Log("Operation " + ActionName + " canceled by user request. " + e.Message);
+                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
+                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
                 ResetCancelToken();
             }
 
