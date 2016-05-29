@@ -9,28 +9,30 @@ namespace Andromeda_Actions_Core.Infrastructure
     public class Logger
     {
         private static string _logFilePath;
-        private static string _logFileName;
+        private const string LogFileName = "LogFile.txt";
         private static string _fullLogPath;
 
-        private static readonly Queue<string> _queue = new Queue<string>();
+        private static readonly Queue<string> Queue = new Queue<string>();
         private static readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
         private static volatile bool _waiting = false;
 
-        public Logger(string userFolder)
-        {
-            _logFilePath = userFolder + "\\logs";
-            _logFileName = "LogFile.txt";
+        private static IFileAndFolderServices _fileAndFolderServices;
 
-            _fullLogPath = _logFilePath + "\\" + _logFileName;
+        public Logger(string userFolder, IFileAndFolderServices fileAndFolderServices)
+        {
+            _fileAndFolderServices = fileAndFolderServices;
+
+            _logFilePath = userFolder + "\\logs";
+            _fullLogPath = _logFilePath + "\\" + LogFileName;
 
             ValidateLogDirectoryExists();
 
             if (!File.Exists(_fullLogPath))
             {
-                WriteToTextFile.CreateNewLogFile(_fullLogPath);
+                _fileAndFolderServices.CreateNewTextFile(_fullLogPath);
             }
 
-            Thread loggingThread = new Thread(new ThreadStart(ProcessQueue));
+            var loggingThread = new Thread(new ThreadStart(ProcessQueue));
             loggingThread.IsBackground = true;
             loggingThread.Start();
 
@@ -39,9 +41,9 @@ namespace Andromeda_Actions_Core.Infrastructure
 
         public static void Log(string line)
         {
-            lock (_queue)
+            lock (Queue)
             {
-                _queue.Enqueue($"{DateTime.Now} {line}");
+                Queue.Enqueue($"{DateTime.Now} {line}");
             }
             _hasNewItems.Set();
         }
@@ -55,10 +57,10 @@ namespace Andromeda_Actions_Core.Infrastructure
                 _waiting = false;
 
                 Queue<string> queueCopy;
-                lock (_queue)
+                lock (Queue)
                 {
-                    queueCopy = new Queue<string>(_queue);
-                    _queue.Clear();
+                    queueCopy = new Queue<string>(Queue);
+                    Queue.Clear();
                 }
 
                 var sb = new StringBuilder();
@@ -68,7 +70,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                     sb.AppendLine(line);
                 }
 
-                WriteToTextFile.WriteToLogFile(_fullLogPath, sb.ToString());
+                _fileAndFolderServices.WriteToTextFile(_fullLogPath, sb.ToString());
                 queueCopy.Clear();
             }
         }

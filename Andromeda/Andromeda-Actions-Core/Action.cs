@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using Andromeda_Actions_Core.Infrastructure;
@@ -26,8 +25,14 @@ namespace Andromeda_Actions_Core
         public string Description { get; protected set; }
         public ActionGroup Category { get; protected set; }
 
-        protected Action()
+        protected INetworkServices NetworkServices;
+        protected IFileAndFolderServices FileAndFolderServices;
+
+        protected Action(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
         {
+            NetworkServices = networkServices;
+            FileAndFolderServices = fileAndFolderServices;
+
             CancellationToken = new CancellationTokenSource();
         }
 
@@ -55,74 +60,15 @@ namespace Andromeda_Actions_Core
             return resultList;
         }
 
-        protected bool VerifyDeviceConnectivity(string device)
-        {
-            try
-            {
-                return NetworkConnections.Pingable(device) == IPStatus.Success;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            
-        }
-
         protected void ResetCancelToken()
         {
             CancellationToken.Dispose();
             CancellationToken = new CancellationTokenSource();
         }
 
-        protected void CleanDirectory(string device, string path)
-        {
-            var fullPath = $"\\\\{device}\\C${path}";
-
-            try
-            {
-                Directory.Delete(fullPath, true);
-                Logger.Log($"Cleaned directory {fullPath}");
-            }
-            catch (Exception ex)
-            {
-                ResultConsole.AddConsoleLine($"Failed to clean directory {fullPath}. Due to exception {ex.Message}");
-                Logger.Log($"Failed to clean directory {fullPath}. Due to exception {ex.Message} Inner exception: {ex.InnerException}");
-            }
-        }
-
-        protected bool ValidateDirectoryExists(string device, string path)
-        {
-            try
-            {
-                return Directory.Exists($"\\\\{device}\\C$\\{path}");
-            }
-            catch (Exception ex)
-            {
-                ResultConsole.AddConsoleLine($"There was an exception when validating the directory {path} for machine: {device}");
-                ResultConsole.AddConsoleLine(ex.Message);
-                Logger.Log($"{ActionName} failed to validate directory: \\\\{device}\\C$\\{path}");
-                return false;
-            }
-        }
-
-        protected bool ValidateFileExists(string device, string path)
-        {
-            try
-            {
-                return File.Exists($"\\\\{device}\\C${path}");
-            }
-            catch (Exception ex)
-            {
-                ResultConsole.AddConsoleLine($"There was an exception when validating the file {path} for machine: {device}");
-                ResultConsole.AddConsoleLine(ex.Message);
-                Logger.Log($"{ActionName} failed to validate file: \\\\{device}\\C$\\{path}");
-                return false;
-            }
-        }
-
         protected void WriteToFailedLog(string actionName, List<string> failedList)
         {
-            var logFile = actionName.Replace(" ", "_") + "_failed_log.txt";
+            var logFile = $"{actionName.Replace(" ", "_")}_failed_log.txt";
             var path = $"{Config.ResultsDirectory}\\{logFile}";
             var sb = new StringBuilder();
 
@@ -132,24 +78,22 @@ namespace Andromeda_Actions_Core
                 Logger.Log($"Deleted file {path}");
             }
 
-            foreach (var failed in failedList)
+            foreach (var device in failedList)
             {
-                sb.AppendLine(failed);
+                sb.AppendLine(device);
             }
 
-            using (var outfile = new StreamWriter(Config.ResultsDirectory + "\\" + logFile, true))
+            try
             {
-                try
-                {
-                    outfile.WriteAsync(sb.ToString());
-                    Logger.Log($"Wrote \"{actionName}\" results to file {path}");
-                    ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. They have been recorded in the log at {path}");
-                }
-                catch (Exception e)
-                {
-                    Logger.Log($"Unable to write to {path}. Error: {e.Message}");
-                    ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. However, there was an exception attempting to write to the failed log file.");
-                }
+                FileAndFolderServices.WriteToTextFile(path, sb.ToString());
+
+                Logger.Log($"Wrote \"{actionName}\" results to file {path}");
+                ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. They have been recorded in the log at {path}");
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Unable to write to {path}. Error: {e.Message}");
+                ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. However, there was an exception attempting to write to the failed log file.");
             }
         }
     }

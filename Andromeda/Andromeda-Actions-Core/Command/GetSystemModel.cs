@@ -7,13 +7,15 @@ namespace Andromeda_Actions_Core.Command
 {
     public class GetSystemModel : Action
     {
-        private const string Scope = "\\root\\cimv2";
+        private readonly IWmiServices _wmiServices;
 
-        public GetSystemModel()
+        public GetSystemModel(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Get Device Model ID";
             Description = "Gets the model ID of the selected device.";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -32,19 +34,19 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, connOps);
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, connOps);
                     if (remote != null)
                     {
                         ObjectQuery query = new SelectQuery("Win32_ComputerSystem");
 
-                        ManagementObjectSearcher searcher = new ManagementObjectSearcher(remote, query);
+                        var searcher = new ManagementObjectSearcher(remote, query);
 
                         ManagementObjectCollection queryCollection = null;
 

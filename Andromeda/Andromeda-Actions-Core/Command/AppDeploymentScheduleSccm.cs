@@ -1,9 +1,11 @@
-﻿namespace Andromeda_Actions_Core.Command
+﻿using Andromeda_Actions_Core.Infrastructure;
+
+namespace Andromeda_Actions_Core.Command
 {
     public class AppDeploymentScheduleSccm : SccmScheduleActionBase
     {
 
-        public AppDeploymentScheduleSccm()
+        public AppDeploymentScheduleSccm(IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
             ActionName = "Application Deployment Evaluation Cycle";
             Description = "Forces SCCM to schedule an Application Deployment check on the client.";
@@ -12,7 +14,7 @@
 
         public override void RunCommand(string rawDeviceList)
         {
-            RunScheduleTrigger(SccmClientFuncs.ApplicationDeploymentEvaluationCycleScheduleId, rawDeviceList);
+            RunScheduleTrigger(ApplicationDeploymentEvaluationCycleScheduleId, rawDeviceList);
         }
     }
 }

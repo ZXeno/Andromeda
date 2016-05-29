@@ -7,17 +7,17 @@ namespace Andromeda_Actions_Core.Infrastructure
     {
         public static void CleanDirectory(string device, string path)
         {
-            var fullPath = $"\\\\{device}\\C$" + path;
+            var fullPath = "\\\\" + device + "\\C$" + path;
 
             try
             {
                 Directory.Delete(fullPath, true);
-                Logger.Log($"Cleaned directory {fullPath}");
+                Logger.Log("Cleaned directory " + fullPath);
             }
             catch (Exception ex)
             {
-                ResultConsole.Instance.AddConsoleLine($"Failed to clean directory {fullPath}. Due to exception {ex.Message}");
-                Logger.Log($"Failed to clean directory {fullPath}. Due to exception {ex.Message} Inner exception: {ex.InnerException}");
+                ResultConsole.Instance.AddConsoleLine("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message);
+                Logger.Log("Failed to clean directory " + fullPath + ". Due to exception " + ex.Message + " Inner exception: " + ex.InnerException);
             }
         }
 
@@ -25,13 +25,13 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             try
             {
-                return Directory.Exists($"\\\\{device}\\C$\\{path}");
+                return Directory.Exists("\\\\" + device + "\\C$\\" + path);
             }
             catch (Exception ex)
             {
-                ResultConsole.Instance.AddConsoleLine($"There was an exception when validating the directory {path} for machine: {device}");
+                ResultConsole.Instance.AddConsoleLine("There was an exception when validating the directory" + path + " for machine: " + device);
                 ResultConsole.Instance.AddConsoleLine(ex.Message);
-                Logger.Log($"{actionName} failed to validate directory: \\\\{device}\\C$\\{path}");
+                Logger.Log(actionName + " failed to validate directory: \\\\" + device + "\\C$\\" + path);
                 return false;
             }
         }
@@ -40,13 +40,13 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             try
             {
-                return File.Exists($"\\\\{device}\\C${path}");
+                return File.Exists("\\\\" + device + "\\C$" + path);
             }
             catch (Exception ex)
             {
-                ResultConsole.Instance.AddConsoleLine($"There was an exception when validating the file {path} for machine: {device}");
+                ResultConsole.Instance.AddConsoleLine("There was an exception when validating the file" + path + " for machine: " + device);
                 ResultConsole.Instance.AddConsoleLine(ex.Message);
-                Logger.Log($"{actionName} failed to validate file: \\\\{device}\\C$\\{path}");
+                Logger.Log(actionName + " failed to validate file: \\\\" + device + "\\C$\\" + path);
                 return false;
             }
         }

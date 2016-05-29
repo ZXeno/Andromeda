@@ -12,7 +12,31 @@ namespace Andromeda_Actions_Core
         protected string FailedLog = "sccm_schedule_failed_log.txt";
         protected string Scope = "\\root\\ccm:SMS_Client";
 
-        public virtual void RunScheduleTrigger(string scheduleId, string deviceList)
+        public const string ApplicationDeploymentEvaluationCycleScheduleId = "{00000000-0000-0000-0000-000000000121}";
+        public const string DiscoveryDataCollectionCycleScheduleId = "{00000000-0000-0000-0000-000000000003}";
+        public const string FileCollectionCycleScheduleId = "{00000000-0000-0000-0000-000000000010}";
+        public const string HardwareInventoryCycleScheduleId = "{00000000-0000-0000-0000-000000000001}";
+        public const string MachinePolicyRetrievalCycleScheduleId = "{00000000-0000-0000-0000-000000000021}";
+        public const string MachinePolicyEvaluationCycleScheduleId = "{00000000-0000-0000-0000-000000000022}";
+        public const string SoftwareInventoryCycleScheduleId = "{00000000-0000-0000-0000-000000000002}";
+        public const string SoftwareMeteringUsageReportCycleScheduleId = "{00000000-0000-0000-0000-000000000031}";
+        public const string SoftwareUpdateDeploymentEvaluationCycleScheduleId = "{00000000-0000-0000-0000-000000000114}";
+        public const string SoftwareUpdateScanCycleScheduleId = "{00000000-0000-0000-0000-000000000113}";
+        public const string StateMessageRefreshScheduleId = "{00000000-0000-0000-0000-000000000111}";
+        public const string UserPolicyRetrievalCycleScheduleId = "{00000000-0000-0000-0000-000000000026}";
+        public const string UserPolicyEvaluationCycleScheduleId = "{00000000-0000-0000-0000-000000000027}";
+        public const string WindowsInstallersSourceListUpdateCycleScheduleId = "{00000000-0000-0000-0000-000000000032}";
+
+        protected readonly IWmiServices WmiService;
+        protected readonly ISccmClientServices SccmClientService;
+
+        protected SccmScheduleActionBase(IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
+        {
+            WmiService = wmiService;
+            SccmClientService = sccmClientService;
+        }
+
+        protected virtual void RunScheduleTrigger(string scheduleId, string deviceList)
         {
             var devlist = ParseDeviceList(deviceList);
             var failedlist = new List<string>();
@@ -24,7 +48,7 @@ namespace Andromeda_Actions_Core
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
@@ -36,7 +60,7 @@ namespace Andromeda_Actions_Core
 
                     try
                     {
-                        remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, Connection);
+                        remote = WmiService.ConnectToRemoteWmi(device, Scope, Connection);
                     }
                     catch (Exception ex)
                     {
@@ -45,7 +69,7 @@ namespace Andromeda_Actions_Core
 
                     if (remote != null)
                     {
-                        SccmClientFuncs.TriggerClientAction(scheduleId, remote);
+                        SccmClientService.TriggerClientAction(scheduleId, remote);
                     }
                     else
                     {

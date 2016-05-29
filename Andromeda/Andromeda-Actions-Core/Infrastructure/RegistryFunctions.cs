@@ -10,7 +10,7 @@ namespace Andromeda_Actions_Core.Logic
         {
             try
             {
-                var targetkey = RegistryKey.OpenRemoteBaseKey(baseKey, targetDevice, RegistryView.Registry64).OpenSubKey(targetSubKey);
+                RegistryKey targetkey = RegistryKey.OpenRemoteBaseKey(baseKey, targetDevice, RegistryView.Registry64).OpenSubKey(targetSubKey);
 
                 if (targetkey != null)
                 {
@@ -24,8 +24,8 @@ namespace Andromeda_Actions_Core.Logic
             }
             catch (Exception e)
             {
-                Logger.Log($"Unable to validate remote registy key {targetSubKey}: {e.Message}. Inner exception: {e.InnerException}");
-                ResultConsole.Instance.AddConsoleLine($"Unable to validate key {targetSubKey} on device {targetDevice}.");
+                Logger.Log("Unable to validate remote registy key " + targetSubKey + ": " + e.Message + ". Inner exception: " + e.InnerException);
+                ResultConsole.Instance.AddConsoleLine("Unable to validate key " + targetSubKey + "on device " + targetDevice + ".");
                 return false;
             }
         }
@@ -39,7 +39,7 @@ namespace Andromeda_Actions_Core.Logic
         {
             if (string.IsNullOrEmpty(targetSubKey))
             {
-                Logger.Log($"targetSubKey value must not be null or empty. GetRegistryKey({targetDevice}, {baseKey}, {targetSubKey}) call contains an empty subkey.");
+                Logger.Log("targetSubKey value must not be null or empty. GetRegistryKey(" + targetDevice +", " + baseKey + ", " + targetSubKey + ") call contains an empty subkey.");
                 return null;
             }
 
@@ -50,8 +50,8 @@ namespace Andromeda_Actions_Core.Logic
             }
             catch (Exception e)
             {
-                Logger.Log($"Unable to get remote registy key {targetSubKey}: {e.Message}. Inner exception: {e.InnerException}");
-                ResultConsole.Instance.AddConsoleLine($"Unable to get remote registry key {targetSubKey} on device {targetDevice}.");
+                Logger.Log("Unable to get remote registy key " + targetSubKey + ": " + e.Message + ". Inner exception: " + e.InnerException);
+                ResultConsole.Instance.AddConsoleLine("Unable to get remote registry key " + targetSubKey + "on device " + targetDevice + ".");
                 return null;
             }
         }
@@ -60,21 +60,21 @@ namespace Andromeda_Actions_Core.Logic
         {
             if (string.IsNullOrEmpty(targetSubKey))
             {
-                ResultConsole.Instance.AddConsoleLine($"Unable to remove remote registry subkey tree on device {targetDevice}. Subkey provided was empty.");
-                Logger.Log($"targetSubKey value must not be null or empty. DeleteSubkeyTree({targetDevice}, {baseKey}, {targetSubKey}) call contains an empty subkey.");
+                ResultConsole.Instance.AddConsoleLine("Unable to remove remote registry subkey tree on device " + targetDevice + ". Subkey provided was empty.");
+                Logger.Log("targetSubKey value must not be null or empty. DeleteSubkeyTree(" + targetDevice + ", " + baseKey + ", " + targetSubKey + ") call contains an empty subkey.");
                 return;
             }
 
             if (ValidateKeyExists(targetDevice, baseKey, targetSubKey))
             {
                 RegistryKey.OpenRemoteBaseKey(baseKey, targetDevice).DeleteSubKeyTree(targetSubKey, false);
-                Logger.Log($"Removed registry key {baseKey}\\{targetSubKey} on device {targetDevice}");
-                ResultConsole.Instance.AddConsoleLine($"Removed registry key {baseKey}\\{targetSubKey} on device {targetDevice}");
+                Logger.Log("Removed registry key " + baseKey + "\\" + targetSubKey + " on device " + targetDevice);
+                ResultConsole.Instance.AddConsoleLine("Removed registry key " + baseKey + "\\" + targetSubKey + " on device " + targetDevice);
                 return;
             }
 
-            ResultConsole.Instance.AddConsoleLine($"Unable to remove remote registry subkey tree on device {targetDevice}. Unable to find subkey: {baseKey}\\{targetSubKey}");
-            Logger.Log($"targetSubKey value must not be null or empty. DeleteSubkeyTree({targetDevice}, {baseKey}, {targetSubKey}) call contains an empty subkey.");
+            ResultConsole.Instance.AddConsoleLine("Unable to remove remote registry subkey tree on device " + targetDevice + ". Unable to find subkey: " + baseKey + "\\" + targetSubKey);
+            Logger.Log("targetSubKey value must not be null or empty. DeleteSubkeyTree(" + targetDevice + ", " + baseKey + ", " + targetSubKey + ") call contains an empty subkey.");
         }
     }
 }

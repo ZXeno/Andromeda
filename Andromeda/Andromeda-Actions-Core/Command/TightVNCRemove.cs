@@ -10,11 +10,15 @@ namespace Andromeda_Actions_Core.Command
         private readonly string _processName = "tvnserver.exe";
         private readonly string _productName = "TightVNC";
 
-        public TightVNCRemove()
+        private readonly IWmiServices _wmiServices;
+
+        public TightVNCRemove(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "TightVNC Remove";
             Description = "Removes TightVNC from the specified computers. [Requires Credentials]";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string a)
@@ -43,14 +47,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, WMIFuncs.RootNamespace, connOps);
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, connOps);
                     if (remote != null)
                     {
                         var procquery =

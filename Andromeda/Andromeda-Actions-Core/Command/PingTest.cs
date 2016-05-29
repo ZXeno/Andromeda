@@ -8,7 +8,7 @@ namespace Andromeda_Actions_Core.Command
 {
     public class PingTest : Action
     {
-        public PingTest()
+        public PingTest(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Ping Test";
             Description = "Runs a ping test against the device list.";
@@ -31,7 +31,7 @@ namespace Andromeda_Actions_Core.Command
                         continue;
                     }
 
-                    ResultConsole.AddConsoleLine(ParseResponse(NetworkConnections.PingTest(device), device));
+                    ResultConsole.AddConsoleLine(ParseResponse(NetworkServices.PingTest(device), device));
                 }
             }
             catch (OperationCanceledException e)
@@ -67,7 +67,7 @@ namespace Andromeda_Actions_Core.Command
                             returnMsg = "Connection has timed out.";
                             break;
                         default:
-                            returnMsg = $"Ping to {device} failed with message {NetworkConnections.GetIpStatusMessage(hostname.Status)}";
+                            returnMsg = $"Ping to {device} failed with message {NetworkServices.GetIpStatusMessage(hostname.Status)}";
                             break;
                     }
                 }

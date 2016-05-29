@@ -9,12 +9,15 @@ namespace Andromeda_Actions_Core.Command
     public class DeleteGpoCache : Action
     {
         private const string GpoCacheDir = "\\ProgramData\\Application Data\\Microsoft\\Group Policy\\History";
+        private readonly IPsExecServices _psExecServices;
 
-        public DeleteGpoCache()
+        public DeleteGpoCache(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Delete GPO Cache";
             Description = "Deletes the GPO cache of the remote computer(s) and forces GPUpdate.";
             Category = ActionGroup.Other;
+
+            _psExecServices = psExecServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -28,14 +31,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    if (FileAndFolderFunctions.ValidateDirectoryExists(device, GpoCacheDir, ActionName))
+                    if (FileAndFolderServices.ValidateDirectoryExists(device, GpoCacheDir, ActionName))
                     {
                         var dirtyContents = Directory.EnumerateDirectories($"\\\\{device}\\C${GpoCacheDir}").ToList();
                         var contents = new List<string>();
@@ -48,10 +51,10 @@ namespace Andromeda_Actions_Core.Command
 
                         foreach (var dir in contents)
                         {
-                            FileAndFolderFunctions.CleanDirectory(device, dir);
+                            FileAndFolderServices.CleanDirectory(device, dir);
                         }
 
-                        RunPsExecCommand.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C gpupdate.exe /force");
+                        _psExecServices.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C gpupdate.exe /force");
                     }
                     else
                     {

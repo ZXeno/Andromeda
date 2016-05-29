@@ -7,14 +7,15 @@ namespace Andromeda_Actions_Core.Command
 {
     public class GetSerialNumber : Action
     {
-        private const string Scope = "\\root\\cimv2";
+        private readonly IWmiServices _wmiServices;
 
-
-        public GetSerialNumber()
+        public GetSerialNumber(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Get Device Serial Number";
             Description = "Gets the serial number of the selected device.";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -25,8 +26,8 @@ namespace Andromeda_Actions_Core.Command
                 EnablePrivileges = true
             };
 
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             try
             {
@@ -34,19 +35,19 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, connOps);
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, connOps);
                     if (remote != null)
                     {
                         ObjectQuery query = new SelectQuery("Win32_BIOS");
 
-                        ManagementObjectSearcher searcher = new ManagementObjectSearcher(remote, query);
+                        var searcher = new ManagementObjectSearcher(remote, query);
 
                         ManagementObjectCollection queryCollection = null;
 

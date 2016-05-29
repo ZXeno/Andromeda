@@ -7,13 +7,15 @@ namespace Andromeda_Actions_Core.Command
 {
     public class GetLoggedOnUser : Action
     {
-        private const string Scope = "\\root\\cimv2";
+        private readonly IWmiServices _wmiServices;
 
-        public GetLoggedOnUser()
+        public GetLoggedOnUser(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Get Logged On User";
             Description = "Gets the logged in user of a remote system.";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -27,14 +29,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, new ConnectionOptions());
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, new ConnectionOptions());
                     if (remote != null)
                     {
                         var query = new ObjectQuery("SELECT username FROM Win32_ComputerSystem");

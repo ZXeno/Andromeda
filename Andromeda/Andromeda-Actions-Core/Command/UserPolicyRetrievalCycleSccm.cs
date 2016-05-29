@@ -1,9 +1,11 @@
-﻿namespace Andromeda_Actions_Core.Command
+﻿using Andromeda_Actions_Core.Infrastructure;
+
+namespace Andromeda_Actions_Core.Command
 {
     public class UserPolicyRetrievalCycleSccm : SccmScheduleActionBase
     {
 
-        public UserPolicyRetrievalCycleSccm()
+        public UserPolicyRetrievalCycleSccm(IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
             ActionName = "User Policy Retrieval Cycle";
             Description = "Forces SCCM to schedule a User Policy Retrieval check on the client.";
@@ -12,7 +14,7 @@
 
         public override void RunCommand(string rawDeviceList)
         {
-            RunScheduleTrigger(SccmClientFuncs.UserPolicyRetrievalCycleScheduleId, rawDeviceList);
+            RunScheduleTrigger(UserPolicyRetrievalCycleScheduleId, rawDeviceList);
         }
 
     }

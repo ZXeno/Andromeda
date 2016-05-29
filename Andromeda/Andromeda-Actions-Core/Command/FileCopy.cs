@@ -12,7 +12,7 @@ namespace Andromeda_Actions_Core.Command
 {
     public class FileCopy : Action
     {
-        public FileCopy()
+        public FileCopy(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "File Copy";
             Description = "Copy file to all devices in the list.";
@@ -45,15 +45,13 @@ namespace Andromeda_Actions_Core.Command
                 return;
             }
 
-            
-
             try
             {
                 Parallel.ForEach(devlist, (device) =>
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
@@ -86,7 +84,7 @@ namespace Andromeda_Actions_Core.Command
 
                     try
                     {
-                        if (ValidateDirectoryExists(device, fileCopyContext.DestinationPath))
+                        if (FileAndFolderServices.ValidateDirectoryExists(device, fileCopyContext.DestinationPath, ActionName))
                         {
                             File.Copy(fileCopyContext.FilePath, destPath + fileName, fileCopyContext.Overwrite);
                             Logger.Log($"Copied file {fileName} to {destPath}");

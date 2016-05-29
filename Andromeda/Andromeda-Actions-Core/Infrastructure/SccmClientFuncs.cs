@@ -40,12 +40,12 @@ namespace Andromeda_Actions_Core
                 {
                     var outParams = ro.InvokeMethod("TriggerSchedule", inParams, null);
 
-                    ResultConsole.Instance.AddConsoleLine($"Returned with value {WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"]))}");
+                    ResultConsole.Instance.AddConsoleLine("Returned with value " + WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"])));
                 }
                 catch (Exception ex)
                 {
                     ResultConsole.Instance.AddConsoleLine("Error performing SCCM Client Function due to an error.");
-                    Logger.Log($"Error performing SCCM Client Function due to the following error: {ex.Message}");
+                    Logger.Log("Error performing SCCM Client Function due to the following error: " + ex.Message);
                 }
             }
         }

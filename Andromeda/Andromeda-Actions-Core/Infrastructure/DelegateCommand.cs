@@ -10,13 +10,12 @@ namespace Andromeda_Actions_Core.Infrastructure
 
         public event EventHandler CanExecuteChanged;
 
-        public DelegateCommand(Action<object> execute)
-            : this(execute, null)
+        public DelegateCommand(Action<object> execute) : this(execute, null)
         {
+
         }
 
-        public DelegateCommand(Action<object> execute,
-                       Predicate<object> canExecute)
+        public DelegateCommand(Action<object> execute, Predicate<object> canExecute)
         {
             _execute = execute;
             _canExecute = canExecute;
@@ -24,12 +23,7 @@ namespace Andromeda_Actions_Core.Infrastructure
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
-            {
-                return true;
-            }
-
-            return _canExecute(parameter);
+            return _canExecute == null || _canExecute(parameter);
         }
 
         public void Execute(object parameter)

@@ -6,11 +6,15 @@ namespace Andromeda_Actions_Core.Command
 {
     public class RunGpUpdate : Action
     {
-        public RunGpUpdate()
+        private readonly IPsExecServices _psExecServices;
+
+        public RunGpUpdate(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Force Group Policy Update";
             Description = "Forces a GPUpdate on the machine(s).";
             Category = ActionGroup.Other;
+
+            _psExecServices = psExecServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -24,14 +28,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    RunPsExecCommand.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C echo n | gpupdate.exe /force");
+                    _psExecServices.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C echo n | gpupdate.exe /force");
                 }
             }
             catch (OperationCanceledException e)

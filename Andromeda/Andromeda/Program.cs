@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Andromeda_Actions_Core;
 using Andromeda_Actions_Core.Infrastructure;
+using Andromeda_Actions_Core.Plugins;
 using Action = Andromeda_Actions_Core.Action;
 
 namespace Andromeda
@@ -17,15 +18,18 @@ namespace Andromeda
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
         public static string PluginFolder = UserFolder + "\\Plugins";
+        public static IoCContainer IoC { get; private set; }
 
-        private readonly Logger _logger;
-        private readonly CredentialManager _credman;
-        private readonly ResultConsole _resultConsole;
+        private Logger _logger;
+        private CredentialManager _credman;
+        private ResultConsole _resultConsole;
 
         public static ConfigManager ConfigManager { get; private set; }
-        private static ICollection<Action> _pluginActions;
+        private readonly List<IPlugin> _loadedPlugins; 
+        private readonly List<Action> _pluginActions;
+        private readonly List<Action> _coreActions; 
 
-        public Program()
+        internal Program()
         {
             if (!Directory.Exists(UserFolder))
             {
@@ -37,51 +41,115 @@ namespace Andromeda
                 Directory.CreateDirectory(PluginFolder);
             }
 
-            _logger = new Logger(UserFolder);
-            _credman = new CredentialManager();
-            ConfigManager = new ConfigManager(UserFolder);
-            _resultConsole = ResultConsole.Instance;
+            _loadedPlugins = new List<IPlugin>();
+            _coreActions = new List<Action>();
+            _pluginActions = new List<Action>();
         }
 
         public void Initialize()
         {
-            _pluginActions = LoadPlugins();
+            InitializeIoCContainer();
+
+            _logger = new Logger(UserFolder, IoC.Resolve<IFileAndFolderServices>());
+            _credman = new CredentialManager();
+            _resultConsole = new ResultConsole(IoC.Resolve<IFileAndFolderServices>());
+            ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>());
+
+            LoadPlugins();
+            LoadCoreActions();
+            LoadPluginActions();
         }
 
-        public ObservableCollection<Action> LoadActions()
+        public ObservableCollection<Action> RetreiveActionsList()
         {
+            var completeList = new List<Action>();
+
+            completeList.AddRange(_coreActions);
+
+            if (_pluginActions.Count > 0)
+            {
+                completeList.AddRange(_pluginActions);
+            }
+
             var actionsList = new ObservableCollection<Action>();
+            completeList.OrderBy(x => x.ActionName).ToList().ForEach((action) => { actionsList.Add(action); });
+
+            return actionsList;
+        }
+
+        private void InitializeIoCContainer()
+        {
+            IoC = new IoCContainer();
+
+            IoC.Register<IFileAndFolderServices, FileAndFolderServices>();
+            IoC.Register<INetworkServices, NetworkServices>();
+            IoC.Register<IPsExecServices, PsExecServices>();
+            IoC.Register<IWmiServices, WmiServices>();
+            IoC.Register<ISccmClientServices, SccmClientServices>();
+            IoC.Register<IXmlServices, XmlServices>();
+            IoC.Register<IRegistryServices, RegistryServices>();
+        }
+
+        private void LoadCoreActions()
+        {
             var actionImportList = new List<Action>();
 
-            // Dynamically get all of our action classes and load them into the viewmodel.
-            string @corenamespace = "Andromeda_Actions_Core.Command";
+            // Dynamically get all of our core action classes and load them.
+            var @corenamespace = "Andromeda_Actions_Core.Command";
             var assembly = Assembly.LoadFile(WorkingPath + "\\Andromeda-Actions-Core.dll");
-            var q = from t in assembly.GetTypes()
-                    where t.IsClass && t.Namespace == @corenamespace
-                    select t;
+            var q = from t in assembly.GetTypes() where t.IsClass && t.Namespace == @corenamespace select t;
 
             foreach (var type in q)
             {
-                var assemblyName = assembly.GetName().Name;
-                var newinstance = Activator.CreateInstance(assemblyName, type.FullName).Unwrap();
-                var action = newinstance as Action;
+                var action = InstantiateImportedType(type);
+
                 if (action != null)
                 {
                     actionImportList.Add(action);
                 }
             }
 
-            actionImportList = actionImportList.OrderBy(x => x.ActionName).ToList();
-
             foreach (var action in actionImportList)
             {
-                actionsList.Add(action);
+                _coreActions.Add(action);
             }
-
-            return actionsList;
         }
 
-        private ICollection<Action> LoadPlugins()
+        private void LoadPluginActions()
+        {
+            foreach (var plugin in _loadedPlugins)
+            {
+                var q = plugin.ImportActions();
+
+                foreach (var type in q)
+                {
+                    var action = InstantiateImportedType(type);
+
+                    if (action != null)
+                    {
+                        _pluginActions.Add(action);
+                    }
+                }
+            }
+        }
+
+        private Action InstantiateImportedType(Type type)
+        {
+            var constructorInfo = type.GetConstructors().First();
+            var paramsInfo = constructorInfo.GetParameters().ToList();
+            var resolvedParams = new List<object>();
+
+            foreach (var param in paramsInfo)
+            {
+                var t = param.ParameterType;
+                var res = IoC.Resolve(t);
+                resolvedParams.Add(res);
+            }
+
+            return constructorInfo.Invoke(resolvedParams.ToArray()) as Action;
+        }
+
+        private void LoadPlugins()
         {
             Logger.Log($"Loading plugins from folder path: {PluginFolder}");
 
@@ -92,7 +160,7 @@ namespace Andromeda
                 Logger.Log("Unable to find plugins directory. Creating...");
                 Directory.CreateDirectory(PluginFolder);
 
-                return new List<Action>();
+                return;
             }
 
             dllFileNames = Directory.GetFiles(PluginFolder, "*.dll");
@@ -105,7 +173,7 @@ namespace Andromeda
                 assemblies.Add(assembly);
             }
 
-            var pluginType = typeof (Action);
+            var pluginType = typeof (IPlugin);
             var pluginTypes = new List<Type>();
             foreach (var assembly in assemblies)
             {
@@ -126,15 +194,12 @@ namespace Andromeda
                     }
                 }
             }
-
-            var plugins = new List<Action>(pluginTypes.Count);
+            
             foreach (var type in pluginTypes)
             {
-                var plugin = (Action) Activator.CreateInstance(type);
-                plugins.Add(plugin);
+                var plugin = (IPlugin)Activator.CreateInstance(type);
+                _loadedPlugins.Add(plugin);
             }
-
-            return plugins;
         }
     }
 }

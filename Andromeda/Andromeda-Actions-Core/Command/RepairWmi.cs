@@ -6,18 +6,21 @@ namespace Andromeda_Actions_Core.Command
 {
     public class RepairWmi : Action
     {
+        private readonly IWmiServices _wmiServices;
 
-        public RepairWmi()
+        public RepairWmi(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Repair WMI";
             Description = "Repairs the WMI of the device(s).";
             Category = ActionGroup.WindowsManagement;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             try
             {
@@ -25,14 +28,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var result = WMIFuncs.RepairRemoteWmi(device);
+                    var result = _wmiServices.RepairRemoteWmi(device);
 
                     if (!result)
                     {

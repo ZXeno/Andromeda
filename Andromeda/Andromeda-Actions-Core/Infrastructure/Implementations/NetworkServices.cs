@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Threading.Tasks;
 
 namespace Andromeda_Actions_Core.Infrastructure
 {
-    public static class NetworkConnections
+    public class NetworkServices : INetworkServices
     {
         /// <summary>
         /// Ping test for single machine. 
@@ -16,7 +13,7 @@ namespace Andromeda_Actions_Core.Infrastructure
         /// </summary>
         /// <param name="hostname"></param>
         /// <returns></returns>
-        public static PingReply PingTest(string hostname)
+        public PingReply PingTest(string hostname)
         {
             try
             {
@@ -28,7 +25,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
         }
 
-        public static bool DnsResolvesSuccessfully(string device)
+        public bool DnsResolvesSuccessfully(string device)
         {
             bool didResolve;
             IPHostEntry hostentry;
@@ -39,14 +36,26 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             catch (Exception)
             {
-                ResultConsole.Instance.AddConsoleLine(string.Format(device + " Connection Error: Could not resolve host."));
+                ResultConsole.Instance.AddConsoleLine($"Connection Error: Could not resolve host {device}. ");
                 didResolve = false;
             }
 
             return didResolve;
         }
 
-        public static string GetIpStatusMessage(IPStatus status)
+        public bool VerifyDeviceConnectivity(string device)
+        {
+            try
+            {
+                return Pingable(device) == IPStatus.Success;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public string GetIpStatusMessage(IPStatus status)
         {
             switch (status)
             {
@@ -118,7 +127,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
         }
 
-        public static IPStatus Pingable(string device)
+        public IPStatus Pingable(string device)
         {
             var reply = new Ping().Send(device, 3000);
 

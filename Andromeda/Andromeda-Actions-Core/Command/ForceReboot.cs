@@ -8,23 +8,15 @@ namespace Andromeda_Actions_Core.Command
 {
     public class ForceReboot : Action
     {
-        //' Flag values:
-        //' 0 - Log off
-        //' 4 - Forced log off
-        //' 1 - Shut down
-        //' 5 - Forced shut down
-        //' 2 - Reboot
-        //' 6 - Forced reboot
-        //' 8 - Power off
-        //' 12 - Forced power off 
+        private readonly IWmiServices _wmiServices;
 
-        private const string Scope = "\\root\\cimv2";
-
-        public ForceReboot()
+        public ForceReboot(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Force Reboot";
             Description = "Force reboots the remote computer.";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -43,17 +35,17 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         return;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, connOps);
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, connOps);
                     if (remote != null)
                     {
-                        WMIFuncs.ForceRebootRemoteDevice(device, remote);
+                        _wmiServices.ForceRebootRemoteDevice(device, remote);
                     }
                     else
                     {

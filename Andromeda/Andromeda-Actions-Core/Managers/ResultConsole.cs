@@ -16,14 +16,7 @@ namespace Andromeda_Actions_Core
         private static ResultConsole _instance;
         public static ResultConsole Instance
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new ResultConsole();
-                }
-                return _instance;
-            }
+            get { return _instance; }
             set
             {
                 if (_instance == null || _instance != value)
@@ -55,9 +48,12 @@ namespace Andromeda_Actions_Core
 
         private readonly Queue<string> _queue = new Queue<string>();
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
+        private readonly IFileAndFolderServices _fileAndFolderServices;
 
-        public ResultConsole()
+        public ResultConsole(IFileAndFolderServices fileAndFolderServices)
         {
+            _fileAndFolderServices = fileAndFolderServices;
+
             _instance = this;
             History = new List<string>();
             _consoleString = "";
@@ -122,7 +118,7 @@ namespace Andromeda_Actions_Core
             }
 
             var filepath = $"{Config.ResultsDirectory}{DateTime.Now}_console_dump.txt";
-            WriteToTextFile.WriteToLogFile(filepath, historydump);
+            _fileAndFolderServices.WriteToTextFile(filepath, historydump);
         }
 
         private void AddLineToHistoryDumpFile(string line)
@@ -131,13 +127,10 @@ namespace Andromeda_Actions_Core
 
             if (!File.Exists(filePath))
             {
-                WriteToTextFile.CreateNewLogFile(filePath);
-                WriteToTextFile.AddLineToFile(filePath, line);
+                _fileAndFolderServices.CreateNewTextFile(filePath);
             }
-            else
-            {
-                WriteToTextFile.AddLineToFile(filePath, line);
-            }
+
+            _fileAndFolderServices.WriteToTextFile(filePath, line);
         }
     }
 }

@@ -17,13 +17,15 @@ namespace Andromeda_Actions_Core.Command
         //' 8 - Power off
         //' 12 - Forced power off 
 
-        private const string Scope = "\\root\\cimv2";
+        private readonly IWmiServices _wmiServices;
 
-        public ForceLogOff()
+        public ForceLogOff(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "Force Log Off";
             Description = "Forces the remote user to log off.";
             Category = ActionGroup.Other;
+
+            _wmiServices = wmiServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -42,14 +44,14 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
                         continue;
                     }
 
-                    var remote = WMIFuncs.ConnectToRemoteWMI(device, Scope, connOps);
+                    var remote = _wmiServices.ConnectToRemoteWmi(device, _wmiServices.RootNamespace, connOps);
                     if (remote != null)
                     {
                         ObjectQuery query = new SelectQuery("Win32_OperatingSystem");
@@ -71,7 +73,7 @@ namespace Andromeda_Actions_Core.Command
                                 // Execute the method and obtain the return values.
                                 var outParams = ro.InvokeMethod("Win32Shutdown", inParams, null);
 
-                                ResultConsole.AddConsoleLine($"Returned with value {WMIFuncs.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"]))}");
+                                ResultConsole.AddConsoleLine($"Returned with value {_wmiServices.GetProcessReturnValueText(Convert.ToInt32(outParams["ReturnValue"]))}");
                             }
                             catch (Exception e)
                             {

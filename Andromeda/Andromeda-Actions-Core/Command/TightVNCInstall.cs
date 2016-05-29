@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Management;
 using System.Threading;
 using Andromeda_Actions_Core.Infrastructure;
 using Andromeda_Actions_Core.Model;
@@ -14,11 +13,15 @@ namespace Andromeda_Actions_Core.Command
         private const string DestinationDirectory = "\\C$\\temp\\";
         private const string TightVncInstallerFileName = "tightvnc-setup-64bit.msi";
 
-        public TightVNCInstall()
+        private readonly IPsExecServices _psExecServices;
+
+        public TightVNCInstall(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
         {
             ActionName = "TightVNC Install";
             Description = "Installs the version of TightVNC from the components directory. [Requires Credentials]";
             Category = ActionGroup.Other;
+
+            _psExecServices = psExecServices;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -43,7 +46,7 @@ namespace Andromeda_Actions_Core.Command
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
-                    if (!VerifyDeviceConnectivity(device))
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
@@ -61,7 +64,7 @@ namespace Andromeda_Actions_Core.Command
                         File.Copy($"{Config.ComponentDirectory}\\{TightVncInstallerFileName}", $"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}");
                     }
 
-                    RunPsExecCommand.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
+                    _psExecServices.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
 
                     Thread.Sleep(500);
 

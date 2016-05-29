@@ -15,6 +15,7 @@ namespace Andromeda
         {
             // Begin program back-end
             Program = new Program();
+            Program.Initialize();
 
             // set up login window
             var loginWindow = new LoginWindow();
@@ -27,8 +28,8 @@ namespace Andromeda
             
             // Initialize Main Window
             var mainWindowViewModel = new MainWindowViewModel();
-            mainWindowViewModel.LoadActionsCollection(Program.LoadActions());
-            MainWindow window = new MainWindow
+            mainWindowViewModel.LoadActionsCollection(Program.RetreiveActionsList());
+            var window = new MainWindow
             {
                 Title = "Andromeda",
                 Height = 750,
@@ -39,7 +40,6 @@ namespace Andromeda
             
             // Show login prompt
             loginWindow.ShowDialog();
-
             if (loginWindowViewModel.WasCanceled)
             {
                 // program is closing if the window was canceled.

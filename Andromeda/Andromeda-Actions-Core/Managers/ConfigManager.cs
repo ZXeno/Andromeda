@@ -27,9 +27,11 @@ namespace Andromeda_Actions_Core
 
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
+        private readonly IXmlServices _xmlServices;
 
-        public ConfigManager(string userFolder)
+        public ConfigManager(string userFolder, IXmlServices xmlServices)
         {
+            _xmlServices = xmlServices;
             _configFilePath = userFolder + "\\" + ConfigFileName;
             _resultsDirectory = userFolder + "\\Results";
             _componentsDirectory = userFolder + "\\components";
@@ -74,7 +76,7 @@ namespace Andromeda_Actions_Core
             Logger.Log("Beginning config file load.");
             try
             {
-                configFileDat = XMLImport.GetXMLFileData(_configFilePath);
+                configFileDat = _xmlServices.GetXmlFileData(_configFilePath);
 
                 // "config" node
 
