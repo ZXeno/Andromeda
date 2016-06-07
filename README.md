@@ -19,14 +19,14 @@ The program relies on external products for some actions to work (namely "Instal
  
 Compiling the installer:
 * Edit file locations in setup.dat in the AndromedaSetup project
-* Change the <source></source> content to match the file location (can be remote)
-* Change the <destination></destination> tags to match your required destination, {user} will be replaced with the currently logged on user.
+* Change the 	&#60;source	&#62;&#60;/source	&#62; content to match the file location (can be remote)
+* Change the 	&#60;destination	&#62;&#60;/destination	&#62; tags to match your required destination, {user} will be replaced with the currently logged on user.
 
 setup.dat file format:
-<files>
-  <file>
-    <name>tightvnc-setup-64bit.msi</name>
-    <source>\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
-  </file>
-</files>
+	&#60;files	&#62;
+  	&#60;file	&#62;
+    	&#60;name	&#62;tightvnc-setup-64bit.msi	&#60;/name	&#62;
+    	&#60;source	&#62;\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi	&#60;/source	&#62;
+    	&#60;destination	&#62;C:\Users\{user}\Documents\Andromeda\Components	&#60;/destination	&#62;
+  	&#60;/file &#62;
+	&#60;/files &#62;
