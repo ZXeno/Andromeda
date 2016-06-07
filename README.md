@@ -7,7 +7,8 @@ The program relies on external products for some actions to work (namely "Instal
 * Program written in Visual Studio 2015 w/ Resharper
 * This application is meant to help automate various tasks for IT Desktop Analysts
 * Current version: .6
-* 
+ 
+
 ### Required External Components ###
 * TightVNC (http://bit.ly/1puiQ1f) rename to "tightvnc-setup-64bit.msi"
 * PSExec (http://bit.ly/1GxtZ6y)
@@ -19,14 +20,14 @@ The program relies on external products for some actions to work (namely "Instal
  
 Compiling the installer:
 * Edit file locations in setup.dat in the AndromedaSetup project
-* Change the 	&#60;source	&#62;&#60;/source	&#62; content to match the file location (can be remote)
-* Change the 	&#60;destination	&#62;&#60;/destination	&#62; tags to match your required destination, {user} will be replaced with the currently logged on user.
+* Change the 	&#60;source&#62;&#60;/source&#62; content to match the file location (can be remote)
+* Change the 	&#60;destination&#62;&#60;/destination&#62; tags to match your required destination, {user} will be replaced with the currently logged on user.
 
 setup.dat file format:
-	&#60;files	&#62;
-  	&#60;file	&#62;
-    	&#60;name	&#62;tightvnc-setup-64bit.msi	&#60;/name	&#62;
-    	&#60;source	&#62;\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi	&#60;/source	&#62;
-    	&#60;destination	&#62;C:\Users\{user}\Documents\Andromeda\Components	&#60;/destination	&#62;
-  	&#60;/file &#62;
-	&#60;/files &#62;
+	&#60;files&#62;<br/>
+  	&#60;file&#62;<br/>
+    	&#60;name&#62;tightvnc-setup-64bit.msi	&#60;/name&#62;<br/>
+    	&#60;source&#62;\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi&#60;/source&#62;<br/>
+    	&#60;destination&#62;C:\Users\{user}\Documents\Andromeda\Components&#60;/destination&#62;<br/>
+  	&#60;/file &#62;<br/>
+	&#60;/files &#62;<br/>
