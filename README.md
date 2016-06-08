@@ -1,23 +1,33 @@
 # README #
 
-
-
-To use this application: simply compile and run the executable. 
-
-To change the directory that updates are searched for, in Program.cs change the line: 
-public static string DirectoryToCheckForUpdate = "\\\\melvin\\Andromeda\\";
-To whatever location you wish to keep updated versions.
-
-The program relies on external products for some actions to work (namely "Install TightVNC" and anything based on PSExec). These products are not, and cannot, be included in this repository. However, after you acquire them (they are free downloads), store them in a directory of your choosing, and point the configuration file for the program at them. To change the compile-time defaults of where your components directory is, open up ConfigManager.cs and change the field value for "_componentsDirectory" to any file location you wish to keep program components.
+The program relies on external products for some actions to work (namely "Install TightVNC" and anything based on PSExec), and Active Directory for user authentication. These products are not, and cannot, be included in this repository. However, after you acquire them (they are free downloads), store them in a directory of your choosing, and point the configuration file for the program at them. To change the compile-time defaults of where your components directory is, open up ConfigManager.cs is Andromeda-Actions-Core project and change the field value for "_componentsDirectory" to any file location you wish to keep program components. This can also be changed after the program is launched by editing the configuration file in C:\users\{username}\Documents\Andromeda\config.dat
 
 ### Quick Summary ###
 
 * Program written in Visual Studio 2015 w/ Resharper
 * This application is meant to help automate various tasks for IT Desktop Analysts
-* Current version: .4
+* Current version: .6
+ 
+
+### Required External Components ###
+* TightVNC (http://bit.ly/1puiQ1f) rename to "tightvnc-setup-64bit.msi"
+* PSExec (http://bit.ly/1GxtZ6y)
 
 ### How do I get set up? ###
+* Compile the program and copy the files to your %userprofile%\Documents\Andromeda, and copy the required components to %userprofile%\Documents\Andromeda\Components.
+* Ensure proper components are available in the Components directory
+* Launch exectuable.
+ 
+Compiling the installer:
+* Edit file locations in setup.dat in the AndromedaSetup project
+* Change the 	&#60;source&#62;&#60;/source&#62; content to match the file location (can be remote)
+* Change the 	&#60;destination&#62;&#60;/destination&#62; tags to match your required destination, {user} will be replaced with the currently logged on user.
 
-* Ensure proper components are available (You will need at least PSExec, and if you plan on using the TightVNC installer functionality, an installer for that program)
-* Either configure the embedded defaults for the configuration, or modify the runtime generated configuration file, usually located in C:\users\<user>\Documents\Andromeda
-* Recommended location to keep the executable is in a folder in %USERPROFILE%\Documents\Andromeda directory, as this is the default directory for the configuration, results, and log files for the program. 
+setup.dat file format:
+	&#60;files&#62;<br/>
+  	&#60;file&#62;<br/>
+    	&#60;name&#62;tightvnc-setup-64bit.msi	&#60;/name&#62;<br/>
+    	&#60;source&#62;\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi&#60;/source&#62;<br/>
+    	&#60;destination&#62;C:\Users\{user}\Documents\Andromeda\Components&#60;/destination&#62;<br/>
+  	&#60;/file &#62;<br/>
+	&#60;/files &#62;<br/>
