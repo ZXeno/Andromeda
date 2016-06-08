@@ -10,6 +10,8 @@ namespace Andromeda_Actions_Core.Infrastructure
     {
         private static string _logFilePath;
         private const string LogFileName = "LogFile.txt";
+        private const string FallbackLogFileName = "Andromeda_Fallback_Log.log";
+        private const string FallbackLogFilePath = "C:\\Temp\\";
         private static string _fullLogPath;
 
         private static readonly Queue<string> Queue = new Queue<string>();
@@ -70,7 +72,15 @@ namespace Andromeda_Actions_Core.Infrastructure
                     sb.AppendLine(line);
                 }
 
-                _fileAndFolderServices.WriteToTextFile(_fullLogPath, sb.ToString());
+                try
+                {
+                    _fileAndFolderServices.WriteToTextFile(_fullLogPath, sb.ToString());
+                }
+                catch (Exception e)
+                {
+                    LogFallbackException(e);
+                }
+                
                 queueCopy.Clear();
             }
         }
@@ -81,6 +91,27 @@ namespace Andromeda_Actions_Core.Infrastructure
             {
                 Thread.Sleep(1);
             }
+        }
+
+        private void LogFallbackException(Exception exception)
+        {
+            var fullpath = $"{FallbackLogFilePath}{FallbackLogFileName}";
+
+            if (!Directory.Exists(FallbackLogFilePath))
+            {
+                Directory.CreateDirectory(FallbackLogFilePath);
+            }
+
+            if (!File.Exists(fullpath))
+            {
+                _fileAndFolderServices.CreateNewTextFile(fullpath);
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"[{DateTime.Now}]:LOGGER EXCEPTION MESSAGE:{exception.Message}");
+            sb.AppendLine($"[{DateTime.Now}]:STACK TRACE: {exception.StackTrace}");
+
+            _fileAndFolderServices.WriteToTextFile(fullpath, sb.ToString());
         }
 
         private static void ValidateLogDirectoryExists()
