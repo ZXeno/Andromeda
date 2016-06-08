@@ -8,7 +8,7 @@ namespace Andromeda_Actions_Core.Command
 {
     public class DeleteGpoCache : Action
     {
-        private const string GpoCacheDir = "\\ProgramData\\Application Data\\Microsoft\\Group Policy\\History";
+        private const string GpoCacheDir = "\\ProgramData\\Microsoft\\Group Policy\\History";
         private readonly IPsExecServices _psExecServices;
 
         public DeleteGpoCache(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
