@@ -54,15 +54,27 @@ namespace Andromeda_Actions_Core.Command
                         continue;
                     }
 
-                    if (!File.Exists($"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}"))
+                    try
                     {
-                        if (!Directory.Exists($"\\\\{device}{DestinationDirectory}"))
+                        if (!File.Exists($"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}"))
                         {
-                            Directory.CreateDirectory($"\\\\{device}{DestinationDirectory}");
-                        }
+                            if (!Directory.Exists($"\\\\{device}{DestinationDirectory}"))
+                            {
+                                Directory.CreateDirectory($"\\\\{device}{DestinationDirectory}");
+                            }
 
-                        File.Copy($"{Config.ComponentDirectory}\\{TightVncInstallerFileName}", $"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}");
+                            File.Copy($"{Config.ComponentDirectory}\\{TightVncInstallerFileName}", $"\\\\{device}{DestinationDirectory}{TightVncInstallerFileName}");
+                        }
                     }
+                    catch (Exception e)
+                    {
+                        var msg = $"There was an error while trying to copy the TightVNC installer to the remote device. Error: {e.Message}";
+                        Logger.Log(msg);
+                        ResultConsole.AddConsoleLine(msg);
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                    
 
                     _psExecServices.RunOnDeviceWithAuthentication(device, cmdToRun, _creds);
 
