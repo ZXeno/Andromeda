@@ -11,19 +11,16 @@ namespace Andromeda_Actions_Core
     {
         public static Configuration CurrentConfig { get; set; }
 
+        // DEFAULT CONFIGURATION VALUES
         public const string ConfigFileName = "config.dat";
-
-        private const string SaveFileVersion = "003";
+        private const string SaveFileVersion = "004";
         private bool _saveOfflineComputers = true;
         private bool _saveOnlineComputers = true;
         private readonly string _resultsDirectory;
-        private bool _alwaysDumpConsoleHistory = false;
         private readonly string _configFilePath;
         private string _componentsDirectory;
         private const string _failedConnectListFile = "failed_to_connect.txt";
         private const string _successfulConnectionListFile = "connection_succeeded_list.txt";
-        private bool _firstTimeAutoFixWmiCheck = true;
-        private bool _automaticallyFixWmi = false;
 
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
@@ -110,18 +107,6 @@ namespace Andromeda_Actions_Core
                     CurrentConfig.SaveOnlineComputers = true;
                 }
 
-                var dumpConsoleNode = configFileDat.SelectSingleNode("config/settings/alwaysDumpConsoleHistory");
-                if (dumpConsoleNode != null)
-                {
-                    CurrentConfig.AlwaysDumpConsoleHistory = StringToBool(dumpConsoleNode.InnerText);
-                }
-                else
-                {
-                    Logger.Log("Problem loading \"alwaysDumpConsoleHistory\" node from config file. Using default.");
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"alwaysDumpConsoleHistory\" node from config file. Using default: TRUE");
-                    CurrentConfig.AlwaysDumpConsoleHistory = true;
-                }
-
                 var resultsDirNode = configFileDat.SelectSingleNode("config/settings/resultsDirectory");
                 if (resultsDirNode != null)
                 {
@@ -129,8 +114,8 @@ namespace Andromeda_Actions_Core
                 }
                 else
                 {
-                    Logger.Log("Problem loading \"alwaysDumpConsoleHistory\" node from config file. Using default.");
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"alwaysDumpConsoleHistory\" node from config file. Using default: " + _resultsDirectory);
+                    Logger.Log("Problem loading \"resultsDirectory\" node from config file. Using default.");
+                    ResultConsole.Instance.AddConsoleLine("Problem loading \"resultsDirectory\" node from config file. Using default: " + _resultsDirectory);
                     CurrentConfig.ResultsDirectory = _resultsDirectory;
                 }
 
@@ -144,30 +129,6 @@ namespace Andromeda_Actions_Core
                     Logger.Log("Problem loading \"componentsDirectory\" node from config file. Using default.");
                     ResultConsole.Instance.AddConsoleLine( "Problem loading \"componentsDirectory\" node from config file. Using default: " + _componentsDirectory);
                     CurrentConfig.ComponentDirectory = _componentsDirectory;
-                }
-
-                var firstTimeWmiCheckNode = configFileDat.SelectSingleNode("config/settings/firsttimewmicheckflag");
-                if (firstTimeWmiCheckNode != null)
-                {
-                    CurrentConfig.FirstTimeAutoFixWmiCheck   = StringToBool(firstTimeWmiCheckNode.InnerText);
-                }
-                else
-                {
-                    Logger.Log("Problem loading \"firsttimewmicheckflag\" node from config file. Using default.");
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"firsttimewmicheckflag\" node from config file. Using default: TRUE");
-                    CurrentConfig.FirstTimeAutoFixWmiCheck = true;
-                }
-
-                var autoFixWmiNode = configFileDat.SelectSingleNode("config/settings/autofixwmiflag");
-                if (autoFixWmiNode != null)
-                {
-                    CurrentConfig.AutomaticallyFixWmi = StringToBool(autoFixWmiNode.InnerText);
-                }
-                else
-                {
-                    Logger.Log("Problem loading \"autofixwmiflag\" node from config file. Using default.");
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"autofixwmiflag\" node from config file. Using default: FALSE");
-                    CurrentConfig.AutomaticallyFixWmi = false;
                 }
 
                 ValidateDirectoryExists(CurrentConfig.ResultsDirectory);
@@ -213,20 +174,11 @@ namespace Andromeda_Actions_Core
                 // Save Online Computers
                 CreateUnattributedElement("saveonlinecomputers", _saveOnlineComputers.ToString());
 
-                // Always Dump console history on exit
-                CreateUnattributedElement("alwaysDumpConsoleHistory", _alwaysDumpConsoleHistory.ToString());
-
                 // Results Log File Directory
                 CreateUnattributedElement("resultsDirectory", _resultsDirectory);
 
                 // Components Directory
                 CreateUnattributedElement("componentsDirectory", _componentsDirectory);
-
-                // First Time Wmi Auto Fix Check Flag
-                CreateUnattributedElement("firsttimewmicheckflag", _firstTimeAutoFixWmiCheck.ToString());
-
-                // Wmi Auto Fix Flag
-                CreateUnattributedElement("autofixwmiflag", _automaticallyFixWmi.ToString());
 
                 // Close <settings>
                 _xwriter.WriteEndElement();

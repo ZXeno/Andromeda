@@ -200,6 +200,7 @@
     <Style x:Key="Checkbox" TargetType="{x:Type CheckBox}">
         <Setter Property="Foreground" Value="#FFC9C9C9"/>
         <Setter Property="FontFamily" Value="Lucida Console" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Height" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>

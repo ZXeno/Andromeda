@@ -32,7 +32,6 @@
 
 
         <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="38,0,0,10" />
-        <Button Style="{StaticResource Notification}" Visibility="{Binding UpdateNotification}" Margin="16,0,0,10" />
         <Label Style="{StaticResource TextboxLabels}"  x:Name="UserLabel" Content="{Binding Username}" Margin="0,10,16,0" Width="190"/>
         <Button x:Name="LoginButton" Content="Login" Visibility="{Binding LoginButtonVisibility, UpdateSourceTrigger=PropertyChanged}" Command="{Binding LoginCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="701,35,0,0" VerticalAlignment="Top" Width="75"/>
         <CheckBox x:Name="RISWcheckbox" Style="{StaticResource Checkbox}" IsChecked="{Binding Path=RunInParallelWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Run in Separate Window" Margin="0,0,16,190" />

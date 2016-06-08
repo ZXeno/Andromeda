@@ -30,11 +30,6 @@ namespace Andromeda_Actions_Core.Infrastructure
                 ResultConsole.Instance.AddConsoleLine($"Exception message: {e.Message}");
                 Logger.Log($"Error connecting to WMI namespace \\\\{hostname}{scope} Exception was caught: {e.Message} Inner exception: {e.InnerException}");
 
-                if (ConfigManager.CurrentConfig.AutomaticallyFixWmi)
-                {
-                    RepairRemoteWmi(hostname);
-                }
-
                 return null;
             }
             

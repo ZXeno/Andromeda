@@ -52,7 +52,7 @@ namespace Andromeda
 
             _logger = new Logger(UserFolder, IoC.Resolve<IFileAndFolderServices>());
             _credman = new CredentialManager();
-            _resultConsole = new ResultConsole(IoC.Resolve<IFileAndFolderServices>());
+            _resultConsole = new ResultConsole();
             ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>());
 
             LoadPlugins();
@@ -79,6 +79,7 @@ namespace Andromeda
 
         private void InitializeIoCContainer()
         {
+            Logger.Log("Initializing dependency injection system...");
             IoC = new IoCContainer();
 
             IoC.Register<IFileAndFolderServices, FileAndFolderServices>();
@@ -88,10 +89,13 @@ namespace Andromeda
             IoC.Register<ISccmClientServices, SccmClientServices>();
             IoC.Register<IXmlServices, XmlServices>();
             IoC.Register<IRegistryServices, RegistryServices>();
+
+            Logger.Log("Dependency injection system initialized.");
         }
 
         private void LoadCoreActions()
         {
+            Logger.Log("Loading core Andromeda actions...");
             var actionImportList = new List<Action>();
 
             // Dynamically get all of our core action classes and load them.
@@ -103,20 +107,21 @@ namespace Andromeda
             {
                 var action = InstantiateImportedType(type);
 
-                if (action != null)
-                {
-                    actionImportList.Add(action);
-                }
+                if (action == null) { continue; }
+
+                actionImportList.Add(action);
             }
 
             foreach (var action in actionImportList)
             {
                 _coreActions.Add(action);
+                Logger.Log($"{action.ActionName} loaded.");
             }
         }
 
         private void LoadPluginActions()
         {
+            Logger.Log("Loading actions from loaded plugins...");
             foreach (var plugin in _loadedPlugins)
             {
                 var q = plugin.ImportActions();
@@ -125,10 +130,10 @@ namespace Andromeda
                 {
                     var action = InstantiateImportedType(type);
 
-                    if (action != null)
-                    {
-                        _pluginActions.Add(action);
-                    }
+                    if (action == null) continue;
+
+                    _pluginActions.Add(action);
+                    Logger.Log($"Action {action.ActionName} loaded.");
                 }
             }
         }
@@ -158,7 +163,15 @@ namespace Andromeda
             if (!Directory.Exists(PluginFolder))
             {
                 Logger.Log("Unable to find plugins directory. Creating...");
-                Directory.CreateDirectory(PluginFolder);
+                try
+                {
+                    Directory.CreateDirectory(PluginFolder);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Unable to create plugin directory due to exception: {e.Message}");
+                }
+                
 
                 return;
             }
@@ -168,9 +181,19 @@ namespace Andromeda
             var assemblies = new List<Assembly>(dllFileNames.Length);
             foreach (var dllFile in dllFileNames)
             {
-                var an = AssemblyName.GetAssemblyName(dllFile);
-                var assembly = Assembly.Load(an);
-                assemblies.Add(assembly);
+                try
+                {
+                    var an = AssemblyName.GetAssemblyName(dllFile);
+                    Logger.Log($"Found dll {an.Name}");
+
+                    var assembly = Assembly.Load(an);
+                    assemblies.Add(assembly);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"There was an error loading the dll file {dllFile} with error {e.Message}");
+                }
+                
             }
 
             var pluginType = typeof (IPlugin);
@@ -199,6 +222,7 @@ namespace Andromeda
             {
                 var plugin = (IPlugin)Activator.CreateInstance(type);
                 _loadedPlugins.Add(plugin);
+                Logger.Log($"Loaded plugin {plugin.PluginName}");
             }
         }
     }

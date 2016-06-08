@@ -30,9 +30,4 @@
     <source>\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi</source>
     <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
   </file>
-  <file>
-    <name>WSDeactivate64.exe</name>
-    <source>\\PATH\TO\ANDROMEDA\FILES\Components\WSDeactivate64.exe</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
-  </file>
 </files>

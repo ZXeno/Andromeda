@@ -12,7 +12,7 @@ namespace Andromeda_Actions_Core
         public delegate void ConsoleEvent(string updateData);
         public static event ConsoleEvent ConsoleChange;
 
-        private static Configuration Config { get { return ConfigManager.CurrentConfig; } }
+        private static Configuration Config => ConfigManager.CurrentConfig;
         private static ResultConsole _instance;
         public static ResultConsole Instance
         {
@@ -25,8 +25,6 @@ namespace Andromeda_Actions_Core
                 }
             }
         }
-
-        public List<string> History { get; }
 
         private string _consoleString;
         public string ConsoleString
@@ -48,14 +46,10 @@ namespace Andromeda_Actions_Core
 
         private readonly Queue<string> _queue = new Queue<string>();
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
-        private readonly IFileAndFolderServices _fileAndFolderServices;
 
-        public ResultConsole(IFileAndFolderServices fileAndFolderServices)
+        public ResultConsole()
         {
-            _fileAndFolderServices = fileAndFolderServices;
-
             _instance = this;
-            History = new List<string>();
             _consoleString = "";
             IsInitialized = true;
 
@@ -91,46 +85,11 @@ namespace Andromeda_Actions_Core
 
                 foreach (var str in queueCopy)
                 {
-                    History.Add(str + "\n");
                     ConsoleString += str + "\n";
-
-                    if (Config != null)
-                    {
-                        if (Config.AlwaysDumpConsoleHistory)
-                        {
-                            AddLineToHistoryDumpFile(str);
-                            Logger.Log($"History dump at {DateTime.Now}. Contents: {str}");
-                        }
-                    }
                 }
 
                 queueCopy.Clear();
             }
-        }
-
-        // Dumps the entire console and console history to a log file.
-        public void DumpConsoleHistoryToLogFile()
-        {
-            string historydump = "";
-            foreach (var entry in History)
-            {
-                historydump += entry;
-            }
-
-            var filepath = $"{Config.ResultsDirectory}{DateTime.Now}_console_dump.txt";
-            _fileAndFolderServices.WriteToTextFile(filepath, historydump);
-        }
-
-        private void AddLineToHistoryDumpFile(string line)
-        {
-            var filePath = $"{Config.ResultsDirectory}\\_history_dump_file.txt";
-
-            if (!File.Exists(filePath))
-            {
-                _fileAndFolderServices.CreateNewTextFile(filePath);
-            }
-
-            _fileAndFolderServices.WriteToTextFile(filePath, line);
         }
     }
 }
