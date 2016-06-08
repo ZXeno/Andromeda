@@ -15,7 +15,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                 try { await outfile.WriteAsync(""); }
                 catch (Exception e)
                 {
-                    throw new Exception($"Unable to create log file. Error: {e.Message}");
+                    throw new Exception($"Unable to create file. Error: {e.Message}");
                 }
             }
         }
