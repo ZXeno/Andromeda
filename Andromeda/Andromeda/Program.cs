@@ -13,14 +13,14 @@ namespace Andromeda
 {
     public class Program
     {
-        public const string VersionNumber = "Version 0.6";
+        public const string VersionNumber = "Version 0.6.1 EXPERIMENTAL";
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
-        public static string PluginFolder = UserFolder + "\\Plugins";
+        public static string PluginFolder = WorkingPath + "\\Plugins";
         public static IoCContainer IoC { get; private set; }
 
-        private Logger _logger;
+        private ILoggerService _logger;
         private CredentialManager _credman;
         private ResultConsole _resultConsole;
 
@@ -50,10 +50,10 @@ namespace Andromeda
         {
             InitializeIoCContainer();
 
-            _logger = new Logger(UserFolder, IoC.Resolve<IFileAndFolderServices>());
+            _logger = IoC.Resolve<ILoggerService>();
             _credman = new CredentialManager();
             _resultConsole = new ResultConsole();
-            ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>());
+            ConfigManager = new ConfigManager(WorkingPath, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
 
             LoadPlugins();
             LoadCoreActions();
@@ -79,9 +79,9 @@ namespace Andromeda
 
         private void InitializeIoCContainer()
         {
-            Logger.Log("Initializing dependency injection system...");
             IoC = new IoCContainer();
 
+            IoC.Register<ILoggerService, Logger>(LifeTimeOptions.ContainerControlledLifeTimeOption);
             IoC.Register<IFileAndFolderServices, FileAndFolderServices>();
             IoC.Register<INetworkServices, NetworkServices>();
             IoC.Register<IPsExecServices, PsExecServices>();
@@ -89,13 +89,12 @@ namespace Andromeda
             IoC.Register<ISccmClientServices, SccmClientServices>();
             IoC.Register<IXmlServices, XmlServices>();
             IoC.Register<IRegistryServices, RegistryServices>();
-
-            Logger.Log("Dependency injection system initialized.");
+            
         }
 
         private void LoadCoreActions()
         {
-            Logger.Log("Loading core Andromeda actions...");
+            _logger.LogMessage("Loading core Andromeda actions...");
             var actionImportList = new List<Action>();
 
             // Dynamically get all of our core action classes and load them.
@@ -115,13 +114,13 @@ namespace Andromeda
             foreach (var action in actionImportList)
             {
                 _coreActions.Add(action);
-                Logger.Log($"{action.ActionName} loaded.");
+                _logger.LogMessage($"{action.ActionName} loaded.");
             }
         }
 
         private void LoadPluginActions()
         {
-            Logger.Log("Loading actions from loaded plugins...");
+            _logger.LogMessage("Loading actions from loaded plugins...");
             foreach (var plugin in _loadedPlugins)
             {
                 var q = plugin.ImportActions();
@@ -133,7 +132,7 @@ namespace Andromeda
                     if (action == null) continue;
 
                     _pluginActions.Add(action);
-                    Logger.Log($"Action {action.ActionName} loaded.");
+                    _logger.LogMessage($"Action {action.ActionName} loaded.");
                 }
             }
         }
@@ -156,22 +155,21 @@ namespace Andromeda
 
         private void LoadPlugins()
         {
-            Logger.Log($"Loading plugins from folder path: {PluginFolder}");
+            _logger.LogMessage($"Loading plugins from folder path: {PluginFolder}");
 
             string[] dllFileNames = null;
 
             if (!Directory.Exists(PluginFolder))
             {
-                Logger.Log("Unable to find plugins directory. Creating...");
+                _logger.LogWarning("Unable to find plugins directory. Creating...", null);
                 try
                 {
                     Directory.CreateDirectory(PluginFolder);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Unable to create plugin directory due to exception: {e.Message}");
+                    _logger.LogError("Unable to create plugin directory due to exception", e);
                 }
-                
 
                 return;
             }
@@ -184,14 +182,14 @@ namespace Andromeda
                 try
                 {
                     var an = AssemblyName.GetAssemblyName(dllFile);
-                    Logger.Log($"Found dll {an.Name}");
+                    _logger.LogMessage($"Found dll {an.Name}");
 
                     var assembly = Assembly.Load(an);
                     assemblies.Add(assembly);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"There was an error loading the dll file {dllFile} with error {e.Message}");
+                    _logger.LogError($"There was an error loading the dll file {dllFile}", e);
                 }
                 
             }
@@ -222,7 +220,7 @@ namespace Andromeda
             {
                 var plugin = (IPlugin)Activator.CreateInstance(type);
                 _loadedPlugins.Add(plugin);
-                Logger.Log($"Loaded plugin {plugin.PluginName}");
+                _logger.LogMessage($"Loaded plugin {plugin.PluginName}");
             }
         }
     }

@@ -13,12 +13,12 @@ namespace AndromedaSetup
             InstallableItems = new List<InstallableItem>();
         }
 
-        public bool LoadConfigFile(string path)
+        public bool LoadConfigFile()
         {
             try
             {
                 var xdoc = new XmlDocument();
-                xdoc.Load(path);
+                xdoc.Load(Environment.CurrentDirectory + "\\setup.dat");
 
                 var xmlNode = xdoc.SelectSingleNode("files");
                 if (xmlNode == null) {throw new Exception(); }
@@ -29,7 +29,7 @@ namespace AndromedaSetup
                 {
                     var item = node.SelectSingleNode("name").InnerText;
                     var source = node.SelectSingleNode("source").InnerText;
-                    var destination = node.SelectSingleNode("destination").InnerText.Replace("{user}", Environment.UserName);
+                    var destination = node.SelectSingleNode("destination").InnerText;
 
                     if (destination.EndsWith("\\"))
                     {
