@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading;
-using Andromeda_Actions_Core.Infrastructure;
-using Andromeda_Actions_Core.Model;
+using System.Windows;
 
 namespace Andromeda_Actions_Core
 {
@@ -11,8 +8,7 @@ namespace Andromeda_Actions_Core
     {
         public delegate void ConsoleEvent(string updateData);
         public static event ConsoleEvent ConsoleChange;
-
-        private static Configuration Config => ConfigManager.CurrentConfig;
+        
         private static ResultConsole _instance;
         public static ResultConsole Instance
         {
@@ -44,11 +40,15 @@ namespace Andromeda_Actions_Core
             ConsoleChange?.Invoke(updateData);
         }
 
+        private static bool _appIsExiting = false;
+
         private readonly Queue<string> _queue = new Queue<string>();
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
 
         public ResultConsole()
         {
+            Application.Current.Exit += OnApplicationExit;
+
             _instance = this;
             _consoleString = "";
             IsInitialized = true;
@@ -74,6 +74,8 @@ namespace Andromeda_Actions_Core
         {
             while (true)
             {
+                if (_appIsExiting) { break; }
+
                 _hasNewItems.WaitOne(100, true);
 
                 Queue<string> queueCopy;
@@ -90,6 +92,11 @@ namespace Andromeda_Actions_Core
 
                 queueCopy.Clear();
             }
+        }
+
+        private void OnApplicationExit(object sender, ExitEventArgs e)
+        {
+            _appIsExiting = true;
         }
     }
 }
