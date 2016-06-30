@@ -8,7 +8,8 @@ namespace Andromeda_Actions_Core.Command
     {
         private readonly IWmiServices _wmiServices;
 
-        public RepairWmi(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
+        public RepairWmi(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Repair WMI";
             Description = "Repairs the WMI of the device(s).";
@@ -50,9 +51,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
         }
     }

@@ -6,9 +6,11 @@ namespace Andromeda_Actions_Core.Infrastructure
     public class SccmClientServices : ISccmClientServices
     {
         private readonly IWmiServices _wmiServices;
+        private readonly ILoggerService _logger;
 
-        public SccmClientServices(IWmiServices wmiServices)
+        public SccmClientServices(ILoggerService logger, IWmiServices wmiServices)
         {
+            _logger = logger;
             _wmiServices = wmiServices;
         }
 
@@ -36,7 +38,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                 catch (Exception ex)
                 {
                     ResultConsole.Instance.AddConsoleLine("Error performing SCCM Client Function due to an error.");
-                    Logger.Log($"Error performing SCCM Client Function due to the following error: {ex.Message}");
+                    _logger.LogError($"Error performing SCCM Client Function due to the following error: {ex.Message}", ex);
                 }
             }
         }

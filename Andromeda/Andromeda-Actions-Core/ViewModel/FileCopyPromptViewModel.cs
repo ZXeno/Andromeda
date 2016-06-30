@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 using Andromeda_Actions_Core.Infrastructure;
 using Microsoft.Win32;

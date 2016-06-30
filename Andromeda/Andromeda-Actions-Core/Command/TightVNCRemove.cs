@@ -12,7 +12,8 @@ namespace Andromeda_Actions_Core.Command
 
         private readonly IWmiServices _wmiServices;
 
-        public TightVNCRemove(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
+        public TightVNCRemove(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "TightVNC Remove";
             Description = "Removes TightVNC from the specified computers. [Requires Credentials]";
@@ -30,7 +31,7 @@ namespace Andromeda_Actions_Core.Command
             {
                 ResultConsole.AddConsoleLine("You must enter your username and password for this command to work.");
                 ResultConsole.AddConsoleLine($"{ActionName} was canceled due to invalid credentials.");
-                Logger.Log($"Tried to run {ActionName} but there were no credentials added.");
+                Logger.LogMessage($"Tried to run {ActionName} but there were no credentials added.");
                 return;
             }
 
@@ -67,7 +68,7 @@ namespace Andromeda_Actions_Core.Command
                             {
                                 process.InvokeMethod("Terminate", null);
                                 ResultConsole.AddConsoleLine($"Called process terminate ({process["Name"]}) on device {device}.");
-                                Logger.Log($"Called process terminate ({process["Name"]}) on device {device}.");
+                                Logger.LogMessage($"Called process terminate ({process["Name"]}) on device {device}.");
                             }
                         }
 
@@ -77,14 +78,14 @@ namespace Andromeda_Actions_Core.Command
                             {
                                 product.InvokeMethod("uninstall", null);
                                 ResultConsole.AddConsoleLine($"Called uninstall on device {device}.");
-                                Logger.Log($"Called uninstall on device {device}.");
+                                Logger.LogMessage($"Called uninstall on device {device}.");
                             }
                         }
                     }
                     else
                     {
                         ResultConsole.AddConsoleLine($"Error connecting to WMI scope {device}. Process aborted for this device.");
-                        Logger.Log($"Error connecting to WMI scope {device}. Process aborted for this device.");
+                        Logger.LogWarning($"Error connecting to WMI scope {device}. Process aborted for this device.", null);
                         failedlist.Add(device);
                     }
 
@@ -92,9 +93,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
             
             if (failedlist.Count > 0)

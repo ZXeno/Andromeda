@@ -27,9 +27,11 @@ namespace Andromeda_Actions_Core
 
         protected INetworkServices NetworkServices;
         protected IFileAndFolderServices FileAndFolderServices;
+        protected ILoggerService Logger;
 
-        protected Action(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
+        protected Action(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
         {
+            Logger = logger;
             NetworkServices = networkServices;
             FileAndFolderServices = fileAndFolderServices;
 
@@ -60,8 +62,11 @@ namespace Andromeda_Actions_Core
             return resultList;
         }
 
-        protected void ResetCancelToken()
+        protected void ResetCancelToken(string actionName, OperationCanceledException e)
         {
+            ResultConsole.AddConsoleLine($"Operation {actionName} canceled.");
+            Logger.LogMessage($"Operation {actionName} canceled by user request. {e.Message}");
+
             CancellationToken.Dispose();
             CancellationToken = new CancellationTokenSource();
         }
@@ -75,7 +80,7 @@ namespace Andromeda_Actions_Core
             if (File.Exists(path))
             {
                 File.Delete(path);
-                Logger.Log($"Deleted file {path}");
+                Logger.LogMessage($"Deleted file {path}");
             }
 
             foreach (var device in failedList)
@@ -85,14 +90,14 @@ namespace Andromeda_Actions_Core
 
             try
             {
-                FileAndFolderServices.WriteToTextFile(path, sb.ToString());
+                FileAndFolderServices.WriteToTextFile(path, sb.ToString(), Logger);
 
-                Logger.Log($"Wrote \"{actionName}\" results to file {path}");
+                Logger.LogMessage($"Wrote \"{actionName}\" results to file {path}");
                 ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. They have been recorded in the log at {path}");
             }
             catch (Exception e)
             {
-                Logger.Log($"Unable to write to {path}. Error: {e.Message}");
+                Logger.LogError($"Unable to write to {path}.", e);
                 ResultConsole.AddConsoleLine($"There were {failedList.Count} computers that failed the process. However, there was an exception attempting to write to the failed log file.");
             }
         }

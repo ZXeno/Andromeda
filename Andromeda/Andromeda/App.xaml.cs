@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using Andromeda.View;
 using Andromeda.ViewModel;
+using Andromeda_Actions_Core.Infrastructure;
 
 namespace Andromeda
 {
@@ -27,7 +29,7 @@ namespace Andromeda
             loginWindow.DataContext = loginWindowViewModel;
             
             // Initialize Main Window
-            var mainWindowViewModel = new MainWindowViewModel();
+            var mainWindowViewModel = new MainWindowViewModel(Program.IoC.Resolve<ILoggerService>());
             mainWindowViewModel.LoadActionsCollection(Program.RetreiveActionsList());
             var window = new MainWindow
             {
@@ -46,8 +48,7 @@ namespace Andromeda
                 Application.Current.Shutdown();
                 return;
             }
-            
-            
+
             mainWindowViewModel?.UpdateLoginProperties();
 
             // show main window

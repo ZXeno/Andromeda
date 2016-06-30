@@ -12,7 +12,8 @@ namespace Andromeda_Actions_Core.Command
 {
     public class FileCopy : Action
     {
-        public FileCopy(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
+        public FileCopy(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "File Copy";
             Description = "Copy file to all devices in the list.";
@@ -21,8 +22,8 @@ namespace Andromeda_Actions_Core.Command
 
         public override void RunCommand(string rawDeviceList)
         {
-            List<string> devlist = ParseDeviceList(rawDeviceList);
-            List<string> failedlist = new List<string>();
+            var devlist = ParseDeviceList(rawDeviceList);
+            var failedlist = new List<string>();
 
             var fileCopyContext = new FileCopyPromptViewModel();
             var fileCopyPrompt = new FileCopyPrompt
@@ -33,15 +34,17 @@ namespace Andromeda_Actions_Core.Command
 
             if (!fileCopyContext.Result)
             {
-                Logger.Log($"Action {ActionName} canceled by user.");
-                ResultConsole.AddConsoleLine($"Action {ActionName} canceled by user.");
+                var msg = $"Action {ActionName} canceled by user.";
+                Logger.LogMessage(msg);
+                ResultConsole.AddConsoleLine(msg);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(fileCopyContext.FilePath))
             {
-                Logger.Log($"Action {ActionName} aborted: source path was empty.");
-                ResultConsole.AddConsoleLine("Aborting: Source path is empty.");
+                var msg = $"Action {ActionName} aborted: source path was empty.";
+                Logger.LogMessage(msg);
+                ResultConsole.AddConsoleLine(msg);
                 return;
             }
 
@@ -84,14 +87,14 @@ namespace Andromeda_Actions_Core.Command
 
                     try
                     {
-                        if (FileAndFolderServices.ValidateDirectoryExists(device, fileCopyContext.DestinationPath, ActionName))
+                        if (FileAndFolderServices.ValidateDirectoryExists(device, fileCopyContext.DestinationPath, ActionName, Logger))
                         {
                             File.Copy(fileCopyContext.FilePath, destPath + fileName, fileCopyContext.Overwrite);
-                            Logger.Log($"Copied file {fileName} to {destPath}");
+                            Logger.LogMessage($"Copied file {fileName} to {destPath}");
                         }
                         else if (fileCopyContext.CreateDestination)
                         {
-                            Logger.Log($"Creating directory {fileCopyContext.DestinationPath}");
+                            Logger.LogMessage($"Creating directory {fileCopyContext.DestinationPath}");
                             Directory.CreateDirectory(destPath);
 
                             Thread.Sleep(100);
@@ -101,21 +104,19 @@ namespace Andromeda_Actions_Core.Command
                         else
                         {
                             ResultConsole.AddConsoleLine("Unable to copy, destination doesn't exist.");
-                            Logger.Log("Unable to copy, destination doesn't exist.");
+                            Logger.LogMessage("Unable to copy, destination doesn't exist.");
                         }
                     }
                     catch (Exception e)
                     {
                         ResultConsole.AddConsoleLine($"Unable to copy file {fileName}. Error: {e.Message}");
-                        Logger.Log($"Unable to copy file {fileName}. Error: {e.Message}");
+                        Logger.LogWarning($"Unable to copy file {fileName}.", e);
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

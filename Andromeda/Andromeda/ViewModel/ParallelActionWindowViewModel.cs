@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using Andromeda_Actions_Core;
 using Andromeda_Actions_Core.Infrastructure;
@@ -73,9 +74,11 @@ namespace Andromeda.ViewModel
         private readonly Thread _actionThread;
         private readonly Action _runningAction;
         public string ActionTitle => _runningAction.ActionName;
+        private readonly ILoggerService _logger;
 
-        public ParallelActionWindowViewModel(Action action, string deviceList)
+        public ParallelActionWindowViewModel(ILoggerService logger, Action action, string deviceList)
         {
+            _logger = logger;
             ViewModelGuid = Guid.NewGuid().ToString();
 
             _runningAction = action;
@@ -86,7 +89,7 @@ namespace Andromeda.ViewModel
                     new ThreadStart(
                         () =>
                         {
-                            Logger.Log("Starting action " + _runningAction.ActionName);
+                            _logger.LogMessage("Starting action " + _runningAction.ActionName);
                             ResultConsole.Instance.AddConsoleLine("Starting action " + _runningAction.ActionName);
                             _runningAction.RunCommand(deviceList);
                             if (!_runningAction.CancellationToken.IsCancellationRequested)
@@ -116,6 +119,14 @@ namespace Andromeda.ViewModel
             PropertyChangedEventArgs args = (PropertyChangedEventArgs)e;
             if (args.PropertyName != "ActionCompleted" && !ActionCompleted) { return; }
             
+            PropertyChanged -= ProcessActionComplete;
+            _actionThread.Join();
+            OnRequestClose(null);
+        }
+
+        private void OnApplicationExit(object sender, ExitEventArgs e)
+        {
+            CancelCommandExecute(this, e);
             PropertyChanged -= ProcessActionComplete;
             _actionThread.Join();
             OnRequestClose(null);

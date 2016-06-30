@@ -8,7 +8,8 @@ namespace Andromeda_Actions_Core.Command
     {
         private readonly IPsExecServices _psExecServices;
 
-        public RunGpUpdate(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
+        public RunGpUpdate(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Force Group Policy Update";
             Description = "Forces a GPUpdate on the machine(s).";
@@ -40,9 +41,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

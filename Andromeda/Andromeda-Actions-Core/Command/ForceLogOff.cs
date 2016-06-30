@@ -19,7 +19,8 @@ namespace Andromeda_Actions_Core.Command
 
         private readonly IWmiServices _wmiServices;
 
-        public ForceLogOff(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
+        public ForceLogOff(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Force Log Off";
             Description = "Forces the remote user to log off.";
@@ -78,22 +79,20 @@ namespace Andromeda_Actions_Core.Command
                             catch (Exception e)
                             {
                                 ResultConsole.AddConsoleLine($"Error running {ActionName} due to a .Net ManagementExcept error. There are likely no users logged on!");
-                                Logger.Log($"Error running {ActionName} due to a .Net ManagementExcept error: {e.Message}");
+                                Logger.LogWarning($"Error running {ActionName} due to a .Net ManagementExcept error.", e);
                             }
                         }
                     }
                     else
                     {
-                        Logger.Log($"There was an error connecting to WMI namespace on {device}");
+                        Logger.LogWarning($"There was an error connecting to WMI namespace on {device}", null);
                         ResultConsole.AddConsoleLine($"There was an error connecting to WMI namespace on {device}");
                     }
                 }
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

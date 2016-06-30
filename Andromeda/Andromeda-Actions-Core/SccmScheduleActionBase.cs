@@ -30,7 +30,9 @@ namespace Andromeda_Actions_Core
         protected readonly IWmiServices WmiService;
         protected readonly ISccmClientServices SccmClientService;
 
-        protected SccmScheduleActionBase(IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
+        protected SccmScheduleActionBase(ILoggerService logger, IWmiServices wmiService,
+            ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
+            : base(logger, networkServices, fileAndFolderServices)
         {
             WmiService = wmiService;
             SccmClientService = sccmClientService;
@@ -74,16 +76,14 @@ namespace Andromeda_Actions_Core
                     else
                     {
                         ResultConsole.AddConsoleLine($"Error connecting to WMI scope {device}. Process aborted for this device.");
-                        Logger.Log($"Error connecting to WMI scope {device}. Process aborted for this device. Exception message: {remoteConnectExceptionMsg}");
+                        Logger.LogWarning($"Error connecting to WMI scope {device}. Process aborted for this device. Exception message: {remoteConnectExceptionMsg}", null);
                         failedlist.Add(device);
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
             catch (Exception) { }
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Andromeda.View"
         xmlns:viewModel="clr-namespace:Andromeda_Actions_Core.ViewModel"
         mc:Ignorable="d"
-        Title="File Copy Action Prompt" Height="210" Width="600" ResizeMode="NoResize" Style="{StaticResource WindowBG}">
+        Title="File Copy Action Prompt" Height="220" Width="600" ResizeMode="NoResize" Style="{StaticResource WindowBG}">
     <Grid>
         <Label Style="{StaticResource TextboxLabels}" Content="Source File:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Left"  Width="262"/>
         <TextBox Style="{StaticResource White}" Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="23" Margin="10,35,54,0" TextWrapping="NoWrap" VerticalAlignment="Top"/>
@@ -16,8 +16,8 @@
 
         <Button Content="Okay" HorizontalAlignment="Right" Margin="0,0,90,10" Width="75" Command="{Binding OkayCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom"/>
         <Button Content="Cancel" Margin="0,0,10,10" Command="{Binding CancelCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="77"/>
-        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=CreateDestination, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Create destination directory" HorizontalAlignment="Left" Margin="10,128,0,32" VerticalAlignment="Top" Width="262" Height="22"/>
-        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=Overwrite, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Overwrite Destination" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" Width="262" Height="22"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=CreateDestination, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Create destination directory" HorizontalAlignment="Left" Margin="10,0,0,36" VerticalAlignment="Bottom" Width="262" Height="22"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=Overwrite, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Overwrite Destination" HorizontalAlignment="Left" Margin="10,0,0,9" VerticalAlignment="Bottom" Width="262" Height="22"/>
 
     </Grid>
 </viewModel:ApplicationWindowBase>

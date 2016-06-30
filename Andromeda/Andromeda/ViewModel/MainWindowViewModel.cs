@@ -88,7 +88,7 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private bool _runInParallelWindow;
+        private bool _runInParallelWindow = true;
         public bool RunInParallelWindow
         {
             get { return _runInParallelWindow; }
@@ -137,13 +137,16 @@ namespace Andromeda.ViewModel
 
         public string VersionNumber => Program.VersionNumber;
         public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
+
+        private readonly ILoggerService _logger;
         #endregion
 
 
 
         #region Constructor
-        public MainWindowViewModel()
+        public MainWindowViewModel(ILoggerService logger)
         {
+            _logger = logger;
             _viewModels = new ObservableCollection<ViewModelBase> { new ResultConsoleViewModel() };
 
             RunButtonText = "Run";
@@ -175,7 +178,7 @@ namespace Andromeda.ViewModel
 
             if (RunInParallelWindow)
             {
-                var dataContext = new ParallelActionWindowViewModel(SelectedAction, DeviceListString);
+                var dataContext = new ParallelActionWindowViewModel(Program.IoC.Resolve<ILoggerService>(), SelectedAction, DeviceListString);
                 var newWindow = new ParallelActionWindow
                 {
                     DataContext = dataContext
@@ -195,10 +198,10 @@ namespace Andromeda.ViewModel
                     () =>
                     {
                         var thisAction = SelectedAction;
-                        Logger.Log("Starting action " + thisAction.ActionName);
-                        ResultConsole.Instance.AddConsoleLine("Starting action " + thisAction.ActionName);
+                        _logger.LogMessage($"Starting action {thisAction.ActionName}");
+                        ResultConsole.Instance.AddConsoleLine($"Starting action {thisAction.ActionName}");
                         thisAction.RunCommand(DeviceListString);
-                        ResultConsole.Instance.AddConsoleLine("Action " + thisAction.ActionName + " completed.");
+                        ResultConsole.Instance.AddConsoleLine($"Action {thisAction.ActionName} completed.");
                         OnActionStarted(false);
                     }));
             thread.SetApartmentState(ApartmentState.STA);
@@ -243,7 +246,7 @@ namespace Andromeda.ViewModel
 
         private void UpdateActionIcon(bool justStarted)
         {
-            Logger.Log("Updating action running state to " + justStarted);
+            _logger.LogMessage($"Updating action running state to {justStarted}");
             ActionRunning = justStarted;
 
             if (justStarted)

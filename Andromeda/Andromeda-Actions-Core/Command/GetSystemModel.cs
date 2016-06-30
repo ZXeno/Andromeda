@@ -9,7 +9,8 @@ namespace Andromeda_Actions_Core.Command
     {
         private readonly IWmiServices _wmiServices;
 
-        public GetSystemModel(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
+        public GetSystemModel(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Get Device Model ID";
             Description = "Gets the model ID of the selected device.";
@@ -56,7 +57,7 @@ namespace Andromeda_Actions_Core.Command
                         }
                         catch (Exception e)
                         {
-                            Logger.Log($"QueryCollection returned with exception {e.Message}");
+                            Logger.LogWarning($"QueryCollection returned with exception.", e);
                             ResultConsole.AddConsoleLine($"QueryCollection returned with exception {e.Message}");
                             continue;
                         }
@@ -64,7 +65,7 @@ namespace Andromeda_Actions_Core.Command
 
                         if (queryCollection.Count == 0)
                         {
-                            Logger.Log($"Query returned null or empty result list for device {device}");
+                            Logger.LogWarning($"Query returned null or empty result list for device {device}", null);
                             ResultConsole.AddConsoleLine($"Query returned null or empty result list for device {device}");
                             continue;
                         }
@@ -80,16 +81,14 @@ namespace Andromeda_Actions_Core.Command
                     {
                         var msg = ($"There was an error connecting to WMI namespace on {device}");
 
-                        Logger.Log(msg);
+                        Logger.LogMessage(msg);
                         ResultConsole.AddConsoleLine(msg);
                     }
                 }
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

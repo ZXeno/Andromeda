@@ -10,7 +10,8 @@ namespace Andromeda_Actions_Core.Command
     {
         private readonly IWmiServices _wmiServices;
 
-        public ForceReboot(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(networkServices, fileAndFolderServices)
+        public ForceReboot(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Force Reboot";
             Description = "Force reboots the remote computer.";
@@ -49,16 +50,14 @@ namespace Andromeda_Actions_Core.Command
                     }
                     else
                     {
-                        Logger.Log($"There was an error connecting to WMI namespace on {device}");
+                        Logger.LogWarning($"There was an error connecting to WMI namespace on {device}", null);
                         ResultConsole.AddConsoleLine($"There was an error connecting to WMI namespace on {device}");
                     }
                 });
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

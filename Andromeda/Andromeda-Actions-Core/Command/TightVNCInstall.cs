@@ -15,7 +15,8 @@ namespace Andromeda_Actions_Core.Command
 
         private readonly IPsExecServices _psExecServices;
 
-        public TightVNCInstall(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
+        public TightVNCInstall(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices)
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "TightVNC Install";
             Description = "Installs the version of TightVNC from the components directory. [Requires Credentials]";
@@ -33,12 +34,12 @@ namespace Andromeda_Actions_Core.Command
             {
                 ResultConsole.AddConsoleLine("You must login for this command to work.");
                 ResultConsole.AddConsoleLine(ActionName + "was canceled due to improper credentials.");
-                Logger.Log("Invalid credentials. Action: " + ActionName + " canceled.");
+                Logger.LogMessage("Invalid credentials. Action: " + ActionName + " canceled.");
                 return;
             }
 
             string cmdToRun = $"MsiExec.exe /i C:\\temp\\{TightVncInstallerFileName} /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=PASS SET_REMOVEWALLPAPER=1 VALUE_OF_REMOVEWALLPAPER=0";
-            Logger.Log($"Running TightVNC Install with following command line parameters: {cmdToRun}");
+            Logger.LogMessage($"Running TightVNC Install with following command line parameters: {cmdToRun}");
 
             try
             {
@@ -50,7 +51,7 @@ namespace Andromeda_Actions_Core.Command
                     {
                         failedlist.Add(device);
                         ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
-                        Logger.Log($"Device {device} failed connection verification. Added to failed list.");
+                        Logger.LogWarning($"Device {device} failed connection verification. Added to failed list.", null);
                         continue;
                     }
 
@@ -69,7 +70,7 @@ namespace Andromeda_Actions_Core.Command
                     catch (Exception e)
                     {
                         var msg = $"There was an error while trying to copy the TightVNC installer to the remote device. Error: {e.Message}";
-                        Logger.Log(msg);
+                        Logger.LogMessage(msg);
                         ResultConsole.AddConsoleLine(msg);
                         Thread.Sleep(500);
                         continue;
@@ -87,9 +88,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

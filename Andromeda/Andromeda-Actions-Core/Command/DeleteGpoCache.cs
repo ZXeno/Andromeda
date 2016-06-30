@@ -11,7 +11,8 @@ namespace Andromeda_Actions_Core.Command
         private const string GpoCacheDir = "\\ProgramData\\Microsoft\\Group Policy\\History";
         private readonly IPsExecServices _psExecServices;
 
-        public DeleteGpoCache(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices) : base(networkServices, fileAndFolderServices)
+        public DeleteGpoCache(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices)
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Delete GPO Cache";
             Description = "Deletes the GPO cache of the remote computer(s) and forces GPUpdate.";
@@ -38,7 +39,7 @@ namespace Andromeda_Actions_Core.Command
                         continue;
                     }
 
-                    if (FileAndFolderServices.ValidateDirectoryExists(device, GpoCacheDir, ActionName))
+                    if (FileAndFolderServices.ValidateDirectoryExists(device, GpoCacheDir, ActionName, Logger))
                     {
                         var dirtyContents = Directory.EnumerateDirectories($"\\\\{device}\\C${GpoCacheDir}").ToList();
                         var contents = new List<string>();
@@ -51,7 +52,7 @@ namespace Andromeda_Actions_Core.Command
 
                         foreach (var dir in contents)
                         {
-                            FileAndFolderServices.CleanDirectory(device, dir);
+                            FileAndFolderServices.CleanDirectory(device, dir, Logger);
                         }
 
                         _psExecServices.RunOnDeviceWithoutAuthentication(device, "cmd.exe /C gpupdate.exe /force");
@@ -65,9 +66,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

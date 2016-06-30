@@ -25,13 +25,15 @@ namespace Andromeda_Actions_Core
         private XmlWriter _xwriter;
         private XmlDocument configFileDat;
         private readonly IXmlServices _xmlServices;
+        private readonly ILoggerService _logger;
 
-        public ConfigManager(string userFolder, IXmlServices xmlServices)
+        public ConfigManager(string path, IXmlServices xmlServices, ILoggerService logger)
         {
+            _logger = logger;
             _xmlServices = xmlServices;
-            _configFilePath = userFolder + "\\" + ConfigFileName;
-            _resultsDirectory = userFolder + "\\Results";
-            _componentsDirectory = userFolder + "\\components";
+            _configFilePath = path + "\\" + ConfigFileName;
+            _resultsDirectory = path + "\\Results";
+            _componentsDirectory = path + "\\components";
 
             CurrentConfig = new Configuration
             {
@@ -53,7 +55,7 @@ namespace Andromeda_Actions_Core
         {
             if (versionNode == null || versionNode.InnerText != SaveFileVersion)
             {
-                Logger.Log("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
+                _logger.LogMessage("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
                 ResultConsole.Instance.AddConsoleLine("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
 
                 if (File.Exists(_configFilePath))
@@ -70,7 +72,7 @@ namespace Andromeda_Actions_Core
 
         public void LoadConfig()
         {
-            Logger.Log("Beginning config file load.");
+            _logger.LogMessage("Beginning config file load.");
             try
             {
                 configFileDat = _xmlServices.GetXmlFileData(_configFilePath);
@@ -90,7 +92,7 @@ namespace Andromeda_Actions_Core
                 }
                 else
                 {
-                    Logger.Log("Problem loading \"saveofflinecomputers\" node from config file. Using default.");
+                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
                     ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
                     CurrentConfig.SaveOfflineComputers = true;
                 }
@@ -102,7 +104,7 @@ namespace Andromeda_Actions_Core
                 }
                 else
                 {
-                    Logger.Log("Problem loading \"saveonlinecomputers\" node from config file. Using default.");
+                    _logger.LogWarning("Problem loading \"saveonlinecomputers\" node from config file. Using default.", null);
                     ResultConsole.Instance.AddConsoleLine("Problem loading \"saveonlinecomputers\" node from config file. Using default: TRUE");
                     CurrentConfig.SaveOnlineComputers = true;
                 }
@@ -114,7 +116,7 @@ namespace Andromeda_Actions_Core
                 }
                 else
                 {
-                    Logger.Log("Problem loading \"resultsDirectory\" node from config file. Using default.");
+                    _logger.LogWarning("Problem loading \"resultsDirectory\" node from config file. Using default.", null);
                     ResultConsole.Instance.AddConsoleLine("Problem loading \"resultsDirectory\" node from config file. Using default: " + _resultsDirectory);
                     CurrentConfig.ResultsDirectory = _resultsDirectory;
                 }
@@ -126,7 +128,7 @@ namespace Andromeda_Actions_Core
                 }
                 else
                 {
-                    Logger.Log("Problem loading \"componentsDirectory\" node from config file. Using default.");
+                    _logger.LogWarning("Problem loading \"componentsDirectory\" node from config file. Using default.", null);
                     ResultConsole.Instance.AddConsoleLine( "Problem loading \"componentsDirectory\" node from config file. Using default: " + _componentsDirectory);
                     CurrentConfig.ComponentDirectory = _componentsDirectory;
                 }
@@ -147,14 +149,14 @@ namespace Andromeda_Actions_Core
 
         public void CreateNewConfigFile()
         {
-            Logger.Log("Generating new config file...");
+            _logger.LogMessage("Generating new config file...");
             ResultConsole.Instance.AddConsoleLine("Generating new config file...");
 
             #region Document Creation
             try
             {
                 XmlWriterSettings _xsets = new XmlWriterSettings();
-                Logger.Log("Configuration file encoding set to UTF8.");
+                _logger.LogMessage("Configuration file encoding set to UTF8.");
                 _xsets.Encoding = Encoding.UTF8;
                 _xsets.Indent = true;
 
@@ -190,14 +192,14 @@ namespace Andromeda_Actions_Core
                 _xwriter.WriteEndDocument();
                 _xwriter.Close();
 
-                Logger.Log("Configuration file generation complete.");
+                _logger.LogMessage("Configuration file generation complete.");
 
                 ValidateDirectoryExists(_resultsDirectory);
                 ValidateDirectoryExists(_componentsDirectory);
             }
             catch (Exception ex)
             {
-                Logger.Log("Exception in " + ex.TargetSite + ": " + ex.InnerException + " - Unable to create configuration file.");
+                _logger.LogError("Unable to create configuration file.", ex);
                 ResultConsole.Instance.AddConsoleLine("Exception in " + ex.TargetSite + ": " + ex.InnerException + " - Unable to create configuration file.");
             }
             #endregion
@@ -232,18 +234,18 @@ namespace Andromeda_Actions_Core
 
         private void ValidateDirectoryExists(string path)
         {
-            Logger.Log("Validating path " + path);
+            _logger.LogMessage("Validating path " + path);
 
             if (!Directory.Exists(path))
             {
-                Logger.Log("Directory path " + path + " does not exist. Creating...");
+                _logger.LogWarning("Directory path " + path + " does not exist. Creating...", null);
                 try
                 {
                     Directory.CreateDirectory(path);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log("There was an error creating directory " + path + "\\. Exception: " + e.InnerException);
+                    _logger.LogError("There was an error creating directory " + path + "\\.", e);
                     ResultConsole.Instance.AddConsoleLine("There was a problem validating a directory during configuration loading. See the log file.");
                 }
             }
@@ -254,11 +256,11 @@ namespace Andromeda_Actions_Core
             if (File.Exists(_configFilePath))
             {
                 ResultConsole.Instance.AddConsoleLine("Configuration file found.");
-                Logger.Log("Configuration file found.");
+                _logger.LogMessage("Configuration file found.");
                 return true;
             }
 
-            Logger.Log("No config file found!");
+            _logger.LogMessage("No config file found!");
             ResultConsole.Instance.AddConsoleLine("No config file found!");
             return false;
 

@@ -12,12 +12,18 @@ namespace Andromeda_Actions_Core.Infrastructure
     public class PsExecServices : IPsExecServices
     {
         private Configuration Config => ConfigManager.CurrentConfig;
+        private readonly ILoggerService _logger;
+
+        public PsExecServices(ILoggerService logger)
+        {
+            _logger = logger;
+        }
 
         public void RunOnDeviceWithAuthentication(string device, string commandline, CredToken creds)
         {
             // For whatever reason, making everything a string literal fixed a problem with making this work correctly
             var loggableArguments = $@"\\{device} -u {creds.Domain}\{creds.User} -p [REDACTED] " + commandline;
-            Logger.Log($"Beginning PsExec attempt on {device} with following command line options: {loggableArguments}");
+            _logger.LogMessage($"Beginning PsExec attempt on {device} with following command line options: {loggableArguments}");
 
             RunPsExec(device, commandline, creds);
         }
@@ -26,7 +32,7 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             // For whatever reason, making everything a string literal fixed a problem with making this work correctly
             var loggableArguments = $@"\\{device} {commandline}";
-            Logger.Log($"Beginning PsExec (NO AUTH) attempt on {device} with following command line options: {loggableArguments}");
+            _logger.LogMessage($"Beginning PsExec (NO AUTH) attempt on {device} with following command line options: {loggableArguments}");
 
             RunPsExec(device, commandline);
         }
@@ -49,13 +55,13 @@ namespace Andromeda_Actions_Core.Infrastructure
                 }
 
                 process.Start();
-                Logger.Log($"PSExec process started with start ID: {process.Id}");
+                _logger.LogMessage($"PSExec process started with start ID: {process.Id}");
                 process.WaitForExit(60000);
 
                 if (!process.HasExited)
                 {
                     process.Kill();
-                    Logger.Log($"Killed process {process.Id}");
+                    _logger.LogMessage($"Killed process {process.Id}");
                 }
 
                 var stdOutput = process.StandardOutput.ReadToEnd();
@@ -71,7 +77,7 @@ namespace Andromeda_Actions_Core.Infrastructure
 
                 ResultConsole.Instance.AddConsoleLine(errResult);
                 ResultConsole.Instance.AddConsoleLine(stdResult);
-                Logger.Log(errResult);
+                _logger.LogMessage(errResult);
             }
             catch (Exception ex)
             {
@@ -133,7 +139,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                     }
                     catch (Exception e)
                     {
-                        Logger.Log($"Unable to create Remote PsExec scrubber batch file {filepath} Exception: {e.Message}");
+                        _logger.LogError($"Unable to create Remote PsExec scrubber batch file {filepath}.", e);
                         ResultConsole.Instance.AddConsoleLine($"Unable to create Remote PsExec scrubber batch file {filepath} Exception: {e.Message}");
                     }
                 }
@@ -156,11 +162,11 @@ namespace Andromeda_Actions_Core.Infrastructure
             if (!purgeproc.HasExited)
             {
                 purgeproc.Kill();
-                Logger.Log($"Killed process {purgeproc.Id}");
+                _logger.LogMessage($"Killed process {purgeproc.Id}");
 
                 foreach (var process in Process.GetProcessesByName("sc.exe"))
                 {
-                    Logger.Log($"Killed process sc.exe with id {process.Id}");
+                    _logger.LogMessage($"Killed process sc.exe with id {process.Id}");
                     process.Kill();
                 }
 
@@ -174,7 +180,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                 }
                 catch (Exception)
                 {
-                    Logger.Log("Unable to remove the scrubremotepsexesvc file. It will need to be manually cleaned.");
+                    _logger.LogMessage("Unable to remove the scrubremotepsexesvc file. It will need to be manually cleaned.");
                 }
             }
 

@@ -63,11 +63,13 @@
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Command\RepairWmi.cs" />
     <Compile Include="Command\RunGpUpdate.cs" />
+    <Compile Include="Command\SccmRemoteAccessRegModify.cs" />
     <Compile Include="Command\SoftwareInventoryCycleSccm.cs" />
     <Compile Include="Command\TightVNCInstall.cs" />
     <Compile Include="Command\TightVNCRemove.cs" />
     <Compile Include="Command\UserPolicyRetrievalCycleSccm.cs" />
     <Compile Include="IAction.cs" />
+    <Compile Include="Infrastructure\Abstractions\ILoggerService.cs" />
     <Compile Include="Infrastructure\Abstractions\IPsExecServices.cs" />
     <Compile Include="Infrastructure\Abstractions\IRegistryServices.cs" />
     <Compile Include="Infrastructure\Abstractions\ISccmClientServices.cs" />
@@ -78,14 +80,14 @@
     <Compile Include="Infrastructure\Abstractions\IFileAndFolderServices.cs" />
     <Compile Include="Infrastructure\Abstractions\INetworkServices.cs" />
     <Compile Include="Infrastructure\Implementations\PsExecServices.cs" />
-    <Compile Include="Infrastructure\LifeTimeOptions.cs" />
-    <Compile Include="Infrastructure\ResolvedTypeWithLifeTimeOptions.cs" />
-    <Compile Include="Infrastructure\IoCContainer.cs" />
+    <Compile Include="Infrastructure\IoC\LifeTimeOptions.cs" />
+    <Compile Include="Infrastructure\IoC\ResolvedTypeWithLifeTimeOptions.cs" />
+    <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
     <Compile Include="ViewModel\FileCopyPromptViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
-    <Compile Include="Infrastructure\Logger.cs" />
+    <Compile Include="Infrastructure\Implementations\Logger.cs" />
     <Compile Include="Infrastructure\Implementations\NetworkServices.cs" />
     <Compile Include="Infrastructure\Implementations\RegistryServices.cs" />
     <Compile Include="Infrastructure\Implementations\SccmClientServices.cs" />
@@ -101,6 +103,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
+    <Compile Include="ViewModel\SccmRegHackOptionViewModel.cs" />
+    <Compile Include="View\SccmRegHackOptionsPrompt.xaml.cs">
+      <DependentUpon>SccmRegHackOptionsPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FileCopyPrompt.xaml.cs">
       <DependentUpon>FileCopyPrompt.xaml</DependentUpon>
     </Compile>
@@ -110,6 +116,10 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\SccmRegHackOptionsPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\FileCopyPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,6 +133,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

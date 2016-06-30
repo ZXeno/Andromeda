@@ -8,5 +8,6 @@ namespace Andromeda_Actions_Core.Infrastructure
         bool ValidateKeyValueExists(RegistryKey subKey, string targetKeyValue, string expectedName);
         RegistryKey GetRegistryKey(string targetDevice, RegistryHive baseKey, string targetSubKey);
         void DeleteSubkeyTree(string targetDevice, RegistryHive baseKey, string targetSubKey);
+        void WriteToSubkey(string targetDevice, RegistryHive baseKey, string targetSubKey, string name, string value, RegistryValueKind keyKind);
     }
 }

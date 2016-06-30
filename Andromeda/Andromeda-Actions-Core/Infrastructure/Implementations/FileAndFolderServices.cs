@@ -6,6 +6,7 @@ namespace Andromeda_Actions_Core.Infrastructure
 {
     public class FileAndFolderServices : IFileAndFolderServices
     {
+
         public async void CreateNewTextFile(string filepath)
         {
             if (File.Exists(filepath)) { return; }
@@ -20,7 +21,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
         }
 
-        public async void CreateRemoteTextFile(string filepath, string contents)
+        public async void CreateRemoteTextFile(string filepath, string contents, ILoggerService logger)
         {
             if (File.Exists(filepath)) return;
 
@@ -33,40 +34,47 @@ namespace Andromeda_Actions_Core.Infrastructure
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Unable to create remote file {filepath} Exception: {e.Message}");
-                    ResultConsole.Instance.AddConsoleLine($"Unable to create remote file {filepath} Exception: {e.Message}");
+                    logger.LogError($"Unable to create remote file {filepath}", e);
                 }
             }
         }
 
-        public void WriteToTextFile(string filepath, string contents)
+        public void WriteToTextFile(string filepath, string contents, ILoggerService logger)
         {
             var sb = new StringBuilder();
             sb.Append(contents);
 
             using (var outfile = new StreamWriter(filepath, true))
             {
-                outfile.WriteAsync(sb.ToString());
+                try
+                {
+                    outfile.WriteAsync(sb.ToString());
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"Unable to write to directory {filepath}", e);
+                }
+                
             }
         }
 
-        public void CleanDirectory(string device, string path)
+        public void CleanDirectory(string device, string path, ILoggerService logger)
         {
             var fullPath = $"\\\\{device}\\C$" + path;
 
             try
             {
                 Directory.Delete(fullPath, true);
-                Logger.Log($"Cleaned directory {fullPath}");
+                logger.LogMessage($"Cleaned directory {fullPath}");
             }
             catch (Exception ex)
             {
                 ResultConsole.Instance.AddConsoleLine($"Failed to clean directory {fullPath}. Due to exception {ex.Message}");
-                Logger.Log($"Failed to clean directory {fullPath}. Due to exception {ex.Message} Inner exception: {ex.InnerException}");
+                logger.LogError($"Failed to clean directory {fullPath}.", ex);
             }
         }
 
-        public bool ValidateDirectoryExists(string device, string path, string actionName)
+        public bool ValidateDirectoryExists(string device, string path, string actionName, ILoggerService logger)
         {
             try
             {
@@ -76,12 +84,12 @@ namespace Andromeda_Actions_Core.Infrastructure
             {
                 ResultConsole.Instance.AddConsoleLine($"There was an exception when validating the directory {path} for machine: {device}");
                 ResultConsole.Instance.AddConsoleLine(ex.Message);
-                Logger.Log($"{actionName} failed to validate directory: \\\\{device}\\C$\\{path}");
+                logger.LogWarning($"{actionName} failed to validate directory: \\\\{device}\\C$\\{path}", null);
                 return false;
             }
         }
 
-        public bool ValidateFileExists(string device, string path, string actionName)
+        public bool ValidateFileExists(string device, string path, string actionName, ILoggerService logger)
         {
             try
             {
@@ -91,7 +99,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             {
                 ResultConsole.Instance.AddConsoleLine($"There was an exception when validating the file {path} for machine: {device}");
                 ResultConsole.Instance.AddConsoleLine(ex.Message);
-                Logger.Log($"{actionName} failed to validate file: \\\\{device}\\C$\\{path}");
+                logger.LogWarning($"{actionName} failed to validate file: \\\\{device}\\C$\\{path}", ex);
                 return false;
             }
         }

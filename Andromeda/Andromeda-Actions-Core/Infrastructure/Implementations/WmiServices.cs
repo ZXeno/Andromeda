@@ -9,9 +9,11 @@ namespace Andromeda_Actions_Core.Infrastructure
         public string RootNamespace => "\\root\\cimv2";
         private readonly IFileAndFolderServices _fileAndFolderServices;
         private readonly IPsExecServices _psExecServices;
+        private readonly ILoggerService _logger;
 
-        public WmiServices(IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices)
+        public WmiServices(ILoggerService logger, IFileAndFolderServices fileAndFolderServices, IPsExecServices psExecServices)
         {
+            _logger = logger;
             _fileAndFolderServices = fileAndFolderServices;
             _psExecServices = psExecServices;
         }
@@ -28,7 +30,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             {
                 ResultConsole.Instance.AddConsoleLine($"Failed to connect to WMI namespace \\\\{hostname}{scope}");
                 ResultConsole.Instance.AddConsoleLine($"Exception message: {e.Message}");
-                Logger.Log($"Error connecting to WMI namespace \\\\{hostname}{scope} Exception was caught: {e.Message} Inner exception: {e.InnerException}");
+                _logger.LogError($"Error connecting to WMI namespace \\\\{hostname}{scope}", e);
 
                 return null;
             }
@@ -62,7 +64,7 @@ namespace Andromeda_Actions_Core.Infrastructure
 
         public bool RepairRemoteWmi(string hostname)
         {
-            Logger.Log($"Attempting to repair WMI on device {hostname}");
+            _logger.LogMessage($"Attempting to repair WMI on device {hostname}");
             ResultConsole.Instance.AddConsoleLine($"Attempting to repair WMI on device {hostname}");
 
             var remoteBatchPath = $"\\\\{hostname}\\C$\\windows\\temp\\fixwmi.bat";
@@ -71,26 +73,26 @@ namespace Andromeda_Actions_Core.Infrastructure
 
             try
             {
-                Logger.Log("Creating remote batch file");
-                _fileAndFolderServices.CreateRemoteTextFile(remoteBatchPath, batchFileContent);
+                _logger.LogMessage("Creating remote batch file");
+                _fileAndFolderServices.CreateRemoteTextFile(remoteBatchPath, batchFileContent, _logger);
                 
             }
             catch (Exception ex)
             {
-                Logger.Log($"Error creating remote WMI repair batch file. Exception thrown: {ex.Message}");
+                _logger.LogError("Error creating remote WMI repair batch file.", ex);
                 ResultConsole.Instance.AddConsoleLine($"Error creating remote WMI repair batch file. Exception thrown: {ex.Message}");
                 return false;
             }
 
             try
             {
-                Logger.Log($"Run WMI repair batch on remote device {hostname}");
+                _logger.LogMessage($"Run WMI repair batch on remote device {hostname}");
                 _psExecServices.RunOnDeviceWithAuthentication(hostname, commandline, CredentialManager.Instance.UserCredentials);
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.Log($"Error running remote batch file on device {hostname}\n Exception: {ex.Message}");
+                _logger.LogError($"Error running remote batch file on device {hostname}", ex);
                 ResultConsole.Instance.AddConsoleLine($"Error running remote batch file on device {hostname}\n Exception: {ex.Message}");
                 return false;
             }
@@ -100,14 +102,14 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             if (remote == null)
             {
-                Logger.Log("Cannot kill process on null management scope.");
+                _logger.LogWarning("Cannot kill process on null management scope.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to kill process {procName} on remote host {device}");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(device) ||string.IsNullOrWhiteSpace(procName))
             {
-                Logger.Log("Device or process name arguments are invalid. Cannot attempt to kill process.");
+                _logger.LogWarning("Device or process name arguments are invalid. Cannot attempt to kill process.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to kill process {procName} on remote host {device}");
                 return false;
             }
@@ -123,7 +125,7 @@ namespace Andromeda_Actions_Core.Infrastructure
                     {
                         process.InvokeMethod("Terminate", null);
                         ResultConsole.Instance.AddConsoleLine($"Called process terminate ({process["Name"]}) on device {device}.");
-                        Logger.Log($"Called process terminate ({process["Name"]}) on device {device}.");
+                        _logger.LogMessage($"Called process terminate ({process["Name"]}) on device {device}.");
                     }
                 }
 
@@ -131,7 +133,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             catch (Exception e)
             {
-                Logger.Log($"There was an error trying to kill process {procName}. Error: {e.Message}");
+                _logger.LogError($"There was an error trying to kill process {procName}.", e);
                 ResultConsole.Instance.AddConsoleLine($"Unable to kill process {procName} on remote host {device} Error: {e.Message}");
                 return false;
             }
@@ -141,14 +143,14 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             if (remote == null)
             {
-                Logger.Log("Cannot call product uninstall on null management scope.");
+                _logger.LogWarning("Cannot call product uninstall on null management scope.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodName} on remote host {device}");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(device) || string.IsNullOrWhiteSpace(prodName))
             {
-                Logger.Log("Device or product name arguments are invalid. Cannot attempt to call product uninstall.");
+                _logger.LogWarning("Device or product name arguments are invalid. Cannot attempt to call product uninstall.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodName} on remote host {device}");
                 return false;
             }
@@ -161,10 +163,10 @@ namespace Andromeda_Actions_Core.Infrastructure
                 {
                     foreach (ManagementObject product in searcher.Get()) // this is the fixed line
                     {
-                        Logger.Log($"Calling uninstall on device {device}.");
+                        _logger.LogMessage($"Calling uninstall on device {device}.");
                         product.InvokeMethod("uninstall", null);
                         ResultConsole.Instance.AddConsoleLine($"Called uninstall on device {device}.");
-                        Logger.Log($"Called uninstall on device {device}.");
+                        _logger.LogMessage($"Called uninstall on device {device}.");
                     }
                 }
 
@@ -172,7 +174,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             catch (Exception e)
             {
-                Logger.Log($"There was an error trying to call product uninstall {prodName}. Error: {e.Message}");
+                _logger.LogError($"There was an error trying to call product uninstall {prodName}.", e);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodName} on remote host {device} Error: {e.Message}");
                 return false;
             }
@@ -182,7 +184,7 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             if (remote == null)
             {
-                Logger.Log($"Cannot call product uninstall on null management scope.");
+                _logger.LogWarning("Cannot call product uninstall on null management scope.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodId} on remote host {device}");
                 return false;
             }
@@ -190,7 +192,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             if (string.IsNullOrWhiteSpace(device) ||
                 string.IsNullOrWhiteSpace(prodId))
             {
-                Logger.Log("Device or product name arguments are invalid. Cannot attempt to call product uninstall.");
+                _logger.LogWarning("Device or product name arguments are invalid. Cannot attempt to call product uninstall.", null);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodId} on remote host {device}");
                 return false;
             }
@@ -203,10 +205,10 @@ namespace Andromeda_Actions_Core.Infrastructure
                 {
                     foreach (ManagementObject product in searcher.Get()) // this is the fixed line
                     {
-                        Logger.Log($"Calling uninstall on device {device}.");
+                        _logger.LogMessage($"Calling uninstall on device {device}.");
                         product.InvokeMethod("uninstall", null);
                         ResultConsole.Instance.AddConsoleLine($"Called uninstall on device {device}.");
-                        Logger.Log($"Called uninstall on device {device}.");
+                        _logger.LogMessage($"Called uninstall on device {device}.");
                     }
                 }
 
@@ -214,7 +216,7 @@ namespace Andromeda_Actions_Core.Infrastructure
             }
             catch (Exception e)
             {
-                Logger.Log($"There was an error trying to call product uninstall {prodId}. Error: {e.Message}" + e.Message);
+                _logger.LogError($"There was an error trying to call product uninstall {prodId}.", e);
                 ResultConsole.Instance.AddConsoleLine($"Unable to call product uninstall {prodId} on remote host {device} Error: {e.Message}" + e.Message);
                 return false;
             }

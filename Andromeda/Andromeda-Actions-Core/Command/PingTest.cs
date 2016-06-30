@@ -8,7 +8,8 @@ namespace Andromeda_Actions_Core.Command
 {
     public class PingTest : Action
     {
-        public PingTest(INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) : base(networkServices, fileAndFolderServices)
+        public PingTest(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) 
+            : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Ping Test";
             Description = "Runs a ping test against the device list.";
@@ -36,9 +37,7 @@ namespace Andromeda_Actions_Core.Command
             }
             catch (OperationCanceledException e)
             {
-                ResultConsole.AddConsoleLine($"Operation {ActionName} canceled.");
-                Logger.Log($"Operation {ActionName} canceled by user request. {e.Message}");
-                ResetCancelToken();
+                ResetCancelToken(ActionName, e);
             }
 
             if (failedlist.Count > 0)

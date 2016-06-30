@@ -1,0 +1,26 @@
+﻿<viewModel:ApplicationWindowBase x:Class="Andromeda.View.SccmRegHackOptionsPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Andromeda.View"
+        xmlns:viewModel="clr-namespace:Andromeda_Actions_Core.ViewModel"
+        mc:Ignorable="d"
+        Title="SCCM Remote Access Registry Hack Options" Height="210" Width="600" ResizeMode="NoResize" Style="{StaticResource WindowBG}">
+    <Grid>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=RemoteAccessEnabled, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Remote Access Enabled" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="320"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=RequiresUserApproval, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Require User Approval" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" Width="320"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=ShowConnectionBanner, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Show Connection Banner" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Width="320"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=ShowTaskbarIcon, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Show Taskbar Icon" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" Width="320"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=AllowAccessOnUnattended, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Allow Access On Unattended Computer" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="320"/>
+        <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=AllowLocalAdministratorsToRemoteControl, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Allow Local Administrator Remote Control" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" Width="320"/>
+
+        <Button Content="Default Settings" Command="{Binding DefaultSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,10,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
+        <Button Content="Force Allow Access" Command="{Binding ForceAccessSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,35,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
+        <Button Content="Silent Access" Command="{Binding SilentSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,60,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
+        
+        <Button Content="Okay" HorizontalAlignment="Right" Margin="0,0,90,10" Width="75" Command="{Binding OkayCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom"/>
+        <Button Content="Cancel" Margin="0,0,10,10" Command="{Binding CancelCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="77"/>
+        
+    </Grid>
+</viewModel:ApplicationWindowBase>
