@@ -32,14 +32,11 @@ namespace AndromedaSetup
             try
             {
                 var config = new InstallConfig();
-                if (!config.LoadConfigFile())
-                {
-                    throw new Exception("Unable to load setup.dat.");
-                }
+                if (!config.LoadConfigFile()) { return; }
 
                 foreach (var process in Process.GetProcessesByName("Andromeda"))
                 {
-                    Console.WriteLine("Ending process " + process.ProcessName);
+                    WriteConsole("Ending process " + process.ProcessName);
                     process.Kill();
                 }
 
@@ -66,7 +63,7 @@ namespace AndromedaSetup
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine($"{e.Message}, it will be ignored.");
+                                WriteConsole($"{e.Message}, it will be ignored.");
                             }
                         });
                     
@@ -79,8 +76,8 @@ namespace AndromedaSetup
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"{e.Message}");
-                        Console.WriteLine("Installation has been aborted.");
+                        WriteConsole($"{e.Message}");
+                        WriteConsole("Installation has been aborted.");
                         return;
                     }
                 }
@@ -93,7 +90,22 @@ namespace AndromedaSetup
                         throw new Exception("Could not find source item " + item.Item);
                     }
 
-                    var destPath = item.Destination.Replace("{path}", _installDirectory);
+                    string destPath = "";
+                    if (item.Destination.Contains("{path}"))
+                    {
+                        destPath = item.Destination.Replace("{path}", _installDirectory);
+                    }
+                    else if (item.Destination.Contains("{user}"))
+                    {
+                        destPath = item.Destination.Replace("{user}", Environment.UserName);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(destPath))
+                    {
+                        WriteConsole($"Unable to install file {item.Item}. Could not resolve destination from installer file.");
+                        return;
+                    }
+
                     if (!Directory.Exists(destPath))
                     {
                         Directory.CreateDirectory(destPath);
@@ -105,7 +117,7 @@ namespace AndromedaSetup
 
                     installLogContent.Add(destPath + "\\" + fileName);
 
-                    Console.WriteLine($"Copied {fileName} to {destPath}");
+                    WriteConsole($"Copied {fileName} to {destPath}");
                 });
 
                 var uninstaller = Assembly.GetExecutingAssembly().Location;
@@ -117,7 +129,7 @@ namespace AndromedaSetup
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Unable to copy uninstaller to {UninstallerLocation}, see the log at {Program.InstallLogPath}\\{Program.InstallLogFileName} for instructions on how to correct this.");
+                    WriteConsole($"Unable to copy uninstaller to {UninstallerLocation}, see the log at {Program.InstallLogPath}\\{Program.InstallLogFileName} for instructions on how to correct this.");
                     installLogContent.Add($"[ERROR]There was an error copying the uninstaller. Copy the installer executable \"{UninstallerName}\" to {UninstallerLocation}. \n[ERROR] {e.Message}");
                 }
 
@@ -126,7 +138,7 @@ namespace AndromedaSetup
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                WriteConsole(ex.Message);
             }
 
             try
@@ -135,7 +147,7 @@ namespace AndromedaSetup
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                WriteConsole(e.Message);
             }
             
         }
@@ -159,8 +171,8 @@ namespace AndromedaSetup
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Unable create install log {lp}. Andromeda is fully installed, but will need to be uninstalled manually.");
-                    Console.WriteLine($"{e.Message}");
+                    WriteConsole($"Unable create install log {lp}. Andromeda is fully installed, but will need to be uninstalled manually.");
+                    WriteConsole($"{e.Message}");
                 }
             }
         }
@@ -177,8 +189,8 @@ namespace AndromedaSetup
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Unable create uninstall log.");
-                    Console.WriteLine($"{e.Message}");
+                    WriteConsole("Unable create uninstall log.");
+                    WriteConsole($"{e.Message}");
                 }
             }
         }
@@ -212,7 +224,7 @@ namespace AndromedaSetup
                         key.SetValue("ApplicationVersion", v.ToString());
                         key.SetValue("Publisher", Publisher);
                         key.SetValue("DisplayIcon", exe);
-                        key.SetValue("DisplayVersion", v.ToString(2));
+                        key.SetValue("DisplayVersion", v.ToString(3));
                         key.SetValue("URLInfoAbout", UrlInfoAbout);
                         key.SetValue("Contact", Contact);
                         key.SetValue("InstallDate", DateTime.Now.ToString("yyyyMMdd"));
@@ -255,7 +267,7 @@ namespace AndromedaSetup
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        WriteConsole(e.Message);
                         Console.ReadLine();
                         return;
                     }
@@ -285,7 +297,7 @@ namespace AndromedaSetup
                         if (File.Exists(filePath))
                         {
                             File.Delete(filePath);
-                            Console.WriteLine($"{filePath} deleted successfully.");
+                            WriteConsole($"{filePath} deleted successfully.");
                             uninstallLogContent.AppendLine($"{filePath} deleted successfully.");
                         }
                     }
@@ -295,7 +307,7 @@ namespace AndromedaSetup
                     }
                 }
 
-                Console.WriteLine("Cleaning up reamining files...");
+                WriteConsole("Cleaning up reamining files...");
 
                 var remainingFiles = Directory.EnumerateFiles(installPath).ToList();
 
@@ -325,7 +337,7 @@ namespace AndromedaSetup
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                WriteConsole(e.Message);
             }
             
             WriteUninstallLog(uninstallLogContent.ToString());
@@ -354,8 +366,17 @@ namespace AndromedaSetup
                 catch (Exception ex)
                 {
                     throw new Exception(
-                        $"An error occurred removing uninstall information from the registry. Andromeda will still show up in the Programs and Features list. To remove it manually delete the entry HKLM\\{UninstallRegKeyPath}\\{UninstallGuid}", ex);
+                        "An error occurred removing uninstall information from the registry. Andromeda will still show up in the Programs and Features list." + 
+                        $" To remove it manually delete the entry HKLM\\{UninstallRegKeyPath}\\{UninstallGuid}", ex);
                 }
+            }
+        }
+
+        private void WriteConsole(string msg)
+        {
+            if (!Program.IsSilentInstall)
+            {
+                Console.WriteLine(msg);
             }
         }
     }

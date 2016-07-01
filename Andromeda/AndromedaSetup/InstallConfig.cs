@@ -46,9 +46,9 @@ namespace AndromedaSetup
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("Unable to load setup.dat");
+                Console.WriteLine($"Unable to load setup.dat {e.Message}");
                 return false;
             }
         }
