@@ -3,31 +3,31 @@
   <file>
     <name>Andromeda.exe</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Andromeda.exe</source>
-    <destination>C:\Users\{user}\Documents\Andromeda</destination>
+    <destination>{path}</destination>
   </file>
   <file>
     <name>Andromeda-Actions-Core.dll</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Andromeda-Actions-Core.dll</source>
-    <destination>C:\Users\{user}\Documents\Andromeda</destination>
+    <destination>{path}</destination>
   </file>
   <file>
     <name>NetFxRepairTool.exe</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Components\NetFxRepairTool.exe</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
+    <destination>{path}\Components</destination>
   </file>
   <file>
     <name>psexec.exe</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Components\psexec.exe</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
+    <destination>{path}\Components</destination>
   </file>
   <file>
     <name>tightvnc-jviewer.jar</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-jviewer.jar</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
+    <destination>{path}\Components</destination>
   </file>
   <file>
     <name>tightvnc-setup-64bit.msi</name>
     <source>\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi</source>
-    <destination>C:\Users\{user}\Documents\Andromeda\Components</destination>
+    <destination>{path}\Components</destination>
   </file>
 </files>

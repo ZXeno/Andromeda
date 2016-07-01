@@ -8,6 +8,7 @@ namespace AndromedaSetup
     {
         public static string InstallLogFileName { get; private set; }
         public static string InstallLogPath { get; private set; }
+        public static bool IsSilentInstall { get; private set; }
 
         private static void Main(string[] args)
         {
@@ -15,8 +16,12 @@ namespace AndromedaSetup
             {
                 Console.WriteLine("You must have administrative rights to run this installer.");
                 Console.WriteLine("Press ENTER to exit.");
-                Console.ReadLine();
                 return;
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                args[i] = args[i].ToLower();
             }
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
@@ -24,9 +29,10 @@ namespace AndromedaSetup
             InstallLogPath = "C:\\Windows\\Installer\\AndromedaUninstaller";
             var installer = new Installer();
 
-            if (args.Contains("/?") || args.Contains(" /help"))
+            if (args.Contains("/?") || args.Contains("/help"))
             {
-                //TODO: Spit out help info
+                PrintHelpText();
+                return;
             }
 
             if (args.Contains("/uninstall"))
@@ -37,7 +43,7 @@ namespace AndromedaSetup
 
             if (args.Contains("/quiet"))
             {
-                // TODO: Implement silent install
+                IsSilentInstall = true;
             }
 
             if (args.Contains("/path="))
@@ -47,14 +53,25 @@ namespace AndromedaSetup
             }
             
             installer.Install(path);
-            
-            Console.WriteLine("Setup complete. Press ENTER to exit.");
-            Console.ReadLine();
+
+            if (!IsSilentInstall)
+            {
+                Console.WriteLine("Setup complete. Press ENTER to exit.");
+                Console.ReadLine();
+            }
         }
 
         private static void PrintHelpText()
         {
-            
+            Console.WriteLine("----ANDROMEDA INSTALLER HELP----");
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine();
+            Console.WriteLine("/? OR /help     Prints this help informaiton.");
+            Console.WriteLine("/path=<newpath> Sets the destination path for installation.");
+            Console.WriteLine("                Default install location is %userprofile%\\Documents");
+            Console.WriteLine("/uninstall      Uninstalls Andromeda from this system.");
+            Console.WriteLine("/quiet          Performs a silent install");
+            Console.WriteLine();
         }
 
         public static bool IsAdministrator()
