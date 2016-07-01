@@ -71,6 +71,12 @@ namespace Andromeda_Actions_Core
             CancellationToken = new CancellationTokenSource();
         }
 
+        protected void ResetCancelToken()
+        {
+            CancellationToken.Dispose();
+            CancellationToken = new CancellationTokenSource();
+        }
+
         protected void WriteToFailedLog(string actionName, List<string> failedList)
         {
             var logFile = $"{actionName.Replace(" ", "_")}_failed_log.txt";
