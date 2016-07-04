@@ -67,8 +67,7 @@ namespace Andromeda_Actions_Core
             ResultConsole.AddConsoleLine($"Operation {actionName} canceled.");
             Logger.LogMessage($"Operation {actionName} canceled by user request. {e.Message}");
 
-            CancellationToken.Dispose();
-            CancellationToken = new CancellationTokenSource();
+            ResetCancelToken();
         }
 
         protected void ResetCancelToken()

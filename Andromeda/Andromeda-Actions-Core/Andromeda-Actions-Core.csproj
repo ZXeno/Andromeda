@@ -52,6 +52,7 @@
     <Compile Include="Command\AppDeploymentScheduleSccm.cs" />
     <Compile Include="Command\CleanComputerCaches.cs" />
     <Compile Include="Command\DeleteGpoCache.cs" />
+    <Compile Include="Command\DeleteOldProfiles.cs" />
     <Compile Include="Command\FileCopy.cs" />
     <Compile Include="Command\ForceLogOff.cs" />
     <Compile Include="Command\ForceReboot.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
+    <Compile Include="ViewModel\DeleteOldProfilesPromptViewModel.cs" />
     <Compile Include="ViewModel\FileCopyPromptViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
     <Compile Include="Infrastructure\Implementations\Logger.cs" />
@@ -104,6 +106,9 @@
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\SccmRegHackOptionViewModel.cs" />
+    <Compile Include="View\DeleteOldProfilesPrompt.xaml.cs">
+      <DependentUpon>DeleteOldProfilesPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SccmRegHackOptionsPrompt.xaml.cs">
       <DependentUpon>SccmRegHackOptionsPrompt.xaml</DependentUpon>
     </Compile>
@@ -116,6 +121,10 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\DeleteOldProfilesPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\SccmRegHackOptionsPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
