@@ -28,6 +28,6 @@ setup.dat file format:
   	&#60;file&#62;<br/>
     	&#60;name&#62;tightvnc-setup-64bit.msi	&#60;/name&#62;<br/>
     	&#60;source&#62;\\PATH\TO\ANDROMEDA\FILES\Components\tightvnc-setup-64bit.msi&#60;/source&#62;<br/>
-    	&#60;destination&#62;C:\Users\{user}\Documents\Andromeda\Components&#60;/destination&#62;<br/>
+    	&#60;destination&#62;{path}\Components&#60;/destination&#62;<br/>
   	&#60;/file &#62;<br/>
 	&#60;/files &#62;<br/>
