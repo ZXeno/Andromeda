@@ -5,11 +5,43 @@
         xmlns:inf="clr-namespace:Andromeda.Infrastructure"
         x:Class="Andromeda.MainWindow"
         Height="750" Width="800" Style="{StaticResource WindowBG}">
+    
+    <Window.Resources>
+        <CollectionViewSource x:Key="ViewSource" Source="{Binding ActionsList}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription  PropertyName="Category"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
 
     <Grid>
         <TextBox Text="{Binding DeviceListString}" Style="{StaticResource DeviceListBox}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Height="419" VerticalAlignment="Top" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-        <ListView x:Name="AVAIL_ACTS_LISTBOX" HorizontalAlignment="Right" Margin="0,100,16,240" Width="622" Background="#A5474747" ItemsSource="{Binding ActionsList}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
+        <ListView  HorizontalAlignment="Right" Margin="0,100,16,240" Width="622" Background="#A5474747" ItemsSource="{Binding Source={StaticResource ViewSource}}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
+            <ListView.GroupStyle>
+                <GroupStyle >
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}" Foreground="#E5C9C9C9" FontWeight="Bold" FontSize="14" VerticalAlignment="Bottom" />
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <ItemsPresenter />
+                                            </Expander.Content>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
