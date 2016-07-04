@@ -18,8 +18,6 @@
     </Window.Resources>
 
     <Grid>
-        <Image Opacity=".75" />
-
         <TextBox Margin="10,25,10,0" TextWrapping="NoWrap" Style="{StaticResource White}" Text="{Binding TextBoxContents}" Height="22" VerticalAlignment="Top" BorderBrush="#FF004064" />
 
         <Button Content="Okay" HorizontalAlignment="Right" Margin="0,0,90,10" Width="75" Command="{Binding OkayCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom"/>
