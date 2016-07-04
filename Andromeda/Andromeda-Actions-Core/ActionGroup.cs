@@ -2,10 +2,11 @@
 {
     public enum ActionGroup
     {
-        SCCM,
-        WindowsManagement,
         Maintenance,
         Other,
+        Reporting,
+        SCCM,
+        WindowsManagement,
         Debug
     }
 }

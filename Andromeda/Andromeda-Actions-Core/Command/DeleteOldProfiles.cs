@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Management;
-using System.Threading;
 using System.Threading.Tasks;
-using Andromeda.View;
 using Andromeda_Actions_Core.Infrastructure;
 using Andromeda_Actions_Core.View;
 using Andromeda_Actions_Core.ViewModel;

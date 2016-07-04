@@ -20,7 +20,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "TightVNC Install";
             Description = "Installs the version of TightVNC from the components directory. [Requires Credentials]";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.WindowsManagement;
 
             _psExecServices = psExecServices;
         }

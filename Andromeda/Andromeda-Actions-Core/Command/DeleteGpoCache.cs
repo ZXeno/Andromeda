@@ -16,7 +16,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Delete GPO Cache";
             Description = "Deletes the GPO cache of the remote computer(s) and forces GPUpdate.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.WindowsManagement;
 
             _psExecServices = psExecServices;
         }

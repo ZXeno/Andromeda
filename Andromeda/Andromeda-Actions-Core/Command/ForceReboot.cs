@@ -15,7 +15,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Force Reboot";
             Description = "Force reboots the remote computer.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.WindowsManagement;
 
             _wmiServices = wmiServices;
         }

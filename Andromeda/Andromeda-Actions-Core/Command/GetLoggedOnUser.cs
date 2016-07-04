@@ -14,7 +14,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Get Logged On User";
             Description = "Gets the logged in user of a remote system.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.Reporting;
 
             _wmiServices = wmiServices;
         }

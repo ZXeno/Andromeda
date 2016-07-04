@@ -14,7 +14,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Get Device Model ID";
             Description = "Gets the model ID of the selected device.";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.Reporting;
 
             _wmiServices = wmiServices;
         }

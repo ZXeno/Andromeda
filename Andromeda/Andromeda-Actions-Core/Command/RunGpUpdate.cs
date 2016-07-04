@@ -13,7 +13,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Force Group Policy Update";
             Description = "Forces a GPUpdate on the machine(s).";
-            Category = ActionGroup.Other;
+            Category = ActionGroup.WindowsManagement;
 
             _psExecServices = psExecServices;
         }

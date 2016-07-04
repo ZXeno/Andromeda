@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Andromeda.ViewModel"
         xmlns:inf="clr-namespace:Andromeda.Infrastructure"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         x:Class="Andromeda.MainWindow"
         Height="750" Width="800" Style="{StaticResource WindowBG}">
     
@@ -11,6 +12,10 @@
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription  PropertyName="Category"/>
             </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Category" />
+                <scm:SortDescription PropertyName="ActionName"></scm:SortDescription>
+            </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </Window.Resources>
 
@@ -45,7 +50,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="      "/>
+                        <TextBlock Text="        "/>
                         <TextBlock Text="{Binding ActionName}"  FontWeight="Bold" Foreground="#FFE0E0E0" ToolTip="{Binding Description}" />
                     </StackPanel>
                 </DataTemplate>
