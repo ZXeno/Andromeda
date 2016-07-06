@@ -15,12 +15,12 @@
         <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=AllowAccessOnUnattended, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Allow Access On Unattended Computer" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Width="320"/>
         <CheckBox Style="{StaticResource Checkbox}" IsChecked="{Binding Path=AllowLocalAdministratorsToRemoteControl, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Allow Local Administrator Remote Control" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" Width="320"/>
 
-        <Button Content="Default Settings" Command="{Binding DefaultSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,10,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
-        <Button Content="Force Allow Access" Command="{Binding ForceAccessSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,35,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
-        <Button Content="Silent Access" Command="{Binding SilentSettingsCommand, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="335,60,0,0" VerticalAlignment="Top" Width="249" Height="20"/>
-        
+        <Button Content="Default Settings" Command="{Binding DefaultSettingsCommand, UpdateSourceTrigger=PropertyChanged}" Margin="335,10,10,0" VerticalAlignment="Top" Height="20"/>
+        <Button Content="Force Allow Access" Command="{Binding ForceAccessSettingsCommand, UpdateSourceTrigger=PropertyChanged}" Margin="335,35,10,0" VerticalAlignment="Top" Height="20"/>
+        <Button Content="Silent Access" Command="{Binding SilentSettingsCommand, UpdateSourceTrigger=PropertyChanged}" Margin="335,60,10,0" VerticalAlignment="Top" Height="20"/>
+
         <Button Content="Okay" HorizontalAlignment="Right" Margin="0,0,90,10" Width="75" Command="{Binding OkayCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom"/>
         <Button Content="Cancel" Margin="0,0,10,10" Command="{Binding CancelCommand, UpdateSourceTrigger=PropertyChanged}" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="77"/>
-        
+
     </Grid>
 </viewModel:ApplicationWindowBase>

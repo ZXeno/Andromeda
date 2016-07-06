@@ -13,7 +13,7 @@ namespace Andromeda
 {
     public class Program
     {
-        public const string VersionNumber = "Version 0.6.1 EXPERIMENTAL";
+        public const string VersionNumber = "Version 0.6.1";
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";

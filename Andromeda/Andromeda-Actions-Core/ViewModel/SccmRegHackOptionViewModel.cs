@@ -14,7 +14,7 @@ namespace Andromeda_Actions_Core.ViewModel
 
         private bool _remoteAccessEnabled = true;
         private bool _requiresUserApproval = true;
-        private bool _showConnectionBanner = false;
+        private bool _showConnectionBanner = true;
         private bool _showTaskBarIcon = true;
         private bool _allowAccessOnUnattended = true;
         private bool _allowLocalAdministratorsToRemoteControl = true;
