@@ -24,18 +24,18 @@ namespace Andromeda_Actions_Core.Infrastructure
         public async void CreateRemoteTextFile(string filepath, string contents, ILoggerService logger)
         {
             if (File.Exists(filepath)) return;
-
-            using (var outfile = new StreamWriter(filepath, true))
+            
+            try
             {
-                try
+                using (var outfile = new StreamWriter(filepath, true))
                 {
                     await outfile.WriteAsync(contents);
                     outfile.Close();
                 }
-                catch (Exception e)
-                {
-                    logger.LogError($"Unable to create remote file {filepath}", e);
-                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Unable to create remote file {filepath}", e);
             }
         }
 
