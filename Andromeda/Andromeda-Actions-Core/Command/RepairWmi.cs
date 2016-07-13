@@ -36,22 +36,36 @@ namespace Andromeda_Actions_Core.Command
                         continue;
                     }
 
-                    var result = _wmiServices.RepairRemoteWmi(device);
-
-                    if (!result)
+                    try
                     {
-                        failedlist.Add(device);
+                        var result = _wmiServices.RepairRemoteWmi(device);
+
+                        if (!result)
+                        {
+                            failedlist.Add(device);
+                        }
+
+                        if (failedlist.Count > 0)
+                        {
+                            WriteToFailedLog(ActionName, failedlist);
+                        }
                     }
-
-                    if (failedlist.Count > 0)
+                    catch (Exception ex)
                     {
-                        WriteToFailedLog(ActionName, failedlist);
+                        Logger.LogError($"There was an error repairing WMI on device {device}. {ex.Message}", ex);
+                        ResultConsole.Instance.AddConsoleLine($"There was an error repairing WMI on device {device}.");
+                        failedlist.Add(device);
                     }
                 }
             }
             catch (OperationCanceledException e)
             {
                 ResetCancelToken(ActionName, e);
+            }
+
+            if (failedlist.Count > 0)
+            {
+                WriteToFailedLog(ActionName, failedlist);
             }
         }
     }
