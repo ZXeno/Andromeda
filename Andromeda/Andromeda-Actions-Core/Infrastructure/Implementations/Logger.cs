@@ -76,7 +76,7 @@ namespace Andromeda_Actions_Core.Infrastructure
         {
             lock (Queue)
             {
-                Queue.Enqueue($"[{DateTime.Now}] {ErrorString} {msg}");
+                Queue.Enqueue($"[{DateTime.Now}] {ErrorString} {msg}| ERROR_MESSAGE:{e.Message}");
                 Queue.Enqueue($"[{DateTime.Now}] {StackTraceString} {e.StackTrace}");
             }
             _hasNewItems.Set();
