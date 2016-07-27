@@ -84,10 +84,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
+    <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\Prompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

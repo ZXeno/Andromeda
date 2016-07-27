@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 using AndromedaCore.Infrastructure;
-using AndromedaCore.ViewModel;
 
-namespace AndromedaActions.ViewModel
+namespace AndromedaCore.ViewModel
 {
     public class CliViewModel : ViewModelBase, IRequestCloseViewModel
     {

@@ -1,6 +1,7 @@
-﻿using AndromedaCore.ViewModel;
+﻿using System.Windows;
+using AndromedaCore.ViewModel;
 
-namespace AndromedaActions.View
+namespace AndromedaCore.View
 {
     /// <summary>
     /// Interaction logic for Prompt.xaml

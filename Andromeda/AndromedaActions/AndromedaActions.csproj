@@ -67,7 +67,6 @@
     <Compile Include="Command\TightVNCRemove.cs" />
     <Compile Include="Command\UserPolicyRetrievalCycleSccm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\DeleteOldProfilesPromptViewModel.cs" />
     <Compile Include="ViewModel\FileCopyPromptViewModel.cs" />
     <Compile Include="ViewModel\SccmRegHackOptionViewModel.cs" />
@@ -76,9 +75,6 @@
     </Compile>
     <Compile Include="View\FileCopyPrompt.xaml.cs">
       <DependentUpon>FileCopyPrompt.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Prompt.xaml.cs">
-      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SccmRegHackOptionsPrompt.xaml.cs">
       <DependentUpon>SccmRegHackOptionsPrompt.xaml</DependentUpon>
@@ -96,10 +92,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\FileCopyPrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
