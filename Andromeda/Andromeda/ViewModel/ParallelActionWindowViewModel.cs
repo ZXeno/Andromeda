@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Andromeda_Actions_Core;
-using Andromeda_Actions_Core.Infrastructure;
-using Andromeda_Actions_Core.ViewModel;
-using Action = Andromeda_Actions_Core.Action;
+using AndromedaCore.Managers;
+using AndromedaCore.Infrastructure;
+using AndromedaCore.ViewModel;
+using Action = AndromedaCore.Action;
 
 namespace Andromeda.ViewModel
 {
@@ -18,6 +18,7 @@ namespace Andromeda.ViewModel
             RequestClose?.Invoke(this, e);
         }
 
+    #region Properties
         public string ViewModelGuid { get; }
 
         private string _windowMessage;
@@ -70,6 +71,7 @@ namespace Andromeda.ViewModel
                 OnPropertyChanged("ActionCompleted");
             }
         }
+    #endregion
 
         private readonly Thread _actionThread;
         private readonly Action _runningAction;
@@ -90,23 +92,32 @@ namespace Andromeda.ViewModel
                         () =>
                         {
                             _logger.LogMessage("Starting action " + _runningAction.ActionName);
+                            ActionManager.OnActionStarted(true, _runningAction.ActionName);
                             ResultConsole.Instance.AddConsoleLine("Starting action " + _runningAction.ActionName);
                             _runningAction.RunCommand(deviceList);
                             if (!_runningAction.CancellationToken.IsCancellationRequested)
                             {
-                                ResultConsole.Instance.AddConsoleLine("Action " + _runningAction.ActionName + " completed.");
+                                var msg = $"Action {_runningAction.ActionName} completed.";
+                                _logger.LogMessage(msg);
+                                ResultConsole.Instance.AddConsoleLine(msg);
+                                ActionManager.OnActionStarted(false, _runningAction.ActionName);
                             }
                             else
                             {
-                                ResultConsole.Instance.AddConsoleLine("Action " + _runningAction.ActionName + " canceled.");
+                                var msg = $"Action {_runningAction.ActionName} canceled.";
+                                _logger.LogMessage(msg);
+                                ResultConsole.Instance.AddConsoleLine(msg);
+                                ActionManager.OnActionStarted(false, _runningAction.ActionName);
                             }
                             
                             ActionCompleted = true;
                         }));
+
             _actionThread.SetApartmentState(ApartmentState.STA);
             _actionThread.IsBackground = false;
             
             PropertyChanged += ProcessActionComplete;
+            Application.Current.Exit += OnApplicationExit;
         }
 
         public void Begin()
@@ -116,7 +127,7 @@ namespace Andromeda.ViewModel
 
         private void ProcessActionComplete(object sender, EventArgs e)
         {
-            PropertyChangedEventArgs args = (PropertyChangedEventArgs)e;
+            var args = (PropertyChangedEventArgs)e;
             if (args.PropertyName != "ActionCompleted" && !ActionCompleted) { return; }
             
             PropertyChanged -= ProcessActionComplete;
@@ -143,14 +154,7 @@ namespace Andromeda.ViewModel
 
         public bool CancelCommandCanExecute()
         {
-            if (_runningAction != null)
-            {
-                return true;
-            }
-
-            return false;
+            return _runningAction != null;
         }
-
-        
     }
 }

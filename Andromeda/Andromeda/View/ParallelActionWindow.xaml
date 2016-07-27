@@ -1,5 +1,5 @@
 ﻿<src:ApplicationWindowBase x:Class="Andromeda.View.ParallelActionWindow"
-        xmlns:src="clr-namespace:Andromeda_Actions_Core.ViewModel;assembly=Andromeda-Actions-Core"
+        xmlns:src="clr-namespace:AndromedaCore.ViewModel;assembly=AndromedaCore"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

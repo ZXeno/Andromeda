@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Andromeda_Actions_Core.ViewModel;
+using AndromedaCore.ViewModel;
 
 namespace Andromeda.View
 {

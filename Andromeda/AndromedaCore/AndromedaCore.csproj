@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AndromedaCore</RootNamespace>
+    <AssemblyName>AndromedaCore</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Andromeda\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Andromeda\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="ActionFactory.cs" />
+    <Compile Include="ActionGroup.cs" />
+    <Compile Include="AppCore.cs" />
+    <Compile Include="IAction.cs" />
+    <Compile Include="Infrastructure\Abstractions\IFileAndFolderServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\ILoggerService.cs" />
+    <Compile Include="Infrastructure\Abstractions\INetworkServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\IPsExecServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\IRegistryServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\ISccmClientServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\IWmiServices.cs" />
+    <Compile Include="Infrastructure\Abstractions\IXmlServices.cs" />
+    <Compile Include="Infrastructure\DelegateCommand.cs" />
+    <Compile Include="Infrastructure\Implementations\FileAndFolderServices.cs" />
+    <Compile Include="Infrastructure\Implementations\Logger.cs" />
+    <Compile Include="Infrastructure\Implementations\NetworkServices.cs" />
+    <Compile Include="Infrastructure\Implementations\PsExecServices.cs" />
+    <Compile Include="Infrastructure\Implementations\RegistryServices.cs" />
+    <Compile Include="Infrastructure\Implementations\SccmClientServices.cs" />
+    <Compile Include="Infrastructure\Implementations\WmiServices.cs" />
+    <Compile Include="Infrastructure\Implementations\XmlServices.cs" />
+    <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
+    <Compile Include="Infrastructure\IoC\LifeTimeOptions.cs" />
+    <Compile Include="Infrastructure\IoC\ResolvedTypeWithLifeTimeOptions.cs" />
+    <Compile Include="Infrastructure\SecureStringHelper.cs" />
+    <Compile Include="Managers\ActionManager.cs" />
+    <Compile Include="Managers\ConfigManager.cs" />
+    <Compile Include="Managers\CredentialManager.cs" />
+    <Compile Include="Managers\ResultConsole.cs" />
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\CredToken.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SccmScheduleActionBase.cs" />
+    <Compile Include="ViewModel\ApplicationWindowBase.cs" />
+    <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="View\ResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
