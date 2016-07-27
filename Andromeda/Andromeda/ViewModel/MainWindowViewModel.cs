@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using Andromeda.View;
 using AndromedaCore;
 using AndromedaCore.Infrastructure;
-using Andromeda.View;
 using AndromedaCore.Managers;
 using AndromedaCore.ViewModel;
-using Action = AndromedaCore.Action;
-
 
 namespace Andromeda.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
 #region Properties
-        public ObservableCollection<Action> ActionsList { get; private set; }
+        public ObservableCollection<IAction> ActionsList { get; private set; }
         public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
 
         private ObservableCollection<ViewModelBase> _viewModels;
@@ -58,8 +54,8 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private Action _selectedAction;
-        public Action SelectedAction
+        private IAction _selectedAction;
+        public IAction SelectedAction
         {
             get { return _selectedAction; }
             set

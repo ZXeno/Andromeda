@@ -8,6 +8,8 @@ namespace AndromedaCore.Managers
 {
     public class ActionManager
     {
+        private static ActionManager Instance { get; set; }
+
         public delegate void LoadedActionsChangedEvent();
         public static event LoadedActionsChangedEvent LoadedActionsChanged;
         public static void OnLoadedActionsChanged()
@@ -22,22 +24,23 @@ namespace AndromedaCore.Managers
             ActionStart?.Invoke(justStarted, actionName);
         }
 
-        public Action this[string i] => _loadedActions[i];
-        private Dictionary<string, Action> _loadedActions { get; }
+        public IAction this[string i] => _loadedActions[i];
+        private Dictionary<string, IAction> _loadedActions { get; }
         private readonly ILoggerService _logger;
 
         // Constructor
         public ActionManager(ILoggerService logger)
         {
-            _loadedActions = new Dictionary<string, Action>();
+            _loadedActions = new Dictionary<string, IAction>();
             _logger = logger;
+            Instance = this;
         }
 
         /// <summary>
         /// Adds action to the LoadedActions dictionary.
         /// </summary>
         /// <param name="instantiatedAction"></param>
-        public void AddAction(Action instantiatedAction)
+        public void AddAction(IAction instantiatedAction)
         {
             if (!_loadedActions.ContainsKey(instantiatedAction.ActionName))
             {
@@ -51,7 +54,7 @@ namespace AndromedaCore.Managers
         /// Adds an enumerable list of actions to the loaded actions dictionary.
         /// </summary>
         /// <param name="instantiatedActionsList"></param>
-        public void AddActions(IEnumerable<Action> instantiatedActionsList)
+        public void AddActions(IEnumerable<IAction> instantiatedActionsList)
         {
             foreach (var action in instantiatedActionsList)
             {
@@ -66,11 +69,11 @@ namespace AndromedaCore.Managers
         /// Removes a single action from the LoadedActions dictionary.
         /// </summary>
         /// <param name="actionName"></param>
-        public void RemoveAction(string actionName)
+        public static void RemoveAction(string actionName)
         {
-            if (_loadedActions.ContainsKey(actionName))
+            if (Instance._loadedActions.ContainsKey(actionName))
             {
-                _loadedActions.Remove(actionName);
+                Instance._loadedActions.Remove(actionName);
                 OnLoadedActionsChanged();
             }
         }
@@ -88,9 +91,9 @@ namespace AndromedaCore.Managers
         /// Returns the list of loaded actions as an ObservableCollection.
         /// </summary>
         /// <returns></returns>
-        public ObservableCollection<Action> GetObservableActionCollection()
+        public ObservableCollection<IAction> GetObservableActionCollection()
         {
-            return new ObservableCollection<Action>(_loadedActions.Values.ToList());
+            return new ObservableCollection<IAction>(_loadedActions.Values.ToList());
         }
 
         /// <summary>
@@ -98,7 +101,7 @@ namespace AndromedaCore.Managers
         /// </summary>
         /// <param name="deviceListString"></param>
         /// <param name="action"></param>
-        public void RunAction(string deviceListString, Action action)
+        public void RunAction(string deviceListString, IAction action)
         {
             var thread = new Thread(
                 new ThreadStart(
@@ -125,6 +128,18 @@ namespace AndromedaCore.Managers
         public void RunAction(string deviceListString, string actionName)
         {
             RunAction(deviceListString, _loadedActions[actionName]);
+        }
+
+        /// <summary>
+        /// Injects a list of actions into the ActionManager. Primarily used by plugins to inject actions.
+        /// </summary>
+        /// <param name="enumerableActions"></param>
+        public static void InjectActions(IEnumerable<IAction> enumerableActions)
+        {
+            if (enumerableActions != null)
+            {
+                Instance.AddActions(enumerableActions);
+            }
         }
     }
 }

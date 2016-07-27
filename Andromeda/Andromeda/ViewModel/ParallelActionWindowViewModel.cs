@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using AndromedaCore;
 using AndromedaCore.Managers;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.ViewModel;
-using Action = AndromedaCore.Action;
 
 namespace Andromeda.ViewModel
 {
@@ -74,11 +74,11 @@ namespace Andromeda.ViewModel
     #endregion
 
         private readonly Thread _actionThread;
-        private readonly Action _runningAction;
+        private readonly IAction _runningAction;
         public string ActionTitle => _runningAction.ActionName;
         private readonly ILoggerService _logger;
 
-        public ParallelActionWindowViewModel(ILoggerService logger, Action action, string deviceList)
+        public ParallelActionWindowViewModel(ILoggerService logger, IAction action, string deviceList)
         {
             _logger = logger;
             ViewModelGuid = Guid.NewGuid().ToString();
