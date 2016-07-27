@@ -125,12 +125,18 @@ namespace AndromedaCore.Plugins
 
         public void UnloadAllPlugins()
         {
-            throw new NotImplementedException();
+            foreach (var plugin in _loadedPlugins.Values)
+            {
+                plugin.UnloadPlugin();
+            }
         }
 
-        public void RemovePlugin()
+        public void RemovePlugin(string pluginName)
         {
-            throw new NotImplementedException();
+            if (_loadedPlugins.ContainsKey(pluginName))
+            {
+                _loadedPlugins.Remove(pluginName);
+            }
         }
 
         public void UninstallPlugin()
