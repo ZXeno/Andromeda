@@ -53,8 +53,9 @@ namespace Andromeda
             // Load Core actions
             LoadCoreActions();
 
-            // Load all plugins from Plugins folder
+            // Load and initialize all plugins from Plugins folder
             PluginManager.LoadAllPlugins();
+            PluginManager.InitializeAllPlugins();
 
             //TODO: Replace this with a more secure design that doesn't store credentials in memory
             // set up login window
