@@ -1,28 +1,33 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
+using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.Infrastructure;
 using Andromeda.View;
-using AndromedaCore;
-using AndromedaCore.Infrastructure;
-using AndromedaCore.Managers;
-using AndromedaCore.Model;
-using AndromedaCore.ViewModel;
+using Andromeda_Actions_Core.ViewModel;
+using Action = Andromeda_Actions_Core.Action;
+
 
 namespace Andromeda.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        #region Properties
-        public ObservableCollection<IAction> ActionsList { get; private set; }
+        public delegate void ActionsStarted(bool justStarted);
+        public static event ActionsStarted ActionStart;
+        public void OnActionStarted(bool justStarted)
+        {
+            ActionStart?.Invoke(justStarted);
+        }
+
+
+#region Properties
+        public ObservableCollection<Action> ActionsList { get; private set; }
         public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
 
         private ObservableCollection<ViewModelBase> _viewModels;
         public ObservableCollection<ViewModelBase> ViewModels => _viewModels ?? (_viewModels = new ObservableCollection<ViewModelBase>());
-
-        private object _runningActionsLock = new object();
-        public ObservableCollection<RunningActionTask> RunningActionTasks => _actionManager.RunningActions;
 
         public string Username
         {
@@ -60,8 +65,8 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private IAction _selectedAction;
-        public IAction SelectedAction
+        private Action _selectedAction;
+        public Action SelectedAction
         {
             get { return _selectedAction; }
             set
@@ -72,33 +77,25 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private RunningActionTask _selectedActionThread;
-        public RunningActionTask SelectedActionThread
+        private bool _actionRunning;
+        public bool ActionRunning
         {
-            get { return _selectedActionThread; }
+            get { return _actionRunning; }
             set
             {
-                _selectedActionThread = value;
-                OnPropertyChanged("SelectedActionThread");
-                CancelCommand = new DelegateCommand(param => CancelCommandExecute(this, null), param => CancelCommandCanExecute());
+                _actionRunning = value;
+                OnPropertyChanged("ActionRunning");
             }
         }
 
-        private ICommand _cancelCommand;
-        public ICommand CancelCommand
+        private bool _runInParallelWindow = true;
+        public bool RunInParallelWindow
         {
-            get
-            {
-                if (_cancelCommand == null)
-                {
-                    CancelCommand = new DelegateCommand(param => CancelCommandExecute(this, null), param => CancelCommandCanExecute());
-                }
-                return _cancelCommand;
-            }
+            get { return _runInParallelWindow; }
             set
             {
-                _cancelCommand = value;
-                OnPropertyChanged("CancelCommand");
+                _runInParallelWindow = value;
+                OnPropertyChanged("RunInParallelWindow");
             }
         }
 
@@ -138,43 +135,84 @@ namespace Andromeda.ViewModel
             }
         }
 
-        public string VersionNumber => App.VersionNumber;
+        public string VersionNumber => Program.VersionNumber;
         public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
 
         private readonly ILoggerService _logger;
-        private readonly ActionManager _actionManager;
         #endregion
 
 
 
         #region Constructor
-        public MainWindowViewModel(ILoggerService logger, ActionManager actionManager)
+        public MainWindowViewModel(ILoggerService logger)
         {
             _logger = logger;
-            _actionManager = actionManager;
             _viewModels = new ObservableCollection<ViewModelBase> { new ResultConsoleViewModel() };
 
             RunButtonText = "Run";
+            ActionRunning = false;
 
-            BindingOperations.EnableCollectionSynchronization(RunningActionTasks, _runningActionsLock);
+            ActionStart += UpdateActionIcon;
         }
 #endregion
 
-        public void LoadActionsCollection()
+        public void LoadActionsCollection(ObservableCollection<Action> collection)
         {
-            ActionsList = _actionManager.GetObservableActionCollection();
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection),"Actions collection cannot be null");
+            }
+
+            ActionsList = new ObservableCollection<Action>(collection);
+        }
+
+        protected override void OnDispose()
+        {
+            ActionsList.Clear();
+            ViewModels.Clear(); 
         }
 
         public void RunCommandExecute()
         {
             if (SelectedAction == null && !RunCommandCanExecute()) { return; }
 
-            _actionManager.RunAction(DeviceListString, SelectedAction);
+            if (RunInParallelWindow)
+            {
+                var dataContext = new ParallelActionWindowViewModel(Program.IoC.Resolve<ILoggerService>(), SelectedAction, DeviceListString);
+                var newWindow = new ParallelActionWindow
+                {
+                    DataContext = dataContext
+                };
+                
+                dataContext.Begin();
+                
+
+                newWindow.Show();
+                return;
+            }
+
+            OnActionStarted(true);
+
+            var thread = new Thread(
+                new ThreadStart(
+                    () =>
+                    {
+                        var thisAction = SelectedAction;
+                        _logger.LogMessage($"Starting action {thisAction.ActionName}");
+                        ResultConsole.Instance.AddConsoleLine($"Starting action {thisAction.ActionName}");
+                        thisAction.RunCommand(DeviceListString);
+                        ResultConsole.Instance.AddConsoleLine($"Action {thisAction.ActionName} completed.");
+                        OnActionStarted(false);
+                    }));
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+
+            thread.Start();
         }
 
         public bool RunCommandCanExecute()
         {
-            return !string.IsNullOrWhiteSpace(DeviceListString);
+            return !_actionRunning && !string.IsNullOrWhiteSpace(DeviceListString);
         }
 
         public bool LoginCommandCanExecute()
@@ -206,23 +244,18 @@ namespace Andromeda.ViewModel
             OnPropertyChanged("LoginButtonVisibility");
         }
 
-        protected override void OnDispose()
+        private void UpdateActionIcon(bool justStarted)
         {
-            ActionsList.Clear();
-            ViewModels.Clear();
-        }
+            _logger.LogMessage($"Updating action running state to {justStarted}");
+            ActionRunning = justStarted;
 
-        public void CancelCommandExecute(object sender, EventArgs e)
-        {
-            lock (SelectedActionThread)
+            if (justStarted)
             {
-                SelectedActionThread.RunningAction.CancellationToken.Cancel();
+                RunButtonText = "Working";
+                return;
             }
-        }
 
-        public bool CancelCommandCanExecute()
-        {
-            return SelectedActionThread?.RunningAction != null;
+            RunButtonText = "Run";
         }
     }
 }

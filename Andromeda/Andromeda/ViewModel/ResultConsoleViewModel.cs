@@ -1,5 +1,5 @@
-﻿using AndromedaCore.Managers;
-using AndromedaCore.ViewModel;
+﻿using Andromeda_Actions_Core;
+using Andromeda_Actions_Core.ViewModel;
 
 namespace Andromeda.ViewModel
 {

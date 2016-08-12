@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andromeda", "Andromeda\Andromeda.csproj", "{3E77B185-F61F-4E1C-8238-1694230DD3A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andromeda-Actions-Core", "Andromeda-Actions-Core\Andromeda-Actions-Core.csproj", "{573C53A8-B532-45CD-99CD-4562C48D0823}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndromedaSetup", "AndromedaSetup\AndromedaSetup.csproj", "{1E7E7918-3719-4AC7-9711-43C74EED5F35}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndromedaCore", "AndromedaCore\AndromedaCore.csproj", "{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndromedaActions", "AndromedaActions\AndromedaActions.csproj", "{6D917D41-C70A-4AEC-985D-00BC899A1E61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +25,14 @@ Global
 		{3E77B185-F61F-4E1C-8238-1694230DD3A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E77B185-F61F-4E1C-8238-1694230DD3A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E77B185-F61F-4E1C-8238-1694230DD3A7}.Release|x86.Build.0 = Release|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Debug|x86.Build.0 = Debug|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Release|x86.ActiveCfg = Release|Any CPU
+		{573C53A8-B532-45CD-99CD-4562C48D0823}.Release|x86.Build.0 = Release|Any CPU
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -35,22 +41,6 @@ Global
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Release|x86.ActiveCfg = Release|Any CPU
 		{1E7E7918-3719-4AC7-9711-43C74EED5F35}.Release|x86.Build.0 = Release|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Debug|x86.Build.0 = Debug|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Release|x86.ActiveCfg = Release|Any CPU
-		{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}.Release|x86.Build.0 = Release|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Debug|x86.Build.0 = Debug|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|x86.ActiveCfg = Release|Any CPU
-		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
