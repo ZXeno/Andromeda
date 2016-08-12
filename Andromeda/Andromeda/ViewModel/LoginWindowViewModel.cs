@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security;
 using System.Windows.Input;
-using Andromeda_Actions_Core;
-using Andromeda_Actions_Core.Infrastructure;
-using Andromeda_Actions_Core.ViewModel;
+using AndromedaCore.Infrastructure;
+using AndromedaCore.Managers;
+using AndromedaCore.ViewModel;
 
 namespace Andromeda.ViewModel
 {
