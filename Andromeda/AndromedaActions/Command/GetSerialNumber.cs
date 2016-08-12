@@ -17,7 +17,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Get Device Serial Number";
             Description = "Gets the serial number of the selected device.";
-            Category = ActionGroup.Reporting;
+            Category = "Reporting";
 
             _wmiServices = wmiServices;
         }

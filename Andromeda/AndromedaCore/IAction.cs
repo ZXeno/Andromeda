@@ -7,7 +7,7 @@ namespace AndromedaCore
     {
         string ActionName { get; }
         string Description { get; }
-        ActionGroup Category { get; }
+        string Category { get; }
         CancellationTokenSource CancellationToken { get; }
         event EventHandler CancellationRequest;
 

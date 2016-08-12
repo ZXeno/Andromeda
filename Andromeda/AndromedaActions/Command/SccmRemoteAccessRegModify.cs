@@ -37,7 +37,7 @@ namespace AndromedaActions.Command
 
             ActionName = "SCCM Remote Access Registry Hack";
             Description = "Changes the remote access options for SCCM remote control.";
-            Category = ActionGroup.SCCM;
+            Category = "SCCM";
         }
 
         public override void RunCommand(string rawDeviceList)

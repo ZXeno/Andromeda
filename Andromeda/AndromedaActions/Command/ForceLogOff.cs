@@ -27,7 +27,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Force Log Off";
             Description = "Forces the remote user to log off.";
-            Category = ActionGroup.WindowsManagement;
+            Category = "Windows Management";
 
             _wmiServices = wmiServices;
         }

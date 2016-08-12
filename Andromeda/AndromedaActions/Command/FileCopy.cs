@@ -20,7 +20,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "File Copy";
             Description = "Copy file to all devices in the list.";
-            Category = ActionGroup.Other;
+            Category = "Other";
         }
 
         public override void RunCommand(string rawDeviceList)

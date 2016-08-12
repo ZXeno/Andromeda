@@ -11,7 +11,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "User Policy Retrieval Cycle";
             Description = "Forces SCCM to schedule a User Policy Retrieval check on the client.";
-            Category = ActionGroup.SCCM;
+            Category = "SCCM";
         }
 
         public override void RunCommand(string rawDeviceList)

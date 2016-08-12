@@ -16,7 +16,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Repair WMI";
             Description = "Repairs the WMI of the device(s).";
-            Category = ActionGroup.WindowsManagement;
+            Category = "Windows Management";
 
             _wmiServices = wmiServices;
         }

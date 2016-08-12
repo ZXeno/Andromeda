@@ -24,7 +24,7 @@ namespace AndromedaCore
 
         public string ActionName { get; protected set; }
         public string Description { get; protected set; }
-        public ActionGroup Category { get; protected set; }
+        public string Category { get; protected set; }
 
         protected INetworkServices NetworkServices;
         protected IFileAndFolderServices FileAndFolderServices;

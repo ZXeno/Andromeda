@@ -15,7 +15,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Ping Test";
             Description = "Runs a ping test against the device list.";
-            Category = ActionGroup.Other;
+            Category = "Other";
         }
 
         public override void RunCommand(string rawDeviceList)

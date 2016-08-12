@@ -23,7 +23,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Clean Computer Temp/Cache Files";
             Description = "Cleans the temp and caches files on a remote device.";
-            Category = ActionGroup.Maintenance;
+            Category = "Maintenance";
         }
 
         public override void RunCommand(string rawDeviceList)

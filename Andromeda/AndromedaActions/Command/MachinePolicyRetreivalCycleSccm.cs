@@ -10,7 +10,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Machine Policy Retreival Cycle";
             Description = "Forces SCCM to schedule a Machine Policy Retreival Cycle on the client.";
-            Category = ActionGroup.SCCM;
+            Category = "SCCM";
         }
 
         public override void RunCommand(string rawDeviceList)

@@ -11,7 +11,7 @@ namespace Andromeda_Actions_Core.Command
         {
             ActionName = "Application Deployment Evaluation Cycle";
             Description = "Forces SCCM to schedule an Application Deployment check on the client.";
-            Category = ActionGroup.SCCM;
+            Category = "SCCM";
         }
 
         public override void RunCommand(string rawDeviceList)

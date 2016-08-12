@@ -10,7 +10,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "Hardware Inventory Cycle";
             Description = "Forces SCCM to schedule a Hardware Inventory check on the client.";
-            Category = ActionGroup.SCCM;
+            Category = "SCCM";
         }
 
         public override void RunCommand(string rawDeviceList)

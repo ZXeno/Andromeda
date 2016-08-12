@@ -22,7 +22,7 @@ namespace AndromedaActions.Command
 
             ActionName = "Delete Old User Profiles";
             Description = "Deletes profiles older than a provided date.";
-            Category = ActionGroup.WindowsManagement;
+            Category = "Windows Management";
         }
 
         public override void RunCommand(string rawDeviceList)

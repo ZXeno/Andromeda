@@ -20,7 +20,7 @@ namespace AndromedaActions.Command
         {
             ActionName = "TightVNC Remove";
             Description = "Removes TightVNC from the specified computers. [Requires Credentials]";
-            Category = ActionGroup.WindowsManagement;
+            Category = "Windows Management";
 
             _wmiServices = wmiServices;
         }
