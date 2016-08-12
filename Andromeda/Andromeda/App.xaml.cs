@@ -17,7 +17,7 @@ namespace Andromeda
     /// </summary>
     public partial class App : Application
     {
-        public const string VersionNumber = "Version 0.7.0";
+        public static string VersionNumber = "Version ";
 
         public static string WorkingPath = Environment.CurrentDirectory;
         public static string UserFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda";
@@ -35,6 +35,8 @@ namespace Andromeda
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            VersionNumber += Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+
             if (!Directory.Exists(UserFolder))
             {
                 Directory.CreateDirectory(UserFolder);

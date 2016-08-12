@@ -79,6 +79,7 @@
     <Compile Include="Managers\ResultConsole.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\CredToken.cs" />
+    <Compile Include="Model\RunningActionTask.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

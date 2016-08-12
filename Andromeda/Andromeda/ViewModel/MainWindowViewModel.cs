@@ -1,22 +1,28 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Andromeda.View;
 using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
+using AndromedaCore.Model;
 using AndromedaCore.ViewModel;
 
 namespace Andromeda.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-#region Properties
+        #region Properties
         public ObservableCollection<IAction> ActionsList { get; private set; }
         public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
 
         private ObservableCollection<ViewModelBase> _viewModels;
         public ObservableCollection<ViewModelBase> ViewModels => _viewModels ?? (_viewModels = new ObservableCollection<ViewModelBase>());
+
+        private object _runningActionsLock = new object();
+        public ObservableCollection<RunningActionTask> RunningActionTasks => _actionManager.RunningActions;
 
         public string Username
         {
@@ -66,25 +72,33 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private bool _actionRunning;
-        public bool ActionRunning
+        private RunningActionTask _selectedActionThread;
+        public RunningActionTask SelectedActionThread
         {
-            get { return _actionRunning; }
+            get { return _selectedActionThread; }
             set
             {
-                _actionRunning = value;
-                OnPropertyChanged("ActionRunning");
+                _selectedActionThread = value;
+                OnPropertyChanged("SelectedActionThread");
+                CancelCommand = new DelegateCommand(param => CancelCommandExecute(this, null), param => CancelCommandCanExecute());
             }
         }
 
-        private bool _runInParallelWindow = true;
-        public bool RunInParallelWindow
+        private ICommand _cancelCommand;
+        public ICommand CancelCommand
         {
-            get { return _runInParallelWindow; }
+            get
+            {
+                if (_cancelCommand == null)
+                {
+                    CancelCommand = new DelegateCommand(param => CancelCommandExecute(this, null), param => CancelCommandCanExecute());
+                }
+                return _cancelCommand;
+            }
             set
             {
-                _runInParallelWindow = value;
-                OnPropertyChanged("RunInParallelWindow");
+                _cancelCommand = value;
+                OnPropertyChanged("CancelCommand");
             }
         }
 
@@ -141,9 +155,8 @@ namespace Andromeda.ViewModel
             _viewModels = new ObservableCollection<ViewModelBase> { new ResultConsoleViewModel() };
 
             RunButtonText = "Run";
-            ActionRunning = false;
 
-            ActionManager.ActionStart += UpdateActionIcon;
+            BindingOperations.EnableCollectionSynchronization(RunningActionTasks, _runningActionsLock);
         }
 #endregion
 
@@ -156,26 +169,12 @@ namespace Andromeda.ViewModel
         {
             if (SelectedAction == null && !RunCommandCanExecute()) { return; }
 
-            if (RunInParallelWindow)
-            {
-                var dataContext = new ParallelActionWindowViewModel(App.IoC.Resolve<ILoggerService>(), SelectedAction, DeviceListString);
-                var newWindow = new ParallelActionWindow
-                {
-                    DataContext = dataContext
-                };
-                
-                dataContext.Begin();
-
-                newWindow.Show();
-                return;
-            }
-
             _actionManager.RunAction(DeviceListString, SelectedAction);
         }
 
         public bool RunCommandCanExecute()
         {
-            return !_actionRunning && !string.IsNullOrWhiteSpace(DeviceListString);
+            return !string.IsNullOrWhiteSpace(DeviceListString);
         }
 
         public bool LoginCommandCanExecute()
@@ -207,23 +206,23 @@ namespace Andromeda.ViewModel
             OnPropertyChanged("LoginButtonVisibility");
         }
 
-        private void UpdateActionIcon(bool justStarted, string actionName)
-        {
-            ActionRunning = justStarted;
-
-            if (justStarted)
-            {
-                RunButtonText = "Working";
-                return;
-            }
-
-            RunButtonText = "Run";
-        }
-
         protected override void OnDispose()
         {
             ActionsList.Clear();
             ViewModels.Clear();
+        }
+
+        public void CancelCommandExecute(object sender, EventArgs e)
+        {
+            lock (SelectedActionThread)
+            {
+                SelectedActionThread.RunningAction.CancellationToken.Cancel();
+            }
+        }
+
+        public bool CancelCommandCanExecute()
+        {
+            return SelectedActionThread?.RunningAction != null;
         }
     }
 }

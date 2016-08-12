@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using AndromedaCore.Infrastructure;
+using AndromedaCore.Model;
 
 namespace AndromedaCore.Managers
 {
@@ -27,11 +28,14 @@ namespace AndromedaCore.Managers
         public IAction this[string i] => _loadedActions[i];
         private Dictionary<string, IAction> _loadedActions { get; }
         private readonly ILoggerService _logger;
+        
+        public ObservableCollection<RunningActionTask> RunningActions { get; private set; }
 
         // Constructor
         public ActionManager(ILoggerService logger)
         {
             _loadedActions = new Dictionary<string, IAction>();
+            RunningActions = new ObservableCollection<RunningActionTask>();
             _logger = logger;
             Instance = this;
         }
@@ -103,21 +107,51 @@ namespace AndromedaCore.Managers
         /// <param name="action"></param>
         public void RunAction(string deviceListString, IAction action)
         {
-            var thread = new Thread(
-                new ThreadStart(
-                    () =>
-                    {
-                        OnActionStarted(true, action.ActionName);
-                        _logger.LogMessage($"Starting action {action.ActionName}");
-                        ResultConsole.Instance.AddConsoleLine($"Starting action {action.ActionName}");
-                        action.RunCommand(deviceListString);
-                        ResultConsole.Instance.AddConsoleLine($"Action {action.ActionName} completed.");
-                        OnActionStarted(false, action.ActionName);
-                    }));
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.IsBackground = true;
+            var t = new Task(
+                () =>
+                {
+                    OnActionStarted(true, action.ActionName);
 
-            thread.Start();
+                    var message1 = $"Starting action {action.ActionName}";
+                    _logger.LogMessage(message1);
+                    ResultConsole.Instance.AddConsoleLine(message1);
+
+                    action.RunCommand(deviceListString);
+
+                    if (!action.CancellationToken.IsCancellationRequested)
+                    {
+                        var msg = $"Action {action.ActionName} completed.";
+                        _logger.LogMessage(msg);
+                        ResultConsole.Instance.AddConsoleLine(msg);
+                    }
+                    else
+                    {
+                        var msg = $"Action {action.ActionName} canceled.";
+                        _logger.LogMessage(msg);
+                        ResultConsole.Instance.AddConsoleLine(msg);
+                    }
+
+                    OnActionStarted(false, action.ActionName);
+                });
+            
+            var newRunningAction = new RunningActionTask
+            {
+                RawDeviceListString = deviceListString,
+                RunningActionName = action.ActionName,
+                ThisActionsTask = t,
+                ThreadId = t.Id,
+                RunningAction = action
+            };
+
+            RunningActions.Add(newRunningAction);
+
+            t.Start();
+            t.ContinueWith(x => ThreadEnd(newRunningAction.ThreadId));
+        }
+
+        private void ThreadEnd(int threadId)
+        {
+            RunningActions.Remove(RunningActions.FirstOrDefault(t => t.ThreadId == threadId));
         }
         
         /// <summary>

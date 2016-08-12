@@ -58,13 +58,9 @@
     <Compile Include="ViewModel\LoginWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
-    <Compile Include="ViewModel\ParallelActionWindowViewModel.cs" />
     <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
     <Compile Include="View\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ParallelActionWindow.xaml.cs">
-      <DependentUpon>ParallelActionWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -79,10 +75,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\LoginWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ParallelActionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
