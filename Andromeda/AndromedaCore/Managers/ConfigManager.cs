@@ -33,7 +33,7 @@ namespace AndromedaCore.Managers
             _xmlServices = xmlServices;
             _configFilePath = path + "\\" + ConfigFileName;
             _resultsDirectory = path + "\\Results";
-            _componentsDirectory = path + "\\components";
+            _componentsDirectory = path + "\\Components";
 
             CurrentConfig = new Configuration
             {
@@ -55,8 +55,9 @@ namespace AndromedaCore.Managers
         {
             if (versionNode == null || versionNode.InnerText != SaveFileVersion)
             {
-                _logger.LogMessage("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
-                ResultConsole.Instance.AddConsoleLine("MISMATCHED CONFIG FILE VERSION. A new one will be generated.");
+                var msg = "MISMATCHED CONFIG FILE VERSION. A new one will be generated.";
+                _logger.LogMessage(msg);
+                ResultConsole.Instance.AddConsoleLine(msg);
 
                 if (File.Exists(_configFilePath))
                 {

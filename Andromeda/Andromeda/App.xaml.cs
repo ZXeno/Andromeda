@@ -47,7 +47,7 @@ namespace Andromeda
             _logger = IoC.Resolve<ILoggerService>();
             _credman = new CredentialManager();
             _resultConsole = new ResultConsole();
-            ConfigManager = new ConfigManager(WorkingPath, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
+            ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
             ActionManager = new ActionManager(_logger);
             PluginManager = new PluginManager(_logger);
             _actionFactory = new ActionFactory(IoC, _logger);

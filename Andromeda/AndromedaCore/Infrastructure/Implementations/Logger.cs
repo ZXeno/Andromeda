@@ -33,7 +33,7 @@ namespace AndromedaCore.Infrastructure
             _fileAndFolderServices = fileAndFolderServices;
             Application.Current.Exit += OnApplicationExit;
 
-            _logFilePath = Environment.CurrentDirectory + "\\logs";
+            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Logs";
             _fullLogPath = _logFilePath + "\\" + LogFileName;
 
             ValidateLogDirectoryExists();
