@@ -33,7 +33,7 @@ namespace AndromedaCore.Managers
             _xmlServices = xmlServices;
             _configFilePath = path + "\\" + ConfigFileName;
             _resultsDirectory = path + "\\Results";
-            _componentsDirectory = path + "\\Components";
+            _componentsDirectory = Environment.CurrentDirectory + "\\Components";
 
             CurrentConfig = new Configuration
             {

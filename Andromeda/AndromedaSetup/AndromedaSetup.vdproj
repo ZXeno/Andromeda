@@ -27,25 +27,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DB5F91C075E48770AA42C2AF66D70F76"
+        "MsmKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
         "OwnerKey" = "8:_4519491611094BC88B2163CA1DE51328"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_DB5F91C075E48770AA42C2AF66D70F76"
-        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DB5F91C075E48770AA42C2AF66D70F76"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
         "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -53,6 +41,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4519491611094BC88B2163CA1DE51328"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +73,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -89,6 +97,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -118,14 +142,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DB5F91C075E48770AA42C2AF66D70F76"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5734D90CA70788838945E6EE6FDFD80B"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AndromedaCore, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_DB5F91C075E48770AA42C2AF66D70F76"
+                    "_5734D90CA70788838945E6EE6FDFD80B"
                     {
                     "Name" = "8:AndromedaCore.dll"
                     "Attributes" = "3:512"
@@ -172,6 +196,17 @@
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
                     "Property" = "8:_A77FD9A2E7D543C394E72666C1E47732"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_FB4737E2FD1B4FED9B2E65595D085626"
+                    {
+                    "Name" = "8:Components"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_F8059EDE0E7046ADAC6F2777F7736478"
                         "Folders"
                         {
                         }
@@ -260,15 +295,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Andromeda"
-        "ProductCode" = "8:{0587D8BF-87E1-4C16-96CC-09D6FD7FD27C}"
-        "PackageCode" = "8:{D680042C-3A3C-47A6-975A-AE5DF5BA5761}"
+        "ProductCode" = "8:{622FB15A-0A19-4DE8-AD5A-6867663527B0}"
+        "PackageCode" = "8:{721B0C12-4E1F-4B42-8A15-9CA6A963F213}"
         "UpgradeCode" = "8:{E9B97EA3-B29B-4154-AB96-E6E40C89C12F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:0.7.0"
         "Manufacturer" = "8:Andromeda"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
