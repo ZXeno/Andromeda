@@ -1,7 +1,7 @@
 ﻿using AndromedaCore;
 using AndromedaCore.Infrastructure;
 
-namespace Andromeda_Actions_Core.Command
+namespace AndromedaActions.Command
 {
     public class AppDeploymentScheduleSccm : SccmScheduleActionBase
     {
