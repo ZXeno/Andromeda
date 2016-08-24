@@ -50,7 +50,6 @@
     <Compile Include="Action.cs" />
     <Compile Include="ActionFactory.cs" />
     <Compile Include="ActionGroup.cs" />
-    <Compile Include="AppCore.cs" />
     <Compile Include="IAction.cs" />
     <Compile Include="Infrastructure\Abstractions\IFileAndFolderServices.cs" />
     <Compile Include="Infrastructure\Abstractions\ILoggerService.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Infrastructure\IoC\LifeTimeOptions.cs" />
     <Compile Include="Infrastructure\IoC\ResolvedTypeWithLifeTimeOptions.cs" />
     <Compile Include="Infrastructure\SecureStringHelper.cs" />
+    <Compile Include="Infrastructure\StaTaskScheduler.cs" />
     <Compile Include="Managers\ActionManager.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\CredentialManager.cs" />

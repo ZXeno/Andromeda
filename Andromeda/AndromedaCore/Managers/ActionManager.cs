@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Model;
@@ -25,17 +27,19 @@ namespace AndromedaCore.Managers
             ActionStart?.Invoke(justStarted, actionName);
         }
 
-        public IAction this[string i] => _loadedActions[i];
+        private IAction this[string i] => _loadedActions[i];
         private Dictionary<string, IAction> _loadedActions { get; }
         private readonly ILoggerService _logger;
         
-        public ObservableCollection<RunningActionTask> RunningActions { get; private set; }
+        public ObservableCollection<RunningActionTask> RunningActions { get; }
+        private readonly StaTaskScheduler _staTaskScheduler;
 
         // Constructor
         public ActionManager(ILoggerService logger)
         {
             _loadedActions = new Dictionary<string, IAction>();
             RunningActions = new ObservableCollection<RunningActionTask>();
+            _staTaskScheduler = new StaTaskScheduler(5); // 5 should be adequate for reasonable performance of multiple running actions
             _logger = logger;
             Instance = this;
         }
@@ -107,12 +111,12 @@ namespace AndromedaCore.Managers
         /// <param name="action"></param>
         public void RunAction(string deviceListString, IAction action)
         {
-            var t = new Task(
+            var t = Task.Factory.StartNew(
                 () =>
                 {
                     OnActionStarted(true, action.ActionName);
 
-                    var message1 = $"Starting action {action.ActionName}";
+                    var message1 = $"Starting action {action.ActionName}. Time: {DateTime.Now.ToString("HH:mm:ss")}";
                     _logger.LogMessage(message1);
                     ResultConsole.Instance.AddConsoleLine(message1);
 
@@ -132,7 +136,7 @@ namespace AndromedaCore.Managers
                     }
 
                     OnActionStarted(false, action.ActionName);
-                });
+                }, CancellationToken.None, TaskCreationOptions.None, _staTaskScheduler);
             
             var newRunningAction = new RunningActionTask
             {
@@ -145,7 +149,7 @@ namespace AndromedaCore.Managers
 
             RunningActions.Add(newRunningAction);
 
-            t.Start();
+            //t.Start();
             t.ContinueWith(x => ThreadEnd(newRunningAction.ThreadId));
         }
 
