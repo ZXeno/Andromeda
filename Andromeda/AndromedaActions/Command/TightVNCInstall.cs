@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
 using AndromedaCore.Model;

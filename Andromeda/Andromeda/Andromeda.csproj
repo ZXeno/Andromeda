@@ -104,9 +104,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Assets\check.png" />
     <Resource Include="Assets\red-x.png" />
     <Resource Include="Assets\tgb.png" />
@@ -122,6 +119,11 @@
       <Project>{d7bbea7d-ee3c-4eb8-99aa-bdeadbf7e3e6}</Project>
       <Name>AndromedaCore</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

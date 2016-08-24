@@ -46,7 +46,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _showConnectionBanner = value;
-                OnPropertyChanged("RemoveConnectionBanner");
+                OnPropertyChanged("ShowConnectionBanner");
             }
         }
 

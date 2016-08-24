@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AndromedaActions.View;
 using AndromedaActions.ViewModel;
-using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
 using Action = AndromedaCore.Action;

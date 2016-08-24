@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AndromedaActions.View;
 using AndromedaActions.ViewModel;
-using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using Microsoft.Win32;
 using Action = AndromedaCore.Action;
@@ -35,7 +34,7 @@ namespace AndromedaActions.Command
         {
             _registry = registryServices;
 
-            ActionName = "SCCM Remote Access Registry Hack";
+            ActionName = "SCCM Remote Access Registry Modify";
             Description = "Changes the remote access options for SCCM remote control.";
             Category = "SCCM";
         }
@@ -46,11 +45,11 @@ namespace AndromedaActions.Command
             var failedlist = new List<string>();
 
             var sccmRegHackContext = new SccmRegHackOptionViewModel();
-            var fileCopyPrompt = new SccmRegHackOptionsPrompt
+            var prompt = new SccmRegHackOptionsPrompt
             {
                 DataContext = sccmRegHackContext
             };
-            fileCopyPrompt.ShowDialog();
+            prompt.ShowDialog();
 
             if (!sccmRegHackContext.Result)
             {

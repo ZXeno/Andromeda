@@ -6,17 +6,18 @@ namespace AndromedaCore.ViewModel
     {
         public ApplicationWindowBase()
         {
-            this.DataContextChanged += new DependencyPropertyChangedEventHandler(this.OnDataContextChanged);
+            DataContextChanged += OnDataContextChanged;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs de)
         {
-            if (de.NewValue is IRequestCloseViewModel)
+            var model = de.NewValue as IRequestCloseViewModel;
+            if (model != null)
             {
                 // if the new datacontext supports the IRequestCloseViewModel we can use
                 // the event to be notified when the associated viewmodel wants to close
                 // the window
-                ((IRequestCloseViewModel)de.NewValue).RequestClose += (s, e) => this.Close();
+                model.RequestClose += (s, e) => Close();
             }
         }
     }
