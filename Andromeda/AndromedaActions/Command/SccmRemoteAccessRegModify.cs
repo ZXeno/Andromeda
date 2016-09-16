@@ -49,7 +49,8 @@ namespace AndromedaActions.Command
             {
                 DataContext = sccmRegHackContext
             };
-            prompt.ShowDialog();
+            prompt.ShowAsTopmostDialog();
+            
 
             if (!sccmRegHackContext.Result)
             {

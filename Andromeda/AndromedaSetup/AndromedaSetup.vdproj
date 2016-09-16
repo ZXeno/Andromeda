@@ -303,8 +303,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Andromeda"
-        "ProductCode" = "8:{F1E0D61D-CD70-41FA-80A4-4209233E142C}"
-        "PackageCode" = "8:{65983A38-BC0C-44EE-B3BA-5E427C383C77}"
+        "ProductCode" = "8:{B69FA636-1639-4684-8064-316E33173F5E}"
+        "PackageCode" = "8:{3BB0A063-874A-40B6-B1AE-0FE82846DD0E}"
         "UpgradeCode" = "8:{E9B97EA3-B29B-4154-AB96-E6E40C89C12F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

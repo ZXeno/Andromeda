@@ -50,7 +50,7 @@ namespace Andromeda
             ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
             ActionManager = new ActionManager(_logger);
             PluginManager = new PluginManager(_logger);
-            _actionFactory = new ActionFactory(IoC, _logger);
+            _actionFactory = new ActionFactory(IoC);
 
             // Load Core actions
             LoadCoreActions();
@@ -58,8 +58,7 @@ namespace Andromeda
             // Load and initialize all plugins from Plugins folder
             PluginManager.LoadAllPlugins();
             PluginManager.InitializeAllPlugins();
-
-            //TODO: Replace this with a more secure design that doesn't store credentials in memory
+            
             // set up login window
             var loginWindow = new LoginWindow();
             var loginWindowViewModel = new LoginWindowViewModel

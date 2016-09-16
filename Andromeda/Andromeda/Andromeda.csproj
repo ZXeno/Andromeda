@@ -104,15 +104,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\check.png" />
-    <Resource Include="Assets\red-x.png" />
-    <Resource Include="Assets\tgb.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="favicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AndromedaCore\AndromedaCore.csproj">

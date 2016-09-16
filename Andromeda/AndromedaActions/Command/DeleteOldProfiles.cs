@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Management;
 using System.Threading.Tasks;
+using System.Windows;
 using AndromedaActions.View;
 using AndromedaActions.ViewModel;
-using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
 using Action = AndromedaCore.Action;
@@ -34,8 +34,9 @@ namespace AndromedaActions.Command
             var deleteProfilesPrompt = new DeleteOldProfilesPrompt
             {
                 DataContext = deleteProfilesContext
+                
             };
-            deleteProfilesPrompt.ShowDialog();
+            deleteProfilesPrompt.ShowAsTopmostDialog();
 
             if (!deleteProfilesContext.Result)
             {

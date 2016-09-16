@@ -9,6 +9,15 @@ namespace AndromedaCore.ViewModel
             DataContextChanged += OnDataContextChanged;
         }
 
+        /// <summary>
+        /// Always opens a new Dialog as the top-most window.
+        /// </summary>
+        public void ShowAsTopmostDialog()
+        {
+            Topmost = true;
+            ShowDialog();
+        }
+
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs de)
         {
             var model = de.NewValue as IRequestCloseViewModel;

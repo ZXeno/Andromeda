@@ -32,7 +32,7 @@ namespace AndromedaActions.Command
             {
                 DataContext = fileCopyContext
             };
-            fileCopyPrompt.ShowDialog();
+            fileCopyPrompt.ShowAsTopmostDialog();
 
             if (!fileCopyContext.Result)
             {

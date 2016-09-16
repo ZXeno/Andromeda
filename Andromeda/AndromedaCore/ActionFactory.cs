@@ -8,12 +8,10 @@ namespace AndromedaCore
     public class ActionFactory
     {
         private static IoCContainer _ioc;
-        private ILoggerService _logger;
 
-        public ActionFactory(IoCContainer container, ILoggerService logger)
+        public ActionFactory(IoCContainer container)
         {
             _ioc = container;
-            _logger = logger;
         }
 
         public static Action InstantiateAction(Type type)
