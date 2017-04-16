@@ -120,11 +120,19 @@ namespace AndromedaActions.Command
             {
                 ResetCancelToken(ActionName, e);
             }
-
+            
             if (failedlist.Count > 0)
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
+
+            // To prevent crashing between uses of this window,
+            // we're making sure to mark these as null. Putting
+            // it here to be sure we no longer need them before
+            // marking them null.
+
+            fileCopyPrompt = null;
+            fileCopyContext.Dispose();
         }
     }
 }

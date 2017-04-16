@@ -46,13 +46,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
+        "OwnerKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
+        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -157,11 +157,6 @@
             "AssemblyAsmDisplayName" = "8:AndromedaCore, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5734D90CA70788838945E6EE6FDFD80B"
-                    {
-                    "Name" = "8:AndromedaCore.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:AndromedaCore.dll"
             "TargetName" = "8:"
@@ -303,8 +298,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Andromeda"
-        "ProductCode" = "8:{B69FA636-1639-4684-8064-316E33173F5E}"
-        "PackageCode" = "8:{3BB0A063-874A-40B6-B1AE-0FE82846DD0E}"
+        "ProductCode" = "8:{7A205BBD-89E3-4D6E-AD6E-826C847068CE}"
+        "PackageCode" = "8:{6C4E83F5-EB7E-46D4-BB12-198C276DF2CD}"
         "UpgradeCode" = "8:{E9B97EA3-B29B-4154-AB96-E6E40C89C12F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

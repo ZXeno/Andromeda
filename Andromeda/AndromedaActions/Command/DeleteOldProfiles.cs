@@ -127,6 +127,9 @@ namespace AndromedaActions.Command
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
+
+            deleteProfilesPrompt = null;
+            deleteProfilesContext.Dispose();
         }
     }
 }

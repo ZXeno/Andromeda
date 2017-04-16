@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AndromedaActions.View;
 using AndromedaActions.ViewModel;
 using AndromedaCore.Infrastructure;
+using AndromedaCore.Managers;
 using Microsoft.Win32;
 using Action = AndromedaCore.Action;
 
@@ -66,12 +67,21 @@ namespace AndromedaActions.Command
             _showTaskBarIcon = sccmRegHackContext.ShowTaskbarIcon;
             _allowAccessOnUnattended = sccmRegHackContext.AllowAccessOnUnattended;
             _allowLocalAdministratorsToRemoteControl = sccmRegHackContext.AllowLocalAdministratorsToRemoteControl;
-
+            
 
             try
             {
                 Parallel.ForEach(devlist, (device) =>
                 {
+                    CancellationToken.Token.ThrowIfCancellationRequested();
+
+                    if (!NetworkServices.VerifyDeviceConnectivity(device))
+                    {
+                        failedlist.Add(device);
+                        ResultConsole.Instance.AddConsoleLine($"Device {device} failed connection verification. Added to failed list.");
+                        return;
+                    }
+
                     _registry.WriteToSubkey(
                         device, 
                         RegistryHive.LocalMachine, 
@@ -133,6 +143,13 @@ namespace AndromedaActions.Command
             {
                 ResetCancelToken(ActionName, e);
             }
+
+            // To prevent crashing between uses of this window,
+            // we're making sure to mark these as null. Putting
+            // it here to be sure we no longer need them before
+            // marking them null.
+            prompt = null;
+            sccmRegHackContext.Dispose();
 
             if (failedlist.Count > 0)
             {

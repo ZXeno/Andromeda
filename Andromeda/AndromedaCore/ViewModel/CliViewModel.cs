@@ -4,14 +4,8 @@ using AndromedaCore.Infrastructure;
 
 namespace AndromedaCore.ViewModel
 {
-    public class CliViewModel : ViewModelBase, IRequestCloseViewModel
+    public class CliViewModel : RequestCloseViewModel
     {
-        public event EventHandler RequestClose;
-        private void OnRequestClose(EventArgs e)
-        {
-            RequestClose?.Invoke(this, e);
-        }
-
         private ICommand _okayCmd;
         public ICommand OkayCommand
         {

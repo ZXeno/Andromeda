@@ -5,13 +5,8 @@ using AndromedaCore.ViewModel;
 
 namespace AndromedaActions.ViewModel
 {
-    public class SccmRegHackOptionViewModel : ViewModelBase, IRequestCloseViewModel
+    public class SccmRegHackOptionViewModel : RequestCloseViewModel
     {
-        public event EventHandler RequestClose;
-        private void OnRequestClose(EventArgs e)
-        {
-            RequestClose?.Invoke(this, e);
-        }
 
         private bool _remoteAccessEnabled = true;
         private bool _requiresUserApproval = true;

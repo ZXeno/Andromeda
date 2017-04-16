@@ -87,6 +87,7 @@
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
     <Compile Include="ViewModel\CliViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
+    <Compile Include="ViewModel\RequestCloseViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>

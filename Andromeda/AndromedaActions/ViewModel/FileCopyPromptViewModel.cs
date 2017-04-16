@@ -6,14 +6,8 @@ using Microsoft.Win32;
 
 namespace AndromedaActions.ViewModel
 {
-    public class FileCopyPromptViewModel : ViewModelBase, IRequestCloseViewModel
+    public class FileCopyPromptViewModel : RequestCloseViewModel
     {
-        public event EventHandler RequestClose;
-        private void OnRequestClose(EventArgs e)
-        {
-            RequestClose?.Invoke(this, e);
-        }
-
         private string _filePath;
         public string FilePath
         {

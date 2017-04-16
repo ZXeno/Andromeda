@@ -5,14 +5,8 @@ using AndromedaCore.ViewModel;
 
 namespace AndromedaActions.ViewModel
 {
-    public class DeleteOldProfilesPromptViewModel : ViewModelBase, IRequestCloseViewModel
+    public class DeleteOldProfilesPromptViewModel : RequestCloseViewModel
     {
-        public event EventHandler RequestClose;
-        private void OnRequestClose(EventArgs e)
-        {
-            RequestClose?.Invoke(this, e);
-        }
-
         private int _dayCount = 14;
         public int DayCount => _dayCount;
         public string DayCountBoxContent
