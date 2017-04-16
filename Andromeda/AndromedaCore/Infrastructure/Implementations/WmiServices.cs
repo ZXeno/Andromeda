@@ -292,7 +292,6 @@ namespace AndromedaCore.Infrastructure
             sb.AppendLine(@"gpupdate /force");
             sb.AppendLine(@"POPD");
             sb.AppendLine(@"Shutdown -f -r -t 0");
-            sb.AppendLine(@"DEL /F /Q ""%windir%\temp\fixwmi.bat""");
             sb.AppendLine(@"EXIT");
 
             return sb.ToString();
