@@ -36,6 +36,9 @@ namespace Andromeda
         protected override void OnStartup(StartupEventArgs e)
         {
             VersionNumber += Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+#if DEBUG
+            UserFolder = WorkingPath;
+#endif
 
             if (!Directory.Exists(UserFolder))
             {

@@ -121,7 +121,7 @@ namespace AndromedaCore.Infrastructure
 
         private void ForceCleanRemotePsExeSvc(string device)
         {
-            var filepath = "C:\\Windows\\scrubremotepsexesvc.bat";
+            var filepath = "C:\\Windows\\temp\\scrubremotepsexesvc.bat";
             var sb = new StringBuilder();
 
             sb.AppendLine("sc \\" + device + " stop PsExeSvc");
