@@ -6,6 +6,7 @@ obj
 
 [Db]ebug/
 [Rr]elease/
+[Bb]ins/
 *.obj
 *.pdb
 

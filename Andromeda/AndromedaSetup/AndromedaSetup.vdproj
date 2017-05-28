@@ -27,13 +27,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
+        "MsmKey" = "8:_98CBFA53943A1332AE4999264CB65054"
         "OwnerKey" = "8:_4519491611094BC88B2163CA1DE51328"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
+        "MsmKey" = "8:_98CBFA53943A1332AE4999264CB65054"
         "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -46,7 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5734D90CA70788838945E6EE6FDFD80B"
+        "OwnerKey" = "8:_98CBFA53943A1332AE4999264CB65054"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -150,13 +150,18 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5734D90CA70788838945E6EE6FDFD80B"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_98CBFA53943A1332AE4999264CB65054"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AndromedaCore, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_98CBFA53943A1332AE4999264CB65054"
+                    {
+                    "Name" = "8:AndromedaCore.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:AndromedaCore.dll"
             "TargetName" = "8:"
@@ -298,15 +303,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Andromeda"
-        "ProductCode" = "8:{7A205BBD-89E3-4D6E-AD6E-826C847068CE}"
-        "PackageCode" = "8:{6C4E83F5-EB7E-46D4-BB12-198C276DF2CD}"
+        "ProductCode" = "8:{CA115B3C-C2D5-4034-9D9E-CFABACDC93D4}"
+        "PackageCode" = "8:{0CD8F299-7F50-4DB1-90A9-1C7BBCFFE151}"
         "UpgradeCode" = "8:{E9B97EA3-B29B-4154-AB96-E6E40C89C12F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.7.0"
+        "ProductVersion" = "8:0.7.1"
         "Manufacturer" = "8:Andromeda"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -419,20 +424,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3F0F27D24DB0494098A38827A040A781"
-            {
-            "Name" = "8:Andromeda"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:32512"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_4519491611094BC88B2163CA1DE51328"
-            "Folder" = "8:_882EDA9CA21F413BB76174145352B63A"
-            "WorkingFolder" = "8:_04D2B507915D4164BDCBC582895CAF5F"
-            "Icon" = "8:_4519491611094BC88B2163CA1DE51328"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8A57021CEB8B40EBB966BF70582F2548"
             {
             "Name" = "8:Andromeda"

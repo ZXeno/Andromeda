@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Andromeda\bin\Debug\</OutputPath>
+    <OutputPath>..\bins\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Andromeda\bin\Release\</OutputPath>
+    <OutputPath>..\bins\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -85,10 +85,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
-    <Compile Include="ViewModel\CliViewModel.cs" />
+    <Compile Include="ViewModel\PromptViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
+    <Compile Include="ViewModel\IWindowService.cs" />
     <Compile Include="ViewModel\RequestCloseViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\WindowService.cs" />
     <Compile Include="View\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>

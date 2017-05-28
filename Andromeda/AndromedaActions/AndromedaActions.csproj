@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Andromeda\bin\Debug\</OutputPath>
+    <OutputPath>..\bins\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Andromeda\bin\Release\</OutputPath>
+    <OutputPath>..\bins\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -55,9 +55,13 @@
     <Compile Include="Command\MachinePolicyRetreivalCycleSccm.cs" />
     <Compile Include="Command\PingTest.cs" />
     <Compile Include="Command\RepairWmi.cs" />
+    <Compile Include="Command\ResetWindowsUpdateService.cs" />
     <Compile Include="Command\RunGpUpdate.cs" />
     <Compile Include="Command\SccmRemoteAccessRegModify.cs" />
     <Compile Include="Command\SoftwareInventoryCycleSccm.cs" />
+    <Compile Include="Command\SoftwareMeteringUsageReportCycle.cs" />
+    <Compile Include="Command\SoftwareUpdateDeploymentCycle.cs" />
+    <Compile Include="Command\SoftwareUpdateScanCycle.cs" />
     <Compile Include="Command\StartCmrcService.cs" />
     <Compile Include="Command\UserPolicyRetrievalCycleSccm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
