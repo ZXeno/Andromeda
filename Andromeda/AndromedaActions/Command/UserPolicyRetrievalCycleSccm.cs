@@ -9,7 +9,7 @@ namespace AndromedaActions.Command
         public UserPolicyRetrievalCycleSccm(ILoggerService logger, IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) 
             : base(logger, wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
-            ActionName = "User Policy Retrieval Cycle";
+            ActionName = "Client Action - User Policy Retrieval Cycle";
             Description = "Forces SCCM to schedule a User Policy Retrieval check on the client.";
             Category = "SCCM";
         }

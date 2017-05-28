@@ -8,7 +8,7 @@ namespace AndromedaActions.Command
          public HardwareInventoryCycleSccm(ILoggerService logger, IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) 
             : base(logger, wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
-            ActionName = "Hardware Inventory Cycle";
+            ActionName = "Client Action - Hardware Inventory Cycle";
             Description = "Forces SCCM to schedule a Hardware Inventory check on the client.";
             Category = "SCCM";
         }
