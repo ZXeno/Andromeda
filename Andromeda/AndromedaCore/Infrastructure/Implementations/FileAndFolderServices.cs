@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using AndromedaCore.Managers;
 
 namespace AndromedaCore.Infrastructure
@@ -45,11 +46,18 @@ namespace AndromedaCore.Infrastructure
             var sb = new StringBuilder();
             sb.Append(contents);
 
+            if (!File.Exists(filepath))
+            {
+                CreateNewTextFile(filepath);
+                Thread.Sleep(1000);
+            }
+
             using (var outfile = new StreamWriter(filepath, true))
             {
                 try
                 {
                     outfile.WriteAsync(sb.ToString());
+                    Thread.Sleep(100);
                 }
                 catch (Exception e)
                 {

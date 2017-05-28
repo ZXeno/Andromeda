@@ -26,6 +26,9 @@ namespace AndromedaCore.Infrastructure
         private static volatile bool _waiting = false;
         private static bool _appIsExiting = false;
 
+        private static Thread _loggingThread;
+        private static int _threadTimeout = 5000;
+
         private static IFileAndFolderServices _fileAndFolderServices;
 
         public Logger(IFileAndFolderServices fileAndFolderServices)
@@ -33,7 +36,7 @@ namespace AndromedaCore.Infrastructure
             _fileAndFolderServices = fileAndFolderServices;
             Application.Current.Exit += OnApplicationExit;
 
-            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Logs";
+            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "Andromeda\\Logs";
             _fullLogPath = _logFilePath + "\\" + LogFileName;
 
             ValidateLogDirectoryExists();
@@ -43,9 +46,8 @@ namespace AndromedaCore.Infrastructure
                 _fileAndFolderServices.CreateNewTextFile(_fullLogPath);
             }
 
-            var loggingThread = new Thread(new ThreadStart(ProcessQueue));
-            loggingThread.IsBackground = true;
-            loggingThread.Start();
+            _loggingThread = new Thread(new ThreadStart(ProcessQueue)) {IsBackground = true};
+            _loggingThread.Start();
 
             LogMessage("Logger initiated.");
         }
@@ -117,6 +119,11 @@ namespace AndromedaCore.Infrastructure
                 }
                 
                 queueCopy.Clear();
+            }
+
+            if (_appIsExiting)
+            {
+                _loggingThread.Join(_threadTimeout);
             }
         }
 

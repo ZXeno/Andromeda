@@ -87,6 +87,7 @@ namespace AndromedaCore
             {
                 File.Delete(path);
                 Logger.LogMessage($"Deleted file {path}");
+                Thread.Sleep(1000);
             }
 
             foreach (var device in failedList)

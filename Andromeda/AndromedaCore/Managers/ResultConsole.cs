@@ -12,7 +12,7 @@ namespace AndromedaCore.Managers
         private static ResultConsole _instance;
         public static ResultConsole Instance
         {
-            get { return _instance; }
+            get => _instance;
             set
             {
                 if (_instance == null || _instance != value)
@@ -25,7 +25,7 @@ namespace AndromedaCore.Managers
         private string _consoleString;
         public string ConsoleString
         {
-            get { return _consoleString; }
+            get => _consoleString;
             private set
             {
                 _consoleString = value;
@@ -44,6 +44,8 @@ namespace AndromedaCore.Managers
 
         private readonly Queue<string> _queue = new Queue<string>();
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
+        private static Thread _loggingThread;
+        private static int _threadTimeout = 5000;
 
         public ResultConsole()
         {
@@ -53,21 +55,20 @@ namespace AndromedaCore.Managers
             _consoleString = "";
             IsInitialized = true;
 
-            var loggingThread = new Thread(new ThreadStart(ProcessQueue));
-            loggingThread.IsBackground = true;
-            loggingThread.Start();
+            _loggingThread = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
+            _loggingThread.Start();
         }
 
         public void AddConsoleLine(string str)
         {
-            if (IsInitialized)
+            if (!IsInitialized) { return; }
+
+            lock (_queue)
             {
-                lock (_queue)
-                {
-                    _queue.Enqueue(str);
-                }
-                _hasNewItems.Set();
+                _queue.Enqueue(str);
             }
+
+            _hasNewItems.Set();
         }
 
         private void ProcessQueue()
@@ -91,6 +92,12 @@ namespace AndromedaCore.Managers
                 }
 
                 queueCopy.Clear();
+            }
+
+            if (_appIsExiting)
+            {
+                _queue.Clear();
+                _loggingThread.Join(_threadTimeout);
             }
         }
 
