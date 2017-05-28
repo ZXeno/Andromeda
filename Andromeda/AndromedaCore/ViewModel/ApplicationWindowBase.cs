@@ -5,8 +5,6 @@ namespace AndromedaCore.ViewModel
 {
     public class ApplicationWindowBase : Window
     {
-
-
         public ApplicationWindowBase()
         {
             DataContextChanged += OnDataContextChanged;

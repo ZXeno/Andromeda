@@ -9,6 +9,7 @@ using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
 using AndromedaCore;
 using AndromedaCore.Plugins;
+using AndromedaCore.ViewModel;
 
 namespace Andromeda
 {
@@ -48,6 +49,7 @@ namespace Andromeda
             InitializeIoCContainer();
 
             _logger = IoC.Resolve<ILoggerService>();
+
             _credman = new CredentialManager();
             _resultConsole = new ResultConsole();
             ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
@@ -82,7 +84,7 @@ namespace Andromeda
                 ResizeMode = ResizeMode.CanMinimize,
                 DataContext = mainWindowViewModel
             };
-            
+
             // Show login prompt
             loginWindow.ShowDialog();
             if (loginWindowViewModel.WasCanceled)
@@ -92,11 +94,12 @@ namespace Andromeda
                 return;
             }
 
-            mainWindowViewModel?.UpdateLoginProperties();
+            mainWindowViewModel.UpdateLoginProperties();
 
             // show main window
             window.Show();
 
+            Application.Current.MainWindow = window;
         }
 
         private void InitializeIoCContainer()
@@ -111,6 +114,7 @@ namespace Andromeda
             IoC.Register<ISccmClientServices, SccmClientServices>();
             IoC.Register<IXmlServices, XmlServices>();
             IoC.Register<IRegistryServices, RegistryServices>();
+            IoC.Register<IWindowService, WindowService>();
 
         }
 

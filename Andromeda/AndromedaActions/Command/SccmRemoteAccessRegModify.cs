@@ -5,6 +5,7 @@ using AndromedaActions.View;
 using AndromedaActions.ViewModel;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
+using AndromedaCore.ViewModel;
 using Microsoft.Win32;
 using Action = AndromedaCore.Action;
 
@@ -12,7 +13,8 @@ namespace AndromedaActions.Command
 {
     public class SccmRemoteAccessRegModify : Action
     {
-        private IRegistryServices _registry;
+        private readonly IWindowService _windowService;
+        private readonly IRegistryServices _registry;
 
         private const string SccmRemoteControlRegistryPath = "SOFTWARE\\Microsoft\\SMS\\Client\\Client Components\\Remote Control";
         private const string RemoteAccessEnabledKeyName = "Enabled";
@@ -31,8 +33,14 @@ namespace AndromedaActions.Command
         private bool _allowLocalAdministratorsToRemoteControl;
         private bool _audibleSignal = false;
 
-        public SccmRemoteAccessRegModify(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IRegistryServices registryServices) : base(logger, networkServices, fileAndFolderServices)
+        public SccmRemoteAccessRegModify(
+            ILoggerService logger, 
+            INetworkServices networkServices, 
+            IFileAndFolderServices fileAndFolderServices, 
+            IRegistryServices registryServices, 
+            IWindowService windowService) : base(logger, networkServices, fileAndFolderServices)
         {
+            _windowService = windowService;
             _registry = registryServices;
 
             ActionName = "SCCM Remote Access Registry Modify";
@@ -46,11 +54,7 @@ namespace AndromedaActions.Command
             var failedlist = new List<string>();
 
             var sccmRegHackContext = new SccmRegHackOptionViewModel();
-            var prompt = new SccmRegHackOptionsPrompt
-            {
-                DataContext = sccmRegHackContext
-            };
-            prompt.ShowAsTopmostDialog();
+            _windowService.ShowDialog<SccmRegHackOptionsPrompt>(sccmRegHackContext);
             
 
             if (!sccmRegHackContext.Result)
@@ -148,7 +152,6 @@ namespace AndromedaActions.Command
             // we're making sure to mark these as null. Putting
             // it here to be sure we no longer need them before
             // marking them null.
-            prompt = null;
             sccmRegHackContext.Dispose();
 
             if (failedlist.Count > 0)
@@ -159,9 +162,7 @@ namespace AndromedaActions.Command
 
         private string BoolToIntString(bool value)
         {
-            if (value) { return "1"; }
-
-            return "0";
+            return value ? "1" : "0";
         }
     }
 }

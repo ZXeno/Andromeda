@@ -7,6 +7,7 @@ using AndromedaActions.View;
 using AndromedaActions.ViewModel;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
+using AndromedaCore.ViewModel;
 using Action = AndromedaCore.Action;
 
 namespace AndromedaActions.Command
@@ -14,11 +15,13 @@ namespace AndromedaActions.Command
     public class DeleteOldProfiles : Action
     {
         private readonly IWmiServices _wmi;
+        private readonly IWindowService _windowService;
         private const string ProfileQuery = "SELECT * FROM Win32_UserProfile WHERE LocalPath LIKE '%Users%'";
 
-        public DeleteOldProfiles(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) : base(logger, networkServices, fileAndFolderServices)
+        public DeleteOldProfiles(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices, IWindowService windowService) : base(logger, networkServices, fileAndFolderServices)
         {
             _wmi = wmiServices;
+            _windowService = windowService;
 
             ActionName = "Delete Old User Profiles";
             Description = "Deletes profiles older than a provided date.";
@@ -31,12 +34,7 @@ namespace AndromedaActions.Command
             var failedlist = new List<string>();
 
             var deleteProfilesContext = new DeleteOldProfilesPromptViewModel();
-            var deleteProfilesPrompt = new DeleteOldProfilesPrompt
-            {
-                DataContext = deleteProfilesContext
-                
-            };
-            deleteProfilesPrompt.ShowAsTopmostDialog();
+            _windowService.ShowDialog<DeleteOldProfilesPrompt>(deleteProfilesContext);
 
             if (!deleteProfilesContext.Result)
             {
@@ -127,8 +125,7 @@ namespace AndromedaActions.Command
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
-
-            deleteProfilesPrompt = null;
+            
             deleteProfilesContext.Dispose();
         }
     }

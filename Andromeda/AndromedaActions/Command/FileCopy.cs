@@ -8,18 +8,23 @@ using AndromedaActions.View;
 using AndromedaActions.ViewModel;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
+using AndromedaCore.ViewModel;
 using Action = AndromedaCore.Action;
 
 namespace AndromedaActions.Command
 {
     public class FileCopy : Action
     {
-        public FileCopy(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices)
+        private readonly IWindowService _windowService;
+
+        public FileCopy(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWindowService windowService)
             : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "File Copy";
             Description = "Copy file to all devices in the list.";
             Category = "Other";
+
+            _windowService = windowService;
         }
 
         public override void RunCommand(string rawDeviceList)
@@ -28,11 +33,7 @@ namespace AndromedaActions.Command
             var failedlist = new List<string>();
 
             var fileCopyContext = new FileCopyPromptViewModel();
-            var fileCopyPrompt = new FileCopyPrompt
-            {
-                DataContext = fileCopyContext
-            };
-            fileCopyPrompt.ShowAsTopmostDialog();
+            _windowService.ShowDialog<FileCopyPrompt>(fileCopyContext);
 
             if (!fileCopyContext.Result)
             {
@@ -131,7 +132,6 @@ namespace AndromedaActions.Command
             // it here to be sure we no longer need them before
             // marking them null.
 
-            fileCopyPrompt = null;
             fileCopyContext.Dispose();
         }
     }
