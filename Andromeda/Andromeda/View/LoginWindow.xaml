@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:Andromeda.View"
         xmlns:infrastructure="clr-namespace:Andromeda.Infrastructure"
         mc:Ignorable="d"
-        Title="Enter Credentials" Height="150" Width="300" Style="{StaticResource WindowBG}">
+        Title="Enter Credentials" 
+        Height="150" Width="300" 
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize"
+        Style="{StaticResource WindowBG}">
 
 
     <Grid>

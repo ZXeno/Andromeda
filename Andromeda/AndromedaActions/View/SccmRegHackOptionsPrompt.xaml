@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:AndromedaCore.ViewModel;assembly=AndromedaCore"
         mc:Ignorable="d"
-        Title="SCCM Remote Access Registry Hack Options" Height="210" Width="600" ResizeMode="NoResize" Style="{StaticResource WindowBG}">
+        Title="SCCM Remote Access Registry Hack Options" 
+        Height="210" Width="600" 
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize" 
+        ShowInTaskbar="False" 
+        Style="{StaticResource WindowBG}">
 
     <Window.Resources>
         <ResourceDictionary>

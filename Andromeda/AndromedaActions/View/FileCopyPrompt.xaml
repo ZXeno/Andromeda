@@ -2,7 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModel="clr-namespace:AndromedaCore.ViewModel;assembly=AndromedaCore"
-        Title="File Copy Action Prompt" Height="220" Width="600" ResizeMode="NoResize" Style="{StaticResource WindowBG}">
+        Title="File Copy Action Prompt" 
+        Height="220" Width="600" 
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize" 
+        ShowInTaskbar="False" 
+        Style="{StaticResource WindowBG}">
 
     <Window.Resources>
         <ResourceDictionary>

@@ -5,7 +5,10 @@
         xmlns:inf="clr-namespace:Andromeda.Infrastructure"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         x:Class="Andromeda.MainWindow"
-        Height="750" Width="800" Style="{StaticResource WindowBG}">
+        Height="750" Width="800" 
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize"
+        Style="{StaticResource WindowBG}">
 
     <Window.Resources>
         <CollectionViewSource x:Key="ViewSource" Source="{Binding ActionsList}">
