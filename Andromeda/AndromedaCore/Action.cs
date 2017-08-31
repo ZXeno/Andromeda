@@ -25,6 +25,8 @@ namespace AndromedaCore
         public string ActionName { get; protected set; }
         public string Description { get; protected set; }
         public string Category { get; protected set; }
+        public bool HasUserInterfaceElement { get; protected set; }
+        public System.Action UiCallback { get; protected set; }
 
         protected INetworkServices NetworkServices;
         protected IFileAndFolderServices FileAndFolderServices;
@@ -37,6 +39,11 @@ namespace AndromedaCore
             FileAndFolderServices = fileAndFolderServices;
 
             CancellationToken = new CancellationTokenSource();
+        }
+
+        public virtual void OpenUserInterfaceElement(string rawDeviceList)
+        {
+            throw new NotImplementedException($"{ActionName} does not have a UI element to open.");
         }
 
         public abstract void RunCommand(string rawDeviceList);

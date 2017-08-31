@@ -17,6 +17,9 @@ namespace AndromedaActions.Command
     {
         private readonly IWindowService _windowService;
 
+        private List<string> _parsedListCache;
+        private FileCopyPromptViewModel fileCopyContextCache;
+
         public FileCopy(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWindowService windowService)
             : base(logger, networkServices, fileAndFolderServices)
         {
@@ -25,35 +28,41 @@ namespace AndromedaActions.Command
             Category = "Other";
 
             _windowService = windowService;
+            HasUserInterfaceElement = true;
+            UiCallback = CallbackMethod;
         }
 
-        public override void RunCommand(string rawDeviceList)
+        public override void OpenUserInterfaceElement(string rawDeviceList)
         {
-            var devlist = ParseDeviceList(rawDeviceList);
-            var failedlist = new List<string>();
+            _parsedListCache = ParseDeviceList(rawDeviceList);
 
-            var fileCopyContext = new FileCopyPromptViewModel();
-            _windowService.ShowDialog<FileCopyPrompt>(fileCopyContext);
+            fileCopyContextCache = new FileCopyPromptViewModel();
+            _windowService.ShowDialog<FileCopyPrompt>(fileCopyContextCache);
 
-            if (!fileCopyContext.Result)
+            if (!fileCopyContextCache.Result)
             {
                 var msg = $"Action {ActionName} canceled by user.";
                 Logger.LogMessage(msg);
                 ResultConsole.AddConsoleLine(msg);
-                return;
+                CancellationToken.Cancel();
             }
 
-            if (string.IsNullOrWhiteSpace(fileCopyContext.FilePath))
+            if (string.IsNullOrWhiteSpace(fileCopyContextCache.FilePath))
             {
                 var msg = $"Action {ActionName} aborted: source path was empty.";
                 Logger.LogMessage(msg);
                 ResultConsole.AddConsoleLine(msg);
-                return;
+                CancellationToken.Cancel();
             }
+        }
+
+        private void CallbackMethod()
+        {
+            var failedlist = new List<string>();
 
             try
             {
-                Parallel.ForEach(devlist, (device) =>
+                Parallel.ForEach(_parsedListCache, (device) =>
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
@@ -64,45 +73,45 @@ namespace AndromedaActions.Command
                         return;
                     }
 
-                    var fileName = fileCopyContext.FilePath.Split(new char[] {'\\'}).Last();
+                    var fileName = fileCopyContextCache.FilePath.Split(new char[] { '\\' }).Last();
 
                     string destPath;
-                    if (string.IsNullOrWhiteSpace(fileCopyContext.DestinationPath))
+                    if (string.IsNullOrWhiteSpace(fileCopyContextCache.DestinationPath))
                     {
                         destPath = $"\\\\{device}\\C$\\";
                     }
                     else
                     {
-                        if (fileCopyContext.DestinationPath.StartsWith("\\"))
+                        if (fileCopyContextCache.DestinationPath.StartsWith("\\"))
                         {
-                            fileCopyContext.DestinationPath = fileCopyContext.DestinationPath.Remove(0, 1);
+                            fileCopyContextCache.DestinationPath = fileCopyContextCache.DestinationPath.Remove(0, 1);
                         }
 
-                        if (fileCopyContext.DestinationPath.EndsWith("\\"))
+                        if (fileCopyContextCache.DestinationPath.EndsWith("\\"))
                         {
-                            fileCopyContext.DestinationPath = fileCopyContext.DestinationPath.Remove(fileCopyContext.DestinationPath.Length - 1, 1);
+                            fileCopyContextCache.DestinationPath = fileCopyContextCache.DestinationPath.Remove(fileCopyContextCache.DestinationPath.Length - 1, 1);
                         }
 
-                        destPath = $"\\\\{device}\\C$\\{fileCopyContext.DestinationPath}\\";
+                        destPath = $"\\\\{device}\\C$\\{fileCopyContextCache.DestinationPath}\\";
                     }
-                    
+
                     ResultConsole.AddConsoleLine($"Copying file {fileName} to device {device}");
 
                     try
                     {
-                        if (FileAndFolderServices.ValidateDirectoryExists(device, fileCopyContext.DestinationPath, ActionName, Logger))
+                        if (FileAndFolderServices.ValidateDirectoryExists(device, fileCopyContextCache.DestinationPath, ActionName, Logger))
                         {
-                            File.Copy(fileCopyContext.FilePath, destPath + fileName, fileCopyContext.Overwrite);
+                            File.Copy(fileCopyContextCache.FilePath, destPath + fileName, fileCopyContextCache.Overwrite);
                             Logger.LogMessage($"Copied file {fileName} to {destPath}");
                         }
-                        else if (fileCopyContext.CreateDestination)
+                        else if (fileCopyContextCache.CreateDestination)
                         {
-                            Logger.LogMessage($"Creating directory {fileCopyContext.DestinationPath}");
+                            Logger.LogMessage($"Creating directory {fileCopyContextCache.DestinationPath}");
                             Directory.CreateDirectory(destPath);
 
                             Thread.Sleep(100);
 
-                            File.Copy(fileCopyContext.FilePath, destPath + fileName, fileCopyContext.Overwrite);
+                            File.Copy(fileCopyContextCache.FilePath, destPath + fileName, fileCopyContextCache.Overwrite);
                         }
                         else
                         {
@@ -121,18 +130,16 @@ namespace AndromedaActions.Command
             {
                 ResetCancelToken(ActionName, e);
             }
-            
+
             if (failedlist.Count > 0)
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
+        }
 
-            // To prevent crashing between uses of this window,
-            // we're making sure to mark these as null. Putting
-            // it here to be sure we no longer need them before
-            // marking them null.
-
-            fileCopyContext.Dispose();
+        public override void RunCommand(string rawDeviceList)
+        {
+            throw new NotImplementedException($"{ActionName} has a user interface element and does utilize the RunCommand method interface.");
         }
     }
 }

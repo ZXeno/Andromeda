@@ -39,7 +39,7 @@ namespace AndromedaCore.Managers
         {
             _loadedActions = new Dictionary<string, IAction>();
             RunningActions = new ObservableCollection<RunningActionTask>();
-            _staTaskScheduler = new StaTaskScheduler(5); // 5 should be adequate for reasonable performance of multiple running actions
+            _staTaskScheduler = new StaTaskScheduler(Environment.ProcessorCount); 
             _logger = logger;
             Instance = this;
         }
@@ -105,22 +105,75 @@ namespace AndromedaCore.Managers
         }
 
         /// <summary>
+        /// Runs an action referenced by ActionName property in its own thread.
+        /// </summary>
+        /// <param name="deviceListString"></param>
+        /// <param name="actionName"></param>
+        public void RunAction(string deviceListString, string actionName)
+        {
+            var actiontype =  _loadedActions[actionName].GetType();
+            var action = ActionFactory.InstantiateAction(actiontype);
+            RunAction(deviceListString, action);
+        }
+
+        /// <summary>
         /// Runs a given action in its own thread.
         /// </summary>
         /// <param name="deviceListString"></param>
         /// <param name="action"></param>
         public void RunAction(string deviceListString, IAction action)
         {
+            if (action.HasUserInterfaceElement)
+            {
+                try
+                {
+                    action.OpenUserInterfaceElement(deviceListString);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.Message, e);
+                    ResultConsole.Instance.AddConsoleLine($"There was an error running {action.ActionName}. Please see the log.");
+                }
+            }
+
             var t = Task.Factory.StartNew(
                 () =>
                 {
                     OnActionStarted(true, action.ActionName);
 
-                    var message1 = $"Starting action {action.ActionName}. Time: {DateTime.Now.ToString("HH:mm:ss")}";
+                    var message1 = $"Starting action {action.ActionName}. Time: {DateTime.Now:HH:mm:ss}";
                     _logger.LogMessage(message1);
                     ResultConsole.Instance.AddConsoleLine(message1);
-
-                    action.RunCommand(deviceListString);
+                    if (!action.CancellationToken.IsCancellationRequested)
+                    {
+                        if (action.HasUserInterfaceElement)
+                        {
+                            try
+                            {
+                                action.UiCallback.Invoke();
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.LogError(
+                                    $"Action {action.ActionName} was unable to perform it's action because the callback was null.",
+                                    e);
+                                ResultConsole.Instance.AddConsoleLine($"Action {action.ActionName} was unable to perform it's action. See the log for error details.");
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                action.RunCommand(deviceListString);
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.LogError(e.Message, e);
+                                ResultConsole.Instance.AddConsoleLine($"There was an error running {action.ActionName}. Please see the log.");
+                                action.CancellationToken.Cancel();
+                            }
+                        }
+                    }
 
                     if (!action.CancellationToken.IsCancellationRequested)
                     {
@@ -137,7 +190,7 @@ namespace AndromedaCore.Managers
 
                     OnActionStarted(false, action.ActionName);
                 }, CancellationToken.None, TaskCreationOptions.None, _staTaskScheduler);
-            
+
             var newRunningAction = new RunningActionTask
             {
                 RawDeviceListString = deviceListString,
@@ -149,23 +202,12 @@ namespace AndromedaCore.Managers
 
             RunningActions.Add(newRunningAction);
 
-            //t.Start();
             t.ContinueWith(x => ThreadEnd(newRunningAction.ThreadId));
         }
 
         private void ThreadEnd(int threadId)
         {
             RunningActions.Remove(RunningActions.FirstOrDefault(t => t.ThreadId == threadId));
-        }
-        
-        /// <summary>
-        /// Runs an action referenced by ActionName property in its own thread.
-        /// </summary>
-        /// <param name="deviceListString"></param>
-        /// <param name="actionName"></param>
-        public void RunAction(string deviceListString, string actionName)
-        {
-            RunAction(deviceListString, _loadedActions[actionName]);
         }
 
         /// <summary>

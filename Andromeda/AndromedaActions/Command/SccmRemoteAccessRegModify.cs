@@ -33,6 +33,8 @@ namespace AndromedaActions.Command
         private bool _allowLocalAdministratorsToRemoteControl;
         private bool _audibleSignal = false;
 
+        private List<string> _parsedListCache;
+
         public SccmRemoteAccessRegModify(
             ILoggerService logger, 
             INetworkServices networkServices, 
@@ -46,23 +48,24 @@ namespace AndromedaActions.Command
             ActionName = "SCCM Remote Access Registry Modify";
             Description = "Changes the remote access options for SCCM remote control.";
             Category = "SCCM";
+
+            HasUserInterfaceElement = true;
+            UiCallback = CallbackMethod;
         }
 
-        public override void RunCommand(string rawDeviceList)
+        public override void OpenUserInterfaceElement(string rawDeviceList)
         {
-            var devlist = ParseDeviceList(rawDeviceList);
-            var failedlist = new List<string>();
+            _parsedListCache = ParseDeviceList(rawDeviceList);
 
             var sccmRegHackContext = new SccmRegHackOptionViewModel();
             _windowService.ShowDialog<SccmRegHackOptionsPrompt>(sccmRegHackContext);
-            
 
             if (!sccmRegHackContext.Result)
             {
                 var msg = $"Action {ActionName} canceled by user.";
                 Logger.LogMessage(msg);
                 ResultConsole.AddConsoleLine(msg);
-                return;
+                CancellationToken.Cancel();
             }
 
             _remoteAccessEnabled = sccmRegHackContext.RemoteAccessEnabled;
@@ -71,11 +74,15 @@ namespace AndromedaActions.Command
             _showTaskBarIcon = sccmRegHackContext.ShowTaskbarIcon;
             _allowAccessOnUnattended = sccmRegHackContext.AllowAccessOnUnattended;
             _allowLocalAdministratorsToRemoteControl = sccmRegHackContext.AllowLocalAdministratorsToRemoteControl;
-            
+        }
+
+        private void CallbackMethod()
+        {
+            var failedlist = new List<string>();
 
             try
             {
-                Parallel.ForEach(devlist, (device) =>
+                Parallel.ForEach(_parsedListCache, (device) =>
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
@@ -87,11 +94,11 @@ namespace AndromedaActions.Command
                     }
 
                     _registry.WriteToSubkey(
-                        device, 
-                        RegistryHive.LocalMachine, 
-                        SccmRemoteControlRegistryPath, 
+                        device,
+                        RegistryHive.LocalMachine,
+                        SccmRemoteControlRegistryPath,
                         RemoteAccessEnabledKeyName,
-                        BoolToIntString(_remoteAccessEnabled).ToString(), 
+                        BoolToIntString(_remoteAccessEnabled).ToString(),
                         RegistryValueKind.DWord);
 
                     _registry.WriteToSubkey(
@@ -148,16 +155,15 @@ namespace AndromedaActions.Command
                 ResetCancelToken(ActionName, e);
             }
 
-            // To prevent crashing between uses of this window,
-            // we're making sure to mark these as null. Putting
-            // it here to be sure we no longer need them before
-            // marking them null.
-            sccmRegHackContext.Dispose();
-
             if (failedlist.Count > 0)
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
+        }
+
+        public override void RunCommand(string rawDeviceList)
+        {
+            throw new NotImplementedException($"{ActionName} has a user interface element and does utilize the RunCommand method interface.");
         }
 
         private string BoolToIntString(bool value)

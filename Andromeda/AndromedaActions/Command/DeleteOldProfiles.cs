@@ -18,6 +18,9 @@ namespace AndromedaActions.Command
         private readonly IWindowService _windowService;
         private const string ProfileQuery = "SELECT * FROM Win32_UserProfile WHERE LocalPath LIKE '%Users%'";
 
+        private List<string> _parsedListCache;
+        private int _dayCountCache = 0;
+
         public DeleteOldProfiles(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices, IWindowService windowService) : base(logger, networkServices, fileAndFolderServices)
         {
             _wmi = wmiServices;
@@ -26,13 +29,14 @@ namespace AndromedaActions.Command
             ActionName = "Delete Old User Profiles";
             Description = "Deletes profiles older than a provided date.";
             Category = "Windows Management";
+
+            UiCallback = CallbackMethod;
+            HasUserInterfaceElement = true;
         }
 
-        public override void RunCommand(string rawDeviceList)
+        public override void OpenUserInterfaceElement(string rawDeviceList)
         {
-            var devlist = ParseDeviceList(rawDeviceList);
-            var failedlist = new List<string>();
-
+            _parsedListCache = ParseDeviceList(rawDeviceList);
             var deleteProfilesContext = new DeleteOldProfilesPromptViewModel();
             _windowService.ShowDialog<DeleteOldProfilesPrompt>(deleteProfilesContext);
 
@@ -41,7 +45,7 @@ namespace AndromedaActions.Command
                 var msg = $"Action {ActionName} canceled by user.";
                 Logger.LogMessage(msg);
                 ResultConsole.AddConsoleLine(msg);
-                return;
+                CancellationToken.Cancel();
             }
 
             if (deleteProfilesContext.DayCount < 0)
@@ -49,14 +53,19 @@ namespace AndromedaActions.Command
                 var msg = $"Action {ActionName} aborted: cannot delete profiles from < 0 days..";
                 Logger.LogMessage(msg);
                 ResultConsole.AddConsoleLine(msg);
-                return;
+                CancellationToken.Cancel();
             }
 
-            int daysOlderThan = deleteProfilesContext.DayCount;
+            _dayCountCache = deleteProfilesContext.DayCount;
+        }
+
+        private void CallbackMethod()
+        {
+            var failedlist = new List<string>();
 
             try
             {
-                Parallel.ForEach(devlist, (device) =>
+                Parallel.ForEach(_parsedListCache, (device) =>
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
@@ -83,14 +92,14 @@ namespace AndromedaActions.Command
 
                             var date = ManagementDateTimeConverter.ToDateTime(queryObjDate.ToString());
 
-                            if (DateTime.Now.DayOfYear - date.DayOfYear >= daysOlderThan)
+                            if (DateTime.Now.DayOfYear - date.DayOfYear >= _dayCountCache)
                             {
                                 profiles.Add(profileObject);
                             }
                         }
 
-                        var countText = $"{profiles.Count} profile{(profiles.Count == 1 ? String.Empty : "s")} slated for deletion.\n" + 
-                            $"Deleting profiles older than {daysOlderThan} days on device {device}.";
+                        var countText = $"{profiles.Count} profile{(profiles.Count == 1 ? String.Empty : "s")} slated for deletion.\n" +
+                                        $"Deleting profiles older than {_dayCountCache} days on device {device}.";
 
                         ResultConsole.AddConsoleLine(countText);
 
@@ -101,12 +110,12 @@ namespace AndromedaActions.Command
                                 CancellationToken.Token.ThrowIfCancellationRequested();
 
                                 var path = queryObj["LocalPath"];
-                                
+
                                 queryObj.Delete();
                                 queryObj.Dispose();
 
                                 ResultConsole.AddConsoleLine($"Delete {path} from device {device} done.");
-                                
+
                             });
                         }
                         catch (Exception e)
@@ -125,8 +134,12 @@ namespace AndromedaActions.Command
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
-            
-            deleteProfilesContext.Dispose();
+        }
+
+
+        public override void RunCommand(string rawDeviceList)
+        {
+            throw new NotImplementedException($"{ActionName} has a user interface element and does utilize the RunCommand method interface.");
         }
     }
 }
