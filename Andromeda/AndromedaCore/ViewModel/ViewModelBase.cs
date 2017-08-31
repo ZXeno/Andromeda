@@ -1,25 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
+using System.Runtime.CompilerServices;
 
 namespace AndromedaCore.ViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
+        public bool MinimizeWindowToTray { get; protected set; }
+
         protected ViewModelBase() { }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            //Raise the PropertyChanged event on the UI Thread, with the relevant propertyName parameter:
-            Application.Current.Dispatcher.BeginInvoke((System.Action) (() =>
-            {
-                var handler = PropertyChanged;
-                handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
         public void Dispose()
         {
