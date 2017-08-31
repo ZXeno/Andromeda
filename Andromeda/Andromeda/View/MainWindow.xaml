@@ -5,6 +5,7 @@
         xmlns:inf="clr-namespace:Andromeda.Infrastructure"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         x:Class="Andromeda.MainWindow"
+        x:Name="Window"
         Height="750" Width="800" 
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize"
@@ -73,7 +74,7 @@
         <Button Content="{Binding Path=RunButtonText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,0,16,201" Width="65" Height="26" VerticalAlignment="Bottom" Command="{Binding RunCommand, UpdateSourceTrigger=PropertyChanged}"  />
         <TextBox Style="{StaticResource ResultConsole}" Text="{Binding ConsoleString, UpdateSourceTrigger=PropertyChanged}" inf:TextBoxBehavior.ScrollOnTextChanged="True" Margin="16,0,16,35" Height="150" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
             <TextBox.DataContext>
-                <vm:ResultConsoleViewModel />
+                <vm:ResultConsoleViewModel></vm:ResultConsoleViewModel>
             </TextBox.DataContext>
         </TextBox>
 
@@ -85,7 +86,7 @@
 
         <Label Style="{StaticResource SectionLabel}" Content="Running Actions:" Margin="517,77,0,0"  Width="200" />
 
-        <ListView ItemsSource="{Binding Source={StaticResource ThreadViewSource}}" SelectedItem="{Binding SelectedActionThread}" Background="#A5474747" Margin="0,100,16,263" HorizontalAlignment="Right" Width="259">
+        <ListView x:Name="RunningActionListView" ItemsSource="{Binding Source={StaticResource ThreadViewSource}}" SelectedItem="{Binding SelectedActionThread}" Background="#A5474747" Margin="0,100,16,263" HorizontalAlignment="Right" Width="259">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid HorizontalAlignment="Left">
@@ -98,10 +99,27 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Action Name: " FontSize="10"  Foreground="#FFE0E0E0" />
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RunningActionName}" FontSize="10" Foreground="#FFE0E0E0" />
-                        <TextBlock Grid.Column="0" Grid.Row="1" Text=" Thread ID: " FontSize="10" Foreground="#FFE0E0E0" />
-                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding ThreadId}" FontSize="10" Foreground="#FFE0E0E0" />
+                        <TextBlock 
+                            Grid.Column="0" Grid.Row="0" 
+                            Text="Action Name: " 
+                            FontSize="10"  
+                            Foreground="#FFE0E0E0" />
+                        <TextBlock 
+                            Grid.Column="1" Grid.Row="0" 
+                            Text="{Binding RunningActionName}" 
+                            FontSize="10" 
+                            Foreground="#FFE0E0E0" />
+                        <TextBlock 
+                            Grid.Column="0" Grid.Row="1" 
+                            Text=" View Devices: " 
+                            FontSize="10" 
+                            Foreground="#FFE0E0E0"/>
+                        <Button 
+                            Grid.Column="1" 
+                            Grid.Row="1" 
+                            Content="View" 
+                            Width="75"
+                            Command="{Binding ElementName=Window, Path=DataContext.ViewRunningActionDeviceListCommand}" />
 
                     </Grid>
                 </DataTemplate>
