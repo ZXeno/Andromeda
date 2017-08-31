@@ -10,9 +10,9 @@ namespace AndromedaActions.Command
             IFileAndFolderServices fileAndFolderServices)
             : base(logger, wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
-            ActionName = "Client Action - Software Metering Usage Report Cycle";
+            ActionName = "Software Metering Usage Report Cycle";
             Description = "Forces SCCM to schedule a Software Metering Usage Report check on the client.";
-            Category = "SCCM";
+            Category = "SCCM Client Actions";
         }
 
         public override void RunCommand(string rawDeviceList)

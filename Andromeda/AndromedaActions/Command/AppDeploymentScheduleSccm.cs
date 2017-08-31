@@ -9,9 +9,9 @@ namespace AndromedaActions.Command
         public AppDeploymentScheduleSccm(ILoggerService logger, IWmiServices wmiService, ISccmClientServices sccmClientService, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices) 
             : base(logger, wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
-            ActionName = "Client Action - Application Deployment Evaluation Cycle";
+            ActionName = "Application Deployment Evaluation Cycle";
             Description = "Forces SCCM to schedule an Application Deployment check on the client.";
-            Category = "SCCM";
+            Category = "SCCM Client Actions";
         }
 
         public override void RunCommand(string rawDeviceList)

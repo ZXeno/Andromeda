@@ -10,9 +10,9 @@ namespace AndromedaActions.Command
             IFileAndFolderServices fileAndFolderServices)
             : base(logger, wmiService, sccmClientService, networkServices, fileAndFolderServices)
         {
-            ActionName = "Client Action - Software Update Scan Cycle";
+            ActionName = "Software Update Scan Cycle";
             Description = "Forces SCCM to schedule a Software Update check on the client.";
-            Category = "SCCM";
+            Category = "SCCM Client Actions";
         }
 
         public override void RunCommand(string rawDeviceList)
