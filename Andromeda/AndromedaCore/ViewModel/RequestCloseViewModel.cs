@@ -17,7 +17,7 @@ namespace AndromedaCore.ViewModel
             {
                 foreach (var listener in listeners)
                 {
-                    RequestClose -= (listener as EventHandler);
+                    RequestClose -= listener as EventHandler;
                 }
             }
 

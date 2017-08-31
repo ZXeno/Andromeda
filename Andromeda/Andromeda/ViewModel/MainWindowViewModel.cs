@@ -39,11 +39,11 @@ namespace Andromeda.ViewModel
         private string _runButtonText;
         public string RunButtonText
         {
-            get { return _runButtonText; }
+            get => _runButtonText;
             set
             {
                 _runButtonText = value;
-                OnPropertyChanged("RunButtonText");
+                OnPropertyChanged();
             }
         }
 
@@ -51,11 +51,11 @@ namespace Andromeda.ViewModel
         private string _deviceListString;
         public string DeviceListString
         {
-            get { return _deviceListString; }
+            get => _deviceListString;
             set
             {
                 _deviceListString = value;
-                OnPropertyChanged("DeviceListString");
+                OnPropertyChanged();
                 RunCommand = new DelegateCommand(param => RunCommandExecute(), param => RunCommandCanExecute());
             }
         }
@@ -63,11 +63,11 @@ namespace Andromeda.ViewModel
         private IAction _selectedAction;
         public IAction SelectedAction
         {
-            get { return _selectedAction; }
+            get => _selectedAction;
             set
             {
                 _selectedAction = value;
-                OnPropertyChanged("SelectedAction");
+                OnPropertyChanged();
                 RunCommand = new DelegateCommand(param => RunCommandExecute(), param => RunCommandCanExecute());
             }
         }
@@ -75,11 +75,12 @@ namespace Andromeda.ViewModel
         private RunningActionTask _selectedActionThread;
         public RunningActionTask SelectedActionThread
         {
-            get { return _selectedActionThread; }
+            get => _selectedActionThread;
             set
             {
                 _selectedActionThread = value;
-                OnPropertyChanged("SelectedActionThread");
+                OnPropertyChanged();
+                ViewRunningActionDeviceListCommand = new DelegateCommand(param => ViewRunningActionDeviceListExecute(), param => ViewRunningActionDeviceListCanExecute());
                 CancelCommand = new DelegateCommand(param => CancelCommandExecute(this, null), param => CancelCommandCanExecute());
             }
         }
@@ -98,7 +99,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _cancelCommand = value;
-                OnPropertyChanged("CancelCommand");
+                OnPropertyChanged();
             }
         }
 
@@ -116,7 +117,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _runCmd = value;
-                OnPropertyChanged("RunCommand");
+                OnPropertyChanged();
             }
         }
 
@@ -134,7 +135,25 @@ namespace Andromeda.ViewModel
             set
             {
                 _loginCommand = value;
-                OnPropertyChanged("LoginCommand");
+                OnPropertyChanged();
+            }
+        }
+
+        private ICommand _viewRunningActionDeviceListCommand;
+        public ICommand ViewRunningActionDeviceListCommand
+        {
+            get
+            {
+                if (_viewRunningActionDeviceListCommand == null)
+                {
+                    ViewRunningActionDeviceListCommand = new DelegateCommand(param => ViewRunningActionDeviceListExecute(), param => ViewRunningActionDeviceListCanExecute());
+                }
+                return _viewRunningActionDeviceListCommand;
+            }
+            set
+            {
+                _viewRunningActionDeviceListCommand = value;
+                OnPropertyChanged();
             }
         }
 
@@ -142,15 +161,15 @@ namespace Andromeda.ViewModel
         public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
 
         private readonly ILoggerService _logger;
+        private readonly IWindowService _windowService;
         private readonly ActionManager _actionManager;
         #endregion
-
-
-
-        #region Constructor
-        public MainWindowViewModel(ILoggerService logger, ActionManager actionManager)
+        
+        #region Constructors
+        public MainWindowViewModel(ILoggerService logger, IWindowService windowService, ActionManager actionManager)
         {
             _logger = logger;
+            _windowService = windowService;
             _actionManager = actionManager;
             _viewModels = new ObservableCollection<ViewModelBase> { new ResultConsoleViewModel() };
 
@@ -158,18 +177,29 @@ namespace Andromeda.ViewModel
 
             BindingOperations.EnableCollectionSynchronization(RunningActionTasks, _runningActionsLock);
         }
-#endregion
+        #endregion
 
+        #region Functions
         public void LoadActionsCollection()
         {
             ActionsList = _actionManager.GetObservableActionCollection();
+        }
+
+        public bool ViewRunningActionDeviceListCanExecute()
+        {
+            return SelectedActionThread != null;
+        }
+
+        public void ViewRunningActionDeviceListExecute()
+        {
+            _windowService.ShowWindow<DevlistView>(new DevlistViewModel(SelectedActionThread.RawDeviceListString));
         }
 
         public void RunCommandExecute()
         {
             if (SelectedAction == null && !RunCommandCanExecute()) { return; }
 
-            _actionManager.RunAction(DeviceListString, SelectedAction);
+            _actionManager.RunAction(DeviceListString, SelectedAction.ActionName);
         }
 
         public bool RunCommandCanExecute()
@@ -224,5 +254,6 @@ namespace Andromeda.ViewModel
         {
             return SelectedActionThread?.RunningAction != null;
         }
+        #endregion
     }
 }

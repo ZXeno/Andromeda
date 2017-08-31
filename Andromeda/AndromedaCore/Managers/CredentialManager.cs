@@ -11,13 +11,10 @@ namespace AndromedaCore.Managers
         public static event CredentialsChanged CredentialsChangedHandler;
 
         private static CredentialManager _instance;
-        public static CredentialManager Instance
-        {
-            get { return _instance; }
-        }
+        public static CredentialManager Instance => _instance;
 
         private CredToken _creds;
-        public CredToken UserCredentials { get { return _creds; } }
+        public CredToken UserCredentials => _creds;
         public bool CredentialsAreValid { get; set; }
 
         public CredentialManager()
@@ -60,10 +57,7 @@ namespace AndromedaCore.Managers
 
         public static void OnCredentialsChanged(string domain, string user, string pass)
         {
-            if (CredentialsChangedHandler != null)
-            {
-                CredentialsChangedHandler(domain, user, pass);
-            }
+            CredentialsChangedHandler?.Invoke(domain, user, pass);
         }
     }
 }

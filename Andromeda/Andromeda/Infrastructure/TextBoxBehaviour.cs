@@ -7,7 +7,7 @@ namespace Andromeda.Infrastructure
 {
     public class TextBoxBehavior
     {
-        static readonly Dictionary<TextBox, Capture> _associations = new Dictionary<TextBox, Capture>();
+        static readonly Dictionary<TextBox, Capture> Associations = new Dictionary<TextBox, Capture>();
 
         public static bool GetScrollOnTextChanged(DependencyObject dependencyObject)
         {
@@ -44,9 +44,9 @@ namespace Andromeda.Infrastructure
             {
                 textBox.Loaded -= TextBoxLoaded;
                 textBox.Unloaded -= TextBoxUnloaded;
-                if (_associations.ContainsKey(textBox))
+                if (Associations.ContainsKey(textBox))
                 {
-                    _associations[textBox].Dispose();
+                    Associations[textBox].Dispose();
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace Andromeda.Infrastructure
         private static void TextBoxUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var textBox = (TextBox) sender;
-            _associations[textBox].Dispose();
+            Associations[textBox].Dispose();
             textBox.Unloaded -= TextBoxUnloaded;
         }
 
@@ -62,7 +62,7 @@ namespace Andromeda.Infrastructure
         {
             var textBox = (TextBox) sender;
             textBox.Loaded -= TextBoxLoaded;
-            _associations[textBox] = new Capture(textBox);
+            Associations[textBox] = new Capture(textBox);
         }
 
         private class Capture : IDisposable

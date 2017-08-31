@@ -17,7 +17,7 @@ namespace AndromedaActions.ViewModel
 
         public bool RemoteAccessEnabled
         {
-            get { return _remoteAccessEnabled; }
+            get => _remoteAccessEnabled;
             set
             {
                 _remoteAccessEnabled = value;
@@ -27,7 +27,7 @@ namespace AndromedaActions.ViewModel
 
         public bool RequiresUserApproval
         {
-            get { return _requiresUserApproval; }
+            get => _requiresUserApproval;
             set
             {
                 _requiresUserApproval = value;
@@ -37,7 +37,7 @@ namespace AndromedaActions.ViewModel
 
         public bool ShowConnectionBanner
         {
-            get { return _showConnectionBanner; }
+            get => _showConnectionBanner;
             set
             {
                 _showConnectionBanner = value;
@@ -47,7 +47,7 @@ namespace AndromedaActions.ViewModel
 
         public bool ShowTaskbarIcon
         {
-            get { return _showTaskBarIcon; }
+            get => _showTaskBarIcon;
             set
             {
                 _showTaskBarIcon = value;
@@ -57,7 +57,7 @@ namespace AndromedaActions.ViewModel
 
         public bool AllowAccessOnUnattended
         {
-            get { return _allowAccessOnUnattended; }
+            get => _allowAccessOnUnattended;
             set
             {
                 _allowAccessOnUnattended = value;
@@ -67,7 +67,7 @@ namespace AndromedaActions.ViewModel
 
         public bool AllowLocalAdministratorsToRemoteControl
         {
-            get { return _allowLocalAdministratorsToRemoteControl; }
+            get => _allowLocalAdministratorsToRemoteControl;
             set
             {
                 _allowLocalAdministratorsToRemoteControl = value;
@@ -143,7 +143,7 @@ namespace AndromedaActions.ViewModel
         private bool _result;
         public bool Result
         {
-            get { return _result; }
+            get => _result;
             set
             {
                 _result = value;

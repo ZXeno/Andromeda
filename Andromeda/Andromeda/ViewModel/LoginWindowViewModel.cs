@@ -17,7 +17,7 @@ namespace Andromeda.ViewModel
         private string _domain;
         public string Domain
         {
-            get { return _domain; }
+            get => _domain;
             set
             {
                 _domain = value;
@@ -28,7 +28,7 @@ namespace Andromeda.ViewModel
         private string _username;
         public string Username
         {
-            get { return _username; }
+            get => _username;
             set
             {
                 _username = value;
@@ -40,7 +40,7 @@ namespace Andromeda.ViewModel
         private SecureString _passwordContainer;
         public string Password
         {
-            get { return SecureStringHelper.GetInsecureString(_passwordContainer); }
+            get => SecureStringHelper.GetInsecureString(_passwordContainer);
             set
             {
                 OnPropertyChanged("Password");
@@ -51,7 +51,7 @@ namespace Andromeda.ViewModel
         private bool _canceled;
         public bool WasCanceled
         {
-            get { return _canceled; }
+            get => _canceled;
             set
             {
                 _canceled = value;
@@ -72,7 +72,7 @@ namespace Andromeda.ViewModel
         private string _errMsg;
         public string ErrorMessage
         {
-            get { return _errMsg; }
+            get => _errMsg;
             set
             {
                 _errMsg = value;

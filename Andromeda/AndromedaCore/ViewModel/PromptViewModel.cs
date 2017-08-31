@@ -35,33 +35,33 @@ namespace AndromedaCore.ViewModel
         private string _textboxLabel;
         public string TextBoxLabel
         {
-            get { return _textboxLabel; }
+            get => _textboxLabel;
             set
             {
                 _textboxLabel = value;
-                OnPropertyChanged("TextBoxLabel");
+                OnPropertyChanged();
             }
         }
 
         private string _boxContents;
         public string TextBoxContents
         {
-            get { return _boxContents; }
+            get => _boxContents;
             set
             {
                 _boxContents = value;
-                OnPropertyChanged("TextBoxContents");
+                OnPropertyChanged();
             }
         }
 
         private bool _result;
         public bool Result
         {
-            get { return _result; }
+            get => _result;
             set
             {
                 _result = value;
-                OnPropertyChanged("Result");
+                OnPropertyChanged();
             }
         }
 

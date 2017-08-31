@@ -4,32 +4,27 @@ namespace AndromedaCore.Model
 {
     public class CredToken
     {
-        private string _usr;
-        private SecureString _pw;
-        private string _domain;
-        private bool _canImpersonate;
-
-        public string User { get { return _usr; } }
-        public SecureString SecurePassword { get { return _pw; } }
-        public string Domain { get { return _domain; } }
-        public bool CanImpersonate { get { return _canImpersonate; } }
+        public string User { get; }
+        public SecureString SecurePassword { get; }
+        public string Domain { get; }
+        public bool CanImpersonate { get; }
 
         public CredToken() { }
 
-        public CredToken(string domain, string user, SecureString Password)
+        public CredToken(string domain, string user, SecureString password)
         {
-            _usr = user;
-            _domain = domain;
-            _pw = Password;
-            _canImpersonate = false;
+            User = user;
+            Domain = domain;
+            SecurePassword = password;
+            CanImpersonate = false;
         }
 
-        public CredToken(string domain, string user, SecureString Password, bool canimpersonate)
+        public CredToken(string domain, string user, SecureString password, bool canimpersonate)
         {
-            _usr = user;
-            _domain = domain;
-            _pw = Password;
-            _canImpersonate = canimpersonate;
+            User = user;
+            Domain = domain;
+            SecurePassword = password;
+            CanImpersonate = canimpersonate;
         }
     }
 }

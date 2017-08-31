@@ -8,7 +8,7 @@ namespace Andromeda.ViewModel
         private string _consoleString;
         public string ConsoleString
         {
-            get { return _consoleString; }
+            get => _consoleString;
             set
             {
                 _consoleString = value;

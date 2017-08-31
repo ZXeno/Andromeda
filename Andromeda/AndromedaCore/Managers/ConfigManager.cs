@@ -18,7 +18,7 @@ namespace AndromedaCore.Managers
         private bool _saveOnlineComputers = true;
         private readonly string _resultsDirectory;
         private readonly string _configFilePath;
-        private string _componentsDirectory;
+        private readonly string _componentsDirectory;
         private const string _failedConnectListFile = "failed_to_connect.txt";
         private const string _successfulConnectionListFile = "connection_succeeded_list.txt";
 
@@ -225,30 +225,24 @@ namespace AndromedaCore.Managers
         private bool StringToBool(string tfval)
         {
             tfval = tfval.ToLower();
-            if (tfval == "true" || tfval == "1" || tfval == "t" || tfval == "y" || tfval == "yes" || tfval == "affirmative")
-            {
-                return true;
-            }
-
-            return false;
+            return tfval == "true" || tfval == "1" || tfval == "t" || tfval == "y" || tfval == "yes" || tfval == "affirmative";
         }
 
         private void ValidateDirectoryExists(string path)
         {
             _logger.LogMessage("Validating path " + path);
 
-            if (!Directory.Exists(path))
+            if (Directory.Exists(path)) {return;}
+
+            _logger.LogWarning("Directory path " + path + " does not exist. Creating...", null);
+            try
             {
-                _logger.LogWarning("Directory path " + path + " does not exist. Creating...", null);
-                try
-                {
-                    Directory.CreateDirectory(path);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("There was an error creating directory " + path + "\\.", e);
-                    ResultConsole.Instance.AddConsoleLine("There was a problem validating a directory during configuration loading. See the log file.");
-                }
+                Directory.CreateDirectory(path);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("There was an error creating directory " + path + "\\.", e);
+                ResultConsole.Instance.AddConsoleLine("There was a problem validating a directory during configuration loading. See the log file.");
             }
         }
 

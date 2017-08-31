@@ -27,13 +27,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_98CBFA53943A1332AE4999264CB65054"
+        "MsmKey" = "8:_C4E681519CEA7C86DA4F33F3B97D9EFD"
         "OwnerKey" = "8:_4519491611094BC88B2163CA1DE51328"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_98CBFA53943A1332AE4999264CB65054"
+        "MsmKey" = "8:_C4E681519CEA7C86DA4F33F3B97D9EFD"
         "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -46,13 +46,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_98CBFA53943A1332AE4999264CB65054"
+        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
+        "OwnerKey" = "8:_C4E681519CEA7C86DA4F33F3B97D9EFD"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -150,14 +150,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_98CBFA53943A1332AE4999264CB65054"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C4E681519CEA7C86DA4F33F3B97D9EFD"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AndromedaCore, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:AndromedaCore, Version=0.8.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_98CBFA53943A1332AE4999264CB65054"
+                    "_C4E681519CEA7C86DA4F33F3B97D9EFD"
                     {
                     "Name" = "8:AndromedaCore.dll"
                     "Attributes" = "3:512"
@@ -189,7 +189,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_04D2B507915D4164BDCBC582895CAF5F"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -303,15 +303,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Andromeda"
-        "ProductCode" = "8:{CA115B3C-C2D5-4034-9D9E-CFABACDC93D4}"
-        "PackageCode" = "8:{0CD8F299-7F50-4DB1-90A9-1C7BBCFFE151}"
+        "ProductCode" = "8:{57EDAC7D-B529-4E26-B921-ED9A6E65CD37}"
+        "PackageCode" = "8:{FBAFD612-3CE5-4AAC-B605-AD147F853963}"
         "UpgradeCode" = "8:{E9B97EA3-B29B-4154-AB96-E6E40C89C12F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.7.1"
+        "ProductVersion" = "8:0.8.0"
         "Manufacturer" = "8:Andromeda"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -325,7 +325,7 @@
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -839,7 +839,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4519491611094BC88B2163CA1DE51328"
             {
-            "SourcePath" = "8:..\\Andromeda\\obj\\Release\\Andromeda.exe"
+            "SourcePath" = "8:..\\Andromeda\\obj\\x64\\Release\\Andromeda.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_04D2B507915D4164BDCBC582895CAF5F"
@@ -868,7 +868,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4C12A3BF497F4BC89FC9B89C5A1AB9FF"
             {
-            "SourcePath" = "8:..\\AndromedaActions\\obj\\Release\\AndromedaActions.dll"
+            "SourcePath" = "8:..\\AndromedaActions\\obj\\x64\\Release\\AndromedaActions.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_04D2B507915D4164BDCBC582895CAF5F"

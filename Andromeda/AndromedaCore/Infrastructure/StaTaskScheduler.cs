@@ -30,9 +30,8 @@ namespace AndromedaCore.Infrastructure
                     {
                         TryExecuteTask(t);
                     }
-                });
+                }) {IsBackground = true};
 
-                thread.IsBackground = true;
                 thread.SetApartmentState(ApartmentState.STA);
 
                 return thread;

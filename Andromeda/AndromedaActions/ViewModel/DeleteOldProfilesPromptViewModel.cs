@@ -11,7 +11,7 @@ namespace AndromedaActions.ViewModel
         public int DayCount => _dayCount;
         public string DayCountBoxContent
         {
-            get { return _dayCount.ToString(); }
+            get => _dayCount.ToString();
             set
             {
                 var val = value;
@@ -59,7 +59,7 @@ namespace AndromedaActions.ViewModel
         private bool _result;
         public bool Result
         {
-            get { return _result; }
+            get => _result;
             set
             {
                 _result = value;

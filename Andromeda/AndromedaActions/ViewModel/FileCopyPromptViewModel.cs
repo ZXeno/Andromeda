@@ -11,7 +11,7 @@ namespace AndromedaActions.ViewModel
         private string _filePath;
         public string FilePath
         {
-            get { return _filePath; }
+            get => _filePath;
             set
             {
                 _filePath = value;
@@ -22,7 +22,7 @@ namespace AndromedaActions.ViewModel
         private string _destPath;
         public string DestinationPath
         {
-            get { return _destPath; }
+            get => _destPath;
             set
             {
                 _destPath = value;
@@ -72,7 +72,7 @@ namespace AndromedaActions.ViewModel
         private bool _createDestination;
         public bool CreateDestination
         {
-            get { return _createDestination; }
+            get => _createDestination;
             set
             {
                 _createDestination = value;
@@ -83,7 +83,7 @@ namespace AndromedaActions.ViewModel
         private bool _overwrite;
         public bool Overwrite
         {
-            get { return _overwrite; }
+            get => _overwrite;
             set
             {
                 _overwrite = value;
@@ -94,7 +94,7 @@ namespace AndromedaActions.ViewModel
         private bool _result;
         public bool Result
         {
-            get { return _result; }
+            get => _result;
             set
             {
                 _result = value;

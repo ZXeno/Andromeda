@@ -74,7 +74,7 @@ namespace Andromeda
             loginWindow.DataContext = loginWindowViewModel;
             
             // Initialize Main Window
-            var mainWindowViewModel = new MainWindowViewModel(IoC.Resolve<ILoggerService>(), ActionManager);
+            var mainWindowViewModel = new MainWindowViewModel(IoC.Resolve<ILoggerService>(),IoC.Resolve<IWindowService>(), ActionManager);
             mainWindowViewModel.LoadActionsCollection();
             var window = new MainWindow
             {
