@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AndromedaCore.Managers;
 
 namespace AndromedaCore.Infrastructure
 {
-    public class Logger : ILoggerService
+    public class Logger : ILoggerService, IDisposable
     {
         private static string _logFilePath;
         private const string LogFileName = "LogFile.txt";
@@ -21,13 +22,12 @@ namespace AndromedaCore.Infrastructure
         private const string MessageString = "[MESSAGE]";
         private const string StackTraceString = "[STACK TRACE]";
 
-        private static readonly Queue<string> Queue = new Queue<string>();
-        private static readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
-        private static volatile bool _waiting = false;
-        private static bool _appIsExiting = false;
-
-        private static Thread _loggingThread;
-        private static int _threadTimeout = 5000;
+        private readonly Queue<string> _queue = new Queue<string>();
+        
+        private readonly Task _loggingTask;
+        private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
+        private const int WaitPeriod = 5000;
+        private readonly CancellationTokenSource _cancellationToken; 
 
         private static IFileAndFolderServices _fileAndFolderServices;
 
@@ -35,8 +35,8 @@ namespace AndromedaCore.Infrastructure
         {
             _fileAndFolderServices = fileAndFolderServices;
             Application.Current.Exit += OnApplicationExit;
-
-            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "Andromeda\\Logs";
+            
+            _logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Andromeda\\Logs";
             _fullLogPath = _logFilePath + "\\" + LogFileName;
 
             ValidateLogDirectoryExists();
@@ -46,30 +46,30 @@ namespace AndromedaCore.Infrastructure
                 _fileAndFolderServices.CreateNewTextFile(_fullLogPath);
             }
 
-            _loggingThread = new Thread(new ThreadStart(ProcessQueue)) {IsBackground = true};
-            _loggingThread.Start();
+            _cancellationToken = new CancellationTokenSource();
+            _loggingTask = Task.Factory.StartNew(ProcessQueue, _cancellationToken.Token);
 
             LogMessage("Logger initiated.");
         }
 
         public void LogMessage(string msg)
         {
-            lock (Queue)
+            lock (_queue)
             {
-                Queue.Enqueue($"[{DateTime.Now}] {MessageString} {msg}");
+                _queue.Enqueue($"[{DateTime.Now}] {MessageString} {msg}");
             }
             _hasNewItems.Set();
         }
 
         public void LogWarning(string msg, Exception e)
         {
-            lock (Queue)
+            lock (_queue)
             {
-                Queue.Enqueue($"[{DateTime.Now}] {WarningString} {msg}");
+                _queue.Enqueue($"[{DateTime.Now}] {WarningString} {msg}");
 
                 if (e != null)
                 {
-                    Queue.Enqueue($"[{DateTime.Now}] -- {WarningString} {e.Message}");
+                    _queue.Enqueue($"[{DateTime.Now}] -- {WarningString} {e.Message}");
                 }
             }
             _hasNewItems.Set();
@@ -77,10 +77,10 @@ namespace AndromedaCore.Infrastructure
 
         public void LogError(string msg, Exception e)
         {
-            lock (Queue)
+            lock (_queue)
             {
-                Queue.Enqueue($"[{DateTime.Now}] {ErrorString} {msg}| ERROR_MESSAGE:{e.Message}");
-                Queue.Enqueue($"[{DateTime.Now}] {StackTraceString} {e.StackTrace}");
+                _queue.Enqueue($"[{DateTime.Now}] {ErrorString} {msg}| ERROR_MESSAGE:{e.Message}");
+                _queue.Enqueue($"[{DateTime.Now}] {StackTraceString} {e.StackTrace}");
             }
             _hasNewItems.Set();
         }
@@ -89,17 +89,15 @@ namespace AndromedaCore.Infrastructure
         {
             while (true)
             {
-                if (_appIsExiting) { break; }
-
-                _waiting = true;
-                _hasNewItems.WaitOne(10000, true);
-                _waiting = false;
+                if (_cancellationToken.IsCancellationRequested) { break; }
+                
+                _hasNewItems.WaitOne(WaitPeriod);
 
                 Queue<string> queueCopy;
-                lock (Queue)
+                lock (_queue)
                 {
-                    queueCopy = new Queue<string>(Queue);
-                    Queue.Clear();
+                    queueCopy = new Queue<string>(_queue);
+                    _queue.Clear();
                 }
 
                 var sb = new StringBuilder();
@@ -111,7 +109,10 @@ namespace AndromedaCore.Infrastructure
 
                 try
                 {
-                    _fileAndFolderServices.WriteToTextFile(_fullLogPath, sb.ToString(), this);
+                    if (!string.IsNullOrWhiteSpace(sb.ToString()))
+                    {
+                        _fileAndFolderServices.WriteToTextFile(_fullLogPath, sb.ToString(), this);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -119,19 +120,6 @@ namespace AndromedaCore.Infrastructure
                 }
                 
                 queueCopy.Clear();
-            }
-
-            if (_appIsExiting)
-            {
-                _loggingThread.Join(_threadTimeout);
-            }
-        }
-
-        public void Flush()
-        {
-            while (!_waiting)
-            {
-                Thread.Sleep(1);
             }
         }
 
@@ -174,7 +162,13 @@ namespace AndromedaCore.Infrastructure
 
         private void OnApplicationExit(object sender, ExitEventArgs e)
         {
-            _appIsExiting = true;
+            _cancellationToken.Cancel();
+        }
+
+        public void Dispose()
+        {
+            _loggingTask?.Dispose();
+            _cancellationToken?.Dispose();
         }
     }
 }
