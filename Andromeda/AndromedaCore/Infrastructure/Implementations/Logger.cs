@@ -25,9 +25,10 @@ namespace AndromedaCore.Infrastructure
         private readonly Queue<string> _queue = new Queue<string>();
         
         private readonly Task _loggingTask;
+        private readonly CancellationTokenSource _cancellationToken;
         private readonly AutoResetEvent _hasNewItems = new AutoResetEvent(false);
         private const int WaitPeriod = 5000;
-        private readonly CancellationTokenSource _cancellationToken; 
+        
 
         private static IFileAndFolderServices _fileAndFolderServices;
 

@@ -11,7 +11,8 @@ namespace Andromeda.Infrastructure
 
         public static bool GetScrollOnTextChanged(DependencyObject dependencyObject)
         {
-            return (bool) dependencyObject.GetValue(ScrollOnTextChangedProperty);
+            var value = dependencyObject.GetValue(ScrollOnTextChangedProperty);
+            return value != null && (bool)value;
         }
 
         public static void SetScrollOnTextChanged(DependencyObject dependencyObject, bool value)
@@ -21,7 +22,7 @@ namespace Andromeda.Infrastructure
 
         public static readonly DependencyProperty ScrollOnTextChangedProperty =
             DependencyProperty.RegisterAttached("ScrollOnTextChanged", typeof(bool), typeof(TextBoxBehavior),
-                new UIPropertyMetadata(false, OnScrollOnTextChanged));
+            new UIPropertyMetadata(false, OnScrollOnTextChanged));
 
         private static void OnScrollOnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
@@ -30,7 +31,7 @@ namespace Andromeda.Infrastructure
             {
                 return;
             }
-            bool oldValue = (bool) e.OldValue, newValue = (bool) e.NewValue;
+            bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
             if (newValue == oldValue)
             {
                 return;
@@ -53,14 +54,14 @@ namespace Andromeda.Infrastructure
 
         private static void TextBoxUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            var textBox = (TextBox) sender;
+            var textBox = (TextBox)sender;
             Associations[textBox].Dispose();
             textBox.Unloaded -= TextBoxUnloaded;
         }
 
         private static void TextBoxLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            var textBox = (TextBox) sender;
+            var textBox = (TextBox)sender;
             textBox.Loaded -= TextBoxLoaded;
             Associations[textBox] = new Capture(textBox);
         }

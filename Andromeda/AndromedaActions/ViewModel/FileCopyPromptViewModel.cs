@@ -15,7 +15,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _filePath = value;
-                OnPropertyChanged("FilePath");
+                OnPropertyChanged();
             }
         }
 
@@ -26,7 +26,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _destPath = value;
-                OnPropertyChanged("DestinationPath");
+                OnPropertyChanged();
             }
         }
 
@@ -76,7 +76,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _createDestination = value;
-                OnPropertyChanged("CreateDestination");
+                OnPropertyChanged();
             }
         }
 
@@ -87,7 +87,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _overwrite = value;
-                OnPropertyChanged("Overwrite");
+                OnPropertyChanged();
             }
         }
 
@@ -98,7 +98,7 @@ namespace AndromedaActions.ViewModel
             set
             {
                 _result = value;
-                OnPropertyChanged("Result");
+                OnPropertyChanged();
             }
         }
 

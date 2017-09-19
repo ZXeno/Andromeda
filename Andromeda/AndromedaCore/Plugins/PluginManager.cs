@@ -104,6 +104,7 @@ namespace AndromedaCore.Plugins
 
         public void InitializePlugin()
         {
+            //TODO: Implement Initizliation Logic
             throw new NotImplementedException();
         }
 
@@ -120,6 +121,7 @@ namespace AndromedaCore.Plugins
 
         public void UnloadPlugin()
         {
+            //TODO: Implement Plugin unloading logic
             throw new NotImplementedException();
         }
 
@@ -141,6 +143,7 @@ namespace AndromedaCore.Plugins
 
         public void UninstallPlugin()
         {
+            //TODO: Are you even going to bother finishing this implementation?
             throw new NotImplementedException();
         }
     }
