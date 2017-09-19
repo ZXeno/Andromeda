@@ -36,6 +36,9 @@ namespace Andromeda
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += UnhandledExceptionHandler;
+
             VersionNumber += Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 #if DEBUG
             UserFolder = WorkingPath;
@@ -129,6 +132,21 @@ namespace Andromeda
 
             var instantiatedCoreActions = ActionFactory.InstantiateAction(q);
             ActionManager.AddActions(instantiatedCoreActions);
+        }
+
+        private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            _logger.LogError($"Unhandled Exception", args.ExceptionObject as Exception);
+            MessageBox.Show(Application.Current.MainWindow, $"Andromeda has encountered an unhandled exception. See the log file for more information. Please restart Andromeda.");
+            Application.Current.Shutdown();
+
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            //TODO: Add cleanup of all application resources
+
+            base.OnExit(e);
         }
     }
 }
