@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using AndromedaCore.Infrastructure;
 
 namespace AndromedaCore.ViewModel
 {
     public class WindowService : IWindowService
     {
-        private Dictionary<IntPtr, ApplicationWindowBase> _openWindows;
+        private readonly Dictionary<IntPtr, ApplicationWindowBase> _openWindows;
 
         public WindowService()
         {
@@ -42,10 +43,23 @@ namespace AndromedaCore.ViewModel
             win.Closed += OnWindowClose;
             win.Activated += (sender, args) => 
             {
-                _openWindows.Add(win.WindowHandle, win);
+                if (!_openWindows.ContainsKey(win.WindowHandle))
+                {
+                    _openWindows.Add(win.WindowHandle, win);
+                }
             };
             win.Owner = Application.Current.MainWindow;
             win.ShowAsTopmostDialog();
+        }
+
+        public void CloseAllWindows()
+        {
+            if (_openWindows.Keys.Count == 0) { return; }
+
+            foreach (var key in _openWindows.Keys)
+            {
+                _openWindows[key].Close();
+            }
         }
 
         private void OnWindowClose(object sender, EventArgs e)
@@ -54,8 +68,6 @@ namespace AndromedaCore.ViewModel
             if (win == null) {return;}
 
             _openWindows.Remove(win.WindowHandle);
-            
-            win.Dispose();
         }
     }
 }
