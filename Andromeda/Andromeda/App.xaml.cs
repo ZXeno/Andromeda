@@ -3,13 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using Andromeda.View;
 using Andromeda.ViewModel;
+using AndromedaCore;
+using AndromedaCore.ViewModel;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
-using AndromedaCore;
 using AndromedaCore.Plugins;
-using AndromedaCore.ViewModel;
 
 namespace Andromeda
 {
@@ -53,7 +52,7 @@ namespace Andromeda
 
             _logger = IoC.Resolve<ILoggerService>();
 
-            _credman = new CredentialManager();
+            _credman = new CredentialManager(IoC.Resolve<IWindowService>());
             _resultConsole = new ResultConsole();
             ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
             ActionManager = new ActionManager(_logger);
@@ -68,13 +67,7 @@ namespace Andromeda
             PluginManager.InitializeAllPlugins();
             
             // set up login window
-            var loginWindow = new LoginWindow();
-            var loginWindowViewModel = new LoginWindowViewModel
-            {
-                SuccessAction = () => loginWindow.DialogResult = true,
-                CancelAction = () => loginWindow.DialogResult = false
-            };
-            loginWindow.DataContext = loginWindowViewModel;
+            
             
             // Initialize Main Window
             var mainWindowViewModel = new MainWindowViewModel(IoC.Resolve<ILoggerService>(),IoC.Resolve<IWindowService>(), ActionManager);
@@ -87,17 +80,6 @@ namespace Andromeda
                 ResizeMode = ResizeMode.CanMinimize,
                 DataContext = mainWindowViewModel
             };
-
-            // Show login prompt
-            loginWindow.ShowDialog();
-            if (loginWindowViewModel.WasCanceled)
-            {
-                // program is closing if the window was canceled.
-                Application.Current.Shutdown();
-                return;
-            }
-
-            mainWindowViewModel.UpdateLoginProperties();
 
             // show main window
             window.Show();

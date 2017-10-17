@@ -27,7 +27,7 @@ namespace AndromedaCore.Plugins
             _loadedPlugins = new Dictionary<string, IPlugin>();
         }
 
-        public void LoadPlugin()
+        public void LoadPlugin(IPlugin pluginToLoad)
         {
             throw new NotImplementedException();
         }
@@ -102,10 +102,9 @@ namespace AndromedaCore.Plugins
             }
         }
 
-        public void InitializePlugin()
+        public void InitializePlugin(IPlugin plugin)
         {
-            //TODO: Implement Initizliation Logic
-            throw new NotImplementedException();
+            plugin.InitializePlugin();
         }
 
         public void InitializeAllPlugins()

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AndromedaCore;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
+using AndromedaCore.Model;
 using Action = AndromedaCore.Action;
 
 namespace AndromedaActions.Command
@@ -11,24 +11,45 @@ namespace AndromedaActions.Command
     {
         private readonly IWmiServices _wmiServices;
 
+        private List<string> _parsedListCache;
+        private CredToken _credToken;
+
         public RepairWmi(ILoggerService logger, INetworkServices networkServices, IFileAndFolderServices fileAndFolderServices, IWmiServices wmiServices) 
             : base(logger, networkServices, fileAndFolderServices)
         {
             ActionName = "Repair WMI";
             Description = "Repairs the WMI of the device(s).";
             Category = "Windows Management";
+            RequiresCredentials = true;
+
+            UiCallback = CallbackMethod;
+            HasUserInterfaceElement = true;
 
             _wmiServices = wmiServices;
         }
 
-        public override void RunCommand(string rawDeviceList)
+        public override void OpenUserInterfaceElement(string rawDeviceList)
         {
-            var devlist = ParseDeviceList(rawDeviceList);
+            _parsedListCache = ParseDeviceList(rawDeviceList);
+
+            _credToken = CredentialManager.RequestCredentials();
+
+            if (_credToken == null)
+            {
+                var msg = $"Action {ActionName} canceled by user.";
+                Logger.LogMessage(msg);
+                ResultConsole.AddConsoleLine(msg);
+                CancellationToken.Cancel();
+            }
+        }
+
+        private void CallbackMethod()
+        {
             var failedlist = new List<string>();
 
             try
             {
-                foreach (var device in devlist)
+                foreach (var device in _parsedListCache)
                 {
                     CancellationToken.Token.ThrowIfCancellationRequested();
 
@@ -41,7 +62,7 @@ namespace AndromedaActions.Command
 
                     try
                     {
-                        var result = _wmiServices.RepairRemoteWmi(device);
+                        var result = _wmiServices.RepairRemoteWmi(device, _credToken);
 
                         if (!result)
                         {
@@ -70,6 +91,13 @@ namespace AndromedaActions.Command
             {
                 WriteToFailedLog(ActionName, failedlist);
             }
+
+            _credToken.Dispose();
+        }
+
+        public override void RunCommand(string rawDeviceList)
+        {
+            throw new NotImplementedException($"{ActionName} requires credentials and does not utilize the RunCommand method interface.");
         }
     }
 }

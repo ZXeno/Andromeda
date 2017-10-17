@@ -3,17 +3,11 @@ using System.Security;
 using System.Windows.Input;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Managers;
-using AndromedaCore.ViewModel;
 
-namespace Andromeda.ViewModel
+namespace AndromedaCore.ViewModel
 {
-    public class LoginWindowViewModel : ViewModelBase
+    public class LoginWindowViewModel : RequestCloseViewModel
     {
-        private CredentialManager _credManager => CredentialManager.Instance;
-
-        public System.Action SuccessAction { get; set; }
-        public System.Action CancelAction { get; set; }
-
         private string _domain;
         public string Domain
         {
@@ -21,7 +15,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _domain = value;
-                OnPropertyChanged("Domain");
+                OnPropertyChanged();
             }
         }
 
@@ -32,7 +26,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _username = value;
-                OnPropertyChanged("Username");
+                OnPropertyChanged();
                 OnPropertyChanged("LoginCommand");
             }
         }
@@ -43,7 +37,7 @@ namespace Andromeda.ViewModel
             get => SecureStringHelper.GetInsecureString(_passwordContainer);
             set
             {
-                OnPropertyChanged("Password");
+                OnPropertyChanged();
                 _passwordContainer = SecureStringHelper.BuildSecureString(value);
             }
         }
@@ -55,7 +49,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _canceled = value;
-                OnPropertyChanged("WasCanceled");
+                OnPropertyChanged();
             }
         }
 
@@ -76,7 +70,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _errMsg = value;
-                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged();
             }
         }
 
@@ -97,9 +91,16 @@ namespace Andromeda.ViewModel
             bool successOnValidate = false;
             bool exception = false;
 
+            if (Username.Contains("\\"))
+            {
+                var userdomainsplit = Username.Split('\\');
+                Domain = userdomainsplit[0];
+                Username = userdomainsplit[1];
+            }
+
             try
             {
-                successOnValidate = _credManager.ValidateCredentials(Domain, Username, Password);
+                successOnValidate = CredentialManager.ValidateCredentials(Domain, Username, Password);
             }
             catch (Exception ex)
             {
@@ -110,9 +111,7 @@ namespace Andromeda.ViewModel
 
             if (successOnValidate)
             {
-                _credManager.SetCredentials(Domain, Username, _credManager.BuildSecureString(Password));
-                _credManager.CredentialsAreValid = true;
-                SuccessAction.Invoke();
+                OnRequestClose(EventArgs.Empty);
             }
             else if (!exception)
             {
@@ -123,7 +122,7 @@ namespace Andromeda.ViewModel
         private void CancelExecute()
         {
             WasCanceled = true;
-            CancelAction.Invoke();
+            OnRequestClose(EventArgs.Empty);
         }
     }
 }

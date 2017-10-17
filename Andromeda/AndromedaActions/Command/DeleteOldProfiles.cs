@@ -139,7 +139,7 @@ namespace AndromedaActions.Command
 
         public override void RunCommand(string rawDeviceList)
         {
-            throw new NotImplementedException($"{ActionName} has a user interface element and does utilize the RunCommand method interface.");
+            throw new NotImplementedException($"{ActionName} has a user interface element and does not utilize the RunCommand method interface.");
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Management;
 using System.Text;
 using AndromedaCore.Managers;
+using AndromedaCore.Model;
 
 namespace AndromedaCore.Infrastructure
 {
@@ -63,13 +64,13 @@ namespace AndromedaCore.Infrastructure
             }
         }
 
-        public bool RepairRemoteWmi(string hostname)
+        public bool RepairRemoteWmi(string hostname, CredToken credentialToken)
         {
             _logger.LogMessage($"Attempting to repair WMI on device {hostname}");
             ResultConsole.Instance.AddConsoleLine($"Attempting to repair WMI on device {hostname}");
 
-            var remoteBatchPath = $"\\\\{hostname}\\C$\\windows\\temp\\fixwmi.bat";
-            var commandline = @"-i cmd /c %windir%\temp\fixwmi.bat"; // -i flag is required for PSExec to push the command through successfully.
+            var remoteBatchPath = $"\\\\{hostname}\\C$\\temp\\fixwmi.bat";
+            var commandline = @"-i cmd /c C:\temp\fixwmi.bat"; // -i flag is required for PSExec to push the command through successfully.
             var batchFileContent = CreateWmiRepairBatchConent();
 
             try
@@ -88,7 +89,7 @@ namespace AndromedaCore.Infrastructure
             try
             {
                 _logger.LogMessage($"Run WMI repair batch on remote device {hostname}");
-                _psExecServices.RunOnDeviceWithAuthentication(hostname, commandline, CredentialManager.Instance.UserCredentials);
+                _psExecServices.RunOnDeviceWithAuthentication(hostname, commandline, credentialToken);
                 return true;
             }
             catch (Exception ex)

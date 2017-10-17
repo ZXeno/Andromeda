@@ -12,7 +12,7 @@ namespace Andromeda.ViewModel
             set
             {
                 _consoleString = value;
-                OnPropertyChanged("ConsoleString");
+                OnPropertyChanged();
             }
         }
 

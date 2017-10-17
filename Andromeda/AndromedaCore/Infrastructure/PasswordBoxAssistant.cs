@@ -4,7 +4,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Andromeda.Infrastructure
+namespace AndromedaCore.Infrastructure
 {
     public static class PasswordBoxAssistant
     {

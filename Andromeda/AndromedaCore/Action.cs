@@ -25,6 +25,7 @@ namespace AndromedaCore
         public string ActionName { get; protected set; }
         public string Description { get; protected set; }
         public string Category { get; protected set; }
+        public bool RequiresCredentials { get; protected set; }
         public bool HasUserInterfaceElement { get; protected set; }
         public System.Action UiCallback { get; protected set; }
 

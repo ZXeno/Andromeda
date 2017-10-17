@@ -93,15 +93,10 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\TextBoxBehavior.cs" />
     <Compile Include="ViewModel\DevlistViewModel.cs" />
-    <Compile Include="ViewModel\LoginWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\ResultConsoleViewModel.cs" />
     <Compile Include="View\DevlistView.xaml.cs">
       <DependentUpon>DevlistView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoginWindow.xaml.cs">
-      <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="View\DevlistView.xaml">
       <SubType>Designer</SubType>
@@ -119,10 +114,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\LoginWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

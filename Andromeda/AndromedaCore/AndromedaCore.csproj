@@ -85,6 +85,7 @@
     <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
     <Compile Include="Infrastructure\IoC\LifeTimeOptions.cs" />
     <Compile Include="Infrastructure\IoC\ResolvedTypeWithLifeTimeOptions.cs" />
+    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Infrastructure\SecureStringHelper.cs" />
     <Compile Include="Infrastructure\StaTaskScheduler.cs" />
     <Compile Include="Managers\ActionManager.cs" />
@@ -105,17 +106,25 @@
     <Compile Include="SccmScheduleActionBase.cs" />
     <Compile Include="ViewModel\ApplicationWindowBase.cs" />
     <Compile Include="ViewModel\IViewModelBase.cs" />
+    <Compile Include="ViewModel\LoginWindowViewModel.cs" />
     <Compile Include="ViewModel\PromptViewModel.cs" />
     <Compile Include="ViewModel\IRequestCloseViewModel.cs" />
     <Compile Include="ViewModel\IWindowService.cs" />
     <Compile Include="ViewModel\RequestCloseViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\WindowService.cs" />
+    <Compile Include="View\LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\LoginWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

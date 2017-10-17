@@ -1,63 +1,43 @@
 ﻿using System.DirectoryServices.AccountManagement;
-using System.Security;
+using AndromedaCore.Infrastructure;
 using AndromedaCore.Model;
+using AndromedaCore.View;
+using AndromedaCore.ViewModel;
 
 namespace AndromedaCore.Managers
 {
-    // TODO: Replace this with a more secure design that doesn't store credentials in memory
     public class CredentialManager
     {
-        public delegate void CredentialsChanged(string domain, string user, string password);
-        public static event CredentialsChanged CredentialsChangedHandler;
+        private static IWindowService _windowService;
 
-        private static CredentialManager _instance;
-        public static CredentialManager Instance => _instance;
-
-        private CredToken _creds;
-        public CredToken UserCredentials => _creds;
-        public bool CredentialsAreValid { get; set; }
-
-        public CredentialManager()
+        public CredentialManager(IWindowService windowService)
         {
-            CredentialsChangedHandler += UpdateCredentials;
-            _creds = null;
-            _instance = this;
+            _windowService = windowService;
         }
 
-        public void SetCredentials(string domain, string user, SecureString pass)
+        public static CredToken RequestCredentials()
         {
-            _creds = new CredToken(domain, user, pass);
-        }
+            var loginWindowViewModel = new LoginWindowViewModel();
+            _windowService.ShowDialog<LoginWindow>(loginWindowViewModel);
 
-        public SecureString BuildSecureString(string strPassword)
-        {
-            SecureString secureStr = new SecureString();
-            
-            if (strPassword.Length > 0)
+            if (loginWindowViewModel.WasCanceled)
             {
-                foreach (var c in strPassword.ToCharArray()) secureStr.AppendChar(c);
+                loginWindowViewModel.Dispose();
+                return null;
             }
 
-            return secureStr;
+            var credtoken = new CredToken(loginWindowViewModel.Domain, loginWindowViewModel.Username, SecureStringHelper.BuildSecureString(loginWindowViewModel.Password));
+
+            return credtoken;
         }
+
         
-        public bool ValidateCredentials(string domain, string user, string pass)
+        public static bool ValidateCredentials(string domain, string user, string pass)
         {
             using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain))
             {
-                // validate the credentials
                 return context.ValidateCredentials(user, pass);
             }
-        }
-
-        private void UpdateCredentials(string domain, string user, string pass)
-        {
-            _creds = new CredToken(domain, user, BuildSecureString(pass));
-        }
-
-        public static void OnCredentialsChanged(string domain, string user, string pass)
-        {
-            CredentialsChangedHandler?.Invoke(domain, user, pass);
         }
     }
 }

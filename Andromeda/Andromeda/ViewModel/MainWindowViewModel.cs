@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Andromeda.View;
@@ -16,25 +15,12 @@ namespace Andromeda.ViewModel
     {
         #region Properties
         public ObservableCollection<IAction> ActionsList { get; private set; }
-        public bool CredentialsValid => CredentialManager.Instance.CredentialsAreValid;
 
         private ObservableCollection<ViewModelBase> _viewModels;
         public ObservableCollection<ViewModelBase> ViewModels => _viewModels ?? (_viewModels = new ObservableCollection<ViewModelBase>());
 
         private object _runningActionsLock = new object();
         public ObservableCollection<RunningActionTask> RunningActionTasks => _actionManager.RunningActions;
-
-        public string Username
-        {
-            get
-            {
-                if (CredentialManager.Instance.CredentialsAreValid)
-                {
-                    return (CredentialManager.Instance.UserCredentials.Domain + "\\" + CredentialManager.Instance.UserCredentials.User).ToUpper();
-                }
-                return @"NO USER Please log in";
-            }
-        }
 
         private string _runButtonText;
         public string RunButtonText
@@ -121,24 +107,6 @@ namespace Andromeda.ViewModel
             }
         }
 
-        private ICommand _loginCommand;
-        public ICommand LoginCommand
-        {
-            get
-            {
-                if (_loginCommand == null)
-                {
-                    LoginCommand = new DelegateCommand(param => LoginCommandExecute(), param => LoginCommandCanExecute());
-                }
-                return _loginCommand;
-            }
-            set
-            {
-                _loginCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
         private ICommand _viewRunningActionDeviceListCommand;
         public ICommand ViewRunningActionDeviceListCommand
         {
@@ -158,7 +126,6 @@ namespace Andromeda.ViewModel
         }
 
         public string VersionNumber => App.VersionNumber;
-        public Visibility LoginButtonVisibility => (!CredentialManager.Instance.CredentialsAreValid) ? Visibility.Visible : Visibility.Collapsed;
 
         private readonly ILoggerService _logger;
         private readonly IWindowService _windowService;
@@ -205,35 +172,6 @@ namespace Andromeda.ViewModel
         public bool RunCommandCanExecute()
         {
             return !string.IsNullOrWhiteSpace(DeviceListString);
-        }
-
-        public bool LoginCommandCanExecute()
-        {
-            return !CredentialManager.Instance.CredentialsAreValid;
-        }
-
-        public void LoginCommandExecute()
-        {
-            var loginWindow = new LoginWindow();
-            var loginWindowViewModel = new LoginWindowViewModel
-            {
-                SuccessAction = () => loginWindow.DialogResult = true,
-                CancelAction = () => loginWindow.DialogResult = false
-            };
-            loginWindow.DataContext = loginWindowViewModel;
-
-            // Show login prompt
-            loginWindow.ShowDialog();
-
-            if (loginWindowViewModel.WasCanceled) { return; }
-
-            UpdateLoginProperties();
-        }
-
-        public void UpdateLoginProperties()
-        {
-            OnPropertyChanged("Username");
-            OnPropertyChanged("LoginButtonVisibility");
         }
 
         protected override void OnDispose()

@@ -1,8 +1,9 @@
-﻿using System.Security;
+﻿using System;
+using System.Security;
 
 namespace AndromedaCore.Model
 {
-    public class CredToken
+    public class CredToken : IDisposable
     {
         public string User { get; }
         public SecureString SecurePassword { get; }
@@ -25,6 +26,11 @@ namespace AndromedaCore.Model
             Domain = domain;
             SecurePassword = password;
             CanImpersonate = canimpersonate;
+        }
+
+        public void Dispose()
+        {
+            SecurePassword?.Dispose();
         }
     }
 }
