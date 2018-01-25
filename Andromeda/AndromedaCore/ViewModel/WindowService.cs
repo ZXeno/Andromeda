@@ -52,6 +52,8 @@ namespace AndromedaCore.ViewModel
             win.ShowAsTopmostDialog();
         }
 
+
+
         public void CloseAllWindows()
         {
             if (_openWindows.Keys.Count == 0) { return; }

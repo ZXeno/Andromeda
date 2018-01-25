@@ -53,7 +53,7 @@ namespace AndromedaCore
         public override string ToString() { return ActionName; }
 
         // Return a list of devices from the string list of the GUI
-        protected List<string> ParseDeviceList(string list)
+        public static List<string> ParseDeviceList(string list)
         {
             var devList = new List<string>(list.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
 

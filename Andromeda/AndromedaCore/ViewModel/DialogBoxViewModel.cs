@@ -4,7 +4,7 @@ using AndromedaCore.Infrastructure;
 
 namespace AndromedaCore.ViewModel
 {
-    public class PromptViewModel : RequestCloseViewModel
+    public class DialogBoxViewModel : RequestCloseViewModel
     {
         private ICommand _okayCmd;
         public ICommand OkayCommand
@@ -13,12 +13,14 @@ namespace AndromedaCore.ViewModel
         }
 
         private ICommand _cancelCmd;
+
         public ICommand CancelCommand
         {
             get { return _cancelCmd ?? (_cancelCmd = new DelegateCommand(param => CancelClose(), param => true)); }
         }
 
         private string _textboxLabel;
+
         public string TextBoxLabel
         {
             get => _textboxLabel;
@@ -29,18 +31,8 @@ namespace AndromedaCore.ViewModel
             }
         }
 
-        private string _boxContents;
-        public string TextBoxContents
-        {
-            get => _boxContents;
-            set
-            {
-                _boxContents = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _result;
+
         public bool Result
         {
             get => _result;
@@ -51,7 +43,7 @@ namespace AndromedaCore.ViewModel
             }
         }
 
-        public PromptViewModel(string promptMessage)
+        public DialogBoxViewModel(string promptMessage)
         {
             TextBoxLabel = promptMessage;
         }

@@ -13,7 +13,9 @@ namespace AndromedaCore.Managers
 
         // DEFAULT CONFIGURATION VALUES
         public const string ConfigFileName = "config.dat";
-        private const string SaveFileVersion = "004";
+        private const string SaveFileVersion = "005";
+        private bool _enableDeviceCountWarning = true;
+        private int _deviceCountWarningThreshold = 25;
         private bool _saveOfflineComputers = true;
         private bool _saveOnlineComputers = true;
         private readonly string _resultsDirectory;
@@ -84,6 +86,39 @@ namespace AndromedaCore.Managers
                 if (!ValidateConfigFileVersion(saveFileVersionNode))
                 {
                     return;
+                }
+
+                var deviceCountWarningNode = configFileDat.SelectSingleNode("config/settings/deviceCountWarning");
+                if (deviceCountWarningNode != null)
+                {
+                    CurrentConfig.EnableDeviceCountWarning = StringToBool(deviceCountWarningNode.InnerText);
+                }
+                else
+                {
+                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
+                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
+                    CurrentConfig.SaveOfflineComputers = true;
+                }
+
+                var deviceCountThresholdNode = configFileDat.SelectSingleNode("config/settings/deviceCountThreshold");
+                if (deviceCountThresholdNode != null)
+                {
+                    try
+                    {
+                        CurrentConfig.DeviceCountWarningThreshold = int.Parse(deviceCountThresholdNode.InnerText);
+                    }
+                    catch (Exception e)
+                    {
+                        ResultConsole.Instance.AddConsoleLine($"Problem loading \"deviceCountThreshold\" node from config file. Using default value: {_deviceCountWarningThreshold}");
+                        CurrentConfig.DeviceCountWarningThreshold = _deviceCountWarningThreshold;
+                    }
+                    
+                }
+                else
+                {
+                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
+                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
+                    CurrentConfig.SaveOfflineComputers = true;
                 }
 
                 var saveOfflineNode = configFileDat.SelectSingleNode("config/settings/saveofflinecomputers");
@@ -170,6 +205,12 @@ namespace AndromedaCore.Managers
                 _xwriter.WriteStartElement("settings");
 
                 CreateUnattributedElement("savefileversion", SaveFileVersion);
+
+                // Device Count Warning
+                CreateUnattributedElement("deviceCountWarning", _enableDeviceCountWarning.ToString());
+
+                // Device Count Warning Threshold
+                CreateUnattributedElement("deviceCountThreshold", _deviceCountWarningThreshold.ToString());
 
                 // Save Offline Computers
                 CreateUnattributedElement("saveofflinecomputers", _saveOfflineComputers.ToString());

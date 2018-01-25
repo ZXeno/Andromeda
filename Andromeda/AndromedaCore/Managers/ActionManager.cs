@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Model;
+using AndromedaCore.View;
+using AndromedaCore.ViewModel;
 
 namespace AndromedaCore.Managers
 {
@@ -30,17 +32,19 @@ namespace AndromedaCore.Managers
         private IAction this[string i] => _loadedActions[i];
         private Dictionary<string, IAction> _loadedActions { get; }
         private readonly ILoggerService _logger;
+        private readonly IWindowService _windowService;
         
         public ObservableCollection<RunningActionTask> RunningActions { get; }
         private readonly StaTaskScheduler _staTaskScheduler;
 
         // Constructor
-        public ActionManager(ILoggerService logger)
+        public ActionManager(ILoggerService logger, IWindowService windowService)
         {
             _loadedActions = new Dictionary<string, IAction>();
             RunningActions = new ObservableCollection<RunningActionTask>();
             _staTaskScheduler = new StaTaskScheduler(Environment.ProcessorCount); 
             _logger = logger;
+            _windowService = windowService;
             Instance = this;
         }
 
@@ -123,6 +127,14 @@ namespace AndromedaCore.Managers
         /// <param name="action"></param>
         public void RunAction(string deviceListString, IAction action)
         {
+            if (!DeviceCountWarningCheck(action, deviceListString))
+            {
+                var msg = $"Action {action.ActionName} canceled.";
+                _logger.LogMessage(msg);
+                ResultConsole.Instance.AddConsoleLine(msg);
+                return;
+            }
+
             if (action.HasUserInterfaceElement)
             {
                 try
@@ -155,7 +167,7 @@ namespace AndromedaCore.Managers
                             catch (Exception e)
                             {
                                 _logger.LogError(
-                                    $"Action {action.ActionName} was unable to perform it's action because the callback was null.",
+                                    $"Action {action.ActionName} UiCallBack threw error: {e.Message}",
                                     e);
                                 ResultConsole.Instance.AddConsoleLine($"Action {action.ActionName} was unable to perform it's action. See the log for error details.");
                             }
@@ -220,6 +232,29 @@ namespace AndromedaCore.Managers
             {
                 Instance.AddActions(enumerableActions);
             }
+        }
+
+        /// <summary>
+        /// Checks to see if the device count is higher than the configured warning threshold. 
+        /// Returns true if not or if warnings are disabled.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="deviceListString"></param>
+        /// <returns></returns>
+        public bool DeviceCountWarningCheck(IAction action, string deviceListString)
+        {
+            if (!ConfigManager.CurrentConfig.EnableDeviceCountWarning) { return true; }
+
+            var parseListCount = Action.ParseDeviceList(deviceListString).Count;
+            if (parseListCount <= ConfigManager.CurrentConfig.DeviceCountWarningThreshold) { return true; }
+
+            var dialog = new DialogBoxViewModel(
+                $"There are {parseListCount} devices in the list!\n\nAre you sure you want to run {action.ActionName} on {parseListCount} devices?");
+
+            _windowService.ShowDialog<DialogBox>(dialog);
+
+            return dialog.Result;
+
         }
     }
 }
