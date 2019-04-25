@@ -2,6 +2,7 @@
 {
     public class Configuration
     {
+        public string SaveFileVersion { get; set; }
         public string DataFilePath { get; set; }
         public bool EnableDeviceCountWarning { get; set; }
         public int DeviceCountWarningThreshold { get; set; }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-using System.Xml;
 using AndromedaCore.Infrastructure;
 using AndromedaCore.Model;
+using Newtonsoft.Json;
 
 namespace AndromedaCore.Managers
 {
     public class ConfigManager
     {
+        private readonly ILoggerService _logger;
+
         public static Configuration CurrentConfig { get; set; }
 
         // DEFAULT CONFIGURATION VALUES
@@ -24,25 +25,12 @@ namespace AndromedaCore.Managers
         private const string _failedConnectListFile = "failed_to_connect.txt";
         private const string _successfulConnectionListFile = "connection_succeeded_list.txt";
 
-        private XmlWriter _xwriter;
-        private XmlDocument configFileDat;
-        private readonly IXmlServices _xmlServices;
-        private readonly ILoggerService _logger;
-
-        public ConfigManager(string path, IXmlServices xmlServices, ILoggerService logger)
+        public ConfigManager(string path, ILoggerService logger)
         {
             _logger = logger;
-            _xmlServices = xmlServices;
             _configFilePath = path + "\\" + ConfigFileName;
             _resultsDirectory = path + "\\Results";
             _componentsDirectory = Environment.CurrentDirectory + "\\Components";
-
-            CurrentConfig = new Configuration
-            {
-                DataFilePath = _configFilePath,
-                FailedConnectListFile = _failedConnectListFile,
-                SuccessfulConnectionListFile = _successfulConnectionListFile
-            };
 
             if (CheckForConfigFile())
             {
@@ -53,9 +41,14 @@ namespace AndromedaCore.Managers
             CreateNewConfigFile();
         }
 
-        private bool ValidateConfigFileVersion(XmlNode versionNode)
+        private bool ValidateConfigFileVersion(string saveFileVersion)
         {
-            if (versionNode == null || versionNode.InnerText != SaveFileVersion)
+            if (string.IsNullOrEmpty(saveFileVersion))
+            {
+                return false;
+            }
+
+            if (SaveFileVersion != saveFileVersion)
             {
                 var msg = "MISMATCHED CONFIG FILE VERSION. A new one will be generated.";
                 _logger.LogMessage(msg);
@@ -76,108 +69,33 @@ namespace AndromedaCore.Managers
         public void LoadConfig()
         {
             _logger.LogMessage("Beginning config file load.");
-            try
+
+            if (File.Exists(_configFilePath))
             {
-                configFileDat = _xmlServices.GetXmlFileData(_configFilePath);
-
-                // "config" node
-
-                var saveFileVersionNode = configFileDat.SelectSingleNode("config/settings/savefileversion");
-                if (!ValidateConfigFileVersion(saveFileVersionNode))
+                try
                 {
+                    string configJson = File.ReadAllText(_configFilePath);
+
+                    CurrentConfig = JsonConvert.DeserializeObject<Configuration>(configJson);
+
+                    if (!ValidateConfigFileVersion(CurrentConfig.SaveFileVersion))
+                    {
+                        return;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ResultConsole.Instance.AddConsoleLine($"Configuration file failed to load with exception: {ex.Message}\n\n A new one will be created.");
+                    CreateNewConfigFile();
                     return;
                 }
-
-                var deviceCountWarningNode = configFileDat.SelectSingleNode("config/settings/deviceCountWarning");
-                if (deviceCountWarningNode != null)
-                {
-                    CurrentConfig.EnableDeviceCountWarning = StringToBool(deviceCountWarningNode.InnerText);
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
-                    CurrentConfig.SaveOfflineComputers = true;
-                }
-
-                var deviceCountThresholdNode = configFileDat.SelectSingleNode("config/settings/deviceCountThreshold");
-                if (deviceCountThresholdNode != null)
-                {
-                    try
-                    {
-                        CurrentConfig.DeviceCountWarningThreshold = int.Parse(deviceCountThresholdNode.InnerText);
-                    }
-                    catch (Exception e)
-                    {
-                        ResultConsole.Instance.AddConsoleLine($"Problem loading \"deviceCountThreshold\" node from config file. Using default value: {_deviceCountWarningThreshold}");
-                        CurrentConfig.DeviceCountWarningThreshold = _deviceCountWarningThreshold;
-                    }
-                    
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
-                    CurrentConfig.SaveOfflineComputers = true;
-                }
-
-                var saveOfflineNode = configFileDat.SelectSingleNode("config/settings/saveofflinecomputers");
-                if (saveOfflineNode != null)
-                {
-                    CurrentConfig.SaveOfflineComputers = StringToBool(saveOfflineNode.InnerText);
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"saveofflinecomputers\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveofflinecomputers\" node from config file. Using default: TRUE");
-                    CurrentConfig.SaveOfflineComputers = true;
-                }
-
-                var saveOnlineNode = configFileDat.SelectSingleNode("config/settings/saveonlinecomputers");
-                if (saveOnlineNode != null)
-                {
-                    CurrentConfig.SaveOnlineComputers = StringToBool(saveOnlineNode.InnerText);
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"saveonlinecomputers\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"saveonlinecomputers\" node from config file. Using default: TRUE");
-                    CurrentConfig.SaveOnlineComputers = true;
-                }
-
-                var resultsDirNode = configFileDat.SelectSingleNode("config/settings/resultsDirectory");
-                if (resultsDirNode != null)
-                {
-                    CurrentConfig.ResultsDirectory = resultsDirNode.InnerText;
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"resultsDirectory\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine("Problem loading \"resultsDirectory\" node from config file. Using default: " + _resultsDirectory);
-                    CurrentConfig.ResultsDirectory = _resultsDirectory;
-                }
-
-                var componentsDirNode = configFileDat.SelectSingleNode("config/settings/componentsDirectory");
-                if (componentsDirNode != null)
-                {
-                    CurrentConfig.ComponentDirectory = componentsDirNode.InnerText;
-                }
-                else
-                {
-                    _logger.LogWarning("Problem loading \"componentsDirectory\" node from config file. Using default.", null);
-                    ResultConsole.Instance.AddConsoleLine( "Problem loading \"componentsDirectory\" node from config file. Using default: " + _componentsDirectory);
-                    CurrentConfig.ComponentDirectory = _componentsDirectory;
-                }
-
-                ValidateDirectoryExists(CurrentConfig.ResultsDirectory);
-                ValidateDirectoryExists(CurrentConfig.ComponentDirectory);
-
-
+                
                 ResultConsole.Instance.AddConsoleLine("Configuration file loaded.");
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Uh oh! \n\n The config file failed to load with error message:\n" + ex.Message);
+                CreateNewConfigFile();
             }
         }
 
@@ -188,85 +106,55 @@ namespace AndromedaCore.Managers
             _logger.LogMessage("Generating new config file...");
             ResultConsole.Instance.AddConsoleLine("Generating new config file...");
 
-            #region Document Creation
+            ValidateDirectoryExists(_resultsDirectory);
+            ValidateDirectoryExists(_componentsDirectory);
+
             try
             {
-                XmlWriterSettings _xsets = new XmlWriterSettings();
-                _logger.LogMessage("Configuration file encoding set to UTF8.");
-                _xsets.Encoding = Encoding.UTF8;
-                _xsets.Indent = true;
+                CurrentConfig = new Configuration()
+                {
+                    SaveFileVersion = SaveFileVersion,
+                    ComponentDirectory = _componentsDirectory,
+                    DataFilePath = _configFilePath,
+                    DeviceCountWarningThreshold = _deviceCountWarningThreshold,
+                    EnableDeviceCountWarning = _enableDeviceCountWarning,
+                    FailedConnectListFile = _failedConnectListFile,
+                    ResultsDirectory = _resultsDirectory,
+                    SaveOfflineComputers = _saveOfflineComputers,
+                    SaveOnlineComputers = _saveOnlineComputers,
+                    SuccessfulConnectionListFile = _successfulConnectionListFile
+                };
 
-                _xwriter = XmlWriter.Create(_configFilePath, _xsets);
-                
-                _xwriter.WriteStartDocument();
-                _xwriter.WriteStartElement("config");
+                string serializedConfig = JsonConvert.SerializeObject(CurrentConfig);
 
-                //Program Settings Category
-                _xwriter.WriteStartElement("settings");
-
-                CreateUnattributedElement("savefileversion", SaveFileVersion);
-
-                // Device Count Warning
-                CreateUnattributedElement("deviceCountWarning", _enableDeviceCountWarning.ToString());
-
-                // Device Count Warning Threshold
-                CreateUnattributedElement("deviceCountThreshold", _deviceCountWarningThreshold.ToString());
-
-                // Save Offline Computers
-                CreateUnattributedElement("saveofflinecomputers", _saveOfflineComputers.ToString());
-
-                // Save Online Computers
-                CreateUnattributedElement("saveonlinecomputers", _saveOnlineComputers.ToString());
-
-                // Results Log File Directory
-                CreateUnattributedElement("resultsDirectory", _resultsDirectory);
-
-                // Components Directory
-                CreateUnattributedElement("componentsDirectory", _componentsDirectory);
-
-                // Close <settings>
-                _xwriter.WriteEndElement();
-
-                // Close <config>
-                _xwriter.WriteEndElement();
-
-                // Close file
-                _xwriter.WriteEndDocument();
-                _xwriter.Close();
-
-                _logger.LogMessage("Configuration file generation complete.");
-
-                ValidateDirectoryExists(_resultsDirectory);
-                ValidateDirectoryExists(_componentsDirectory);
+                File.WriteAllText(_configFilePath, serializedConfig);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Unable to create configuration file.", ex);
-                ResultConsole.Instance.AddConsoleLine("Exception in " + ex.TargetSite + ": " + ex.InnerException + " - Unable to create configuration file.");
+                ResultConsole.Instance.AddConsoleLine("Exception in " + ex.TargetSite + ": " + ex.InnerException?.Message + " - Unable to create configuration file.");
+                return;
             }
-            #endregion
 
+            _logger.LogMessage("Configuration file generation complete.");
         }
         #endregion
 
-        public void UpdateConfigDocument(XmlDocument configdat, string path)
+        public void UpdateConfigDocument(string path)
         {
-            configFileDat = configdat;
-            configFileDat.Save(path);
+            try
+            {
+                string serializedConfig = JsonConvert.SerializeObject(CurrentConfig);
+                File.WriteAllText(_configFilePath, serializedConfig);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Unable to update configuration file.", ex);
+                ResultConsole.Instance.AddConsoleLine($"Unable to update configuration file: {ex.Message}");
+                return;
+            }
+            
             ResultConsole.Instance.AddConsoleLine("Config file updated.");
-        }
-
-        private void CreateUnattributedElement(string ElementName, string StringData)
-        {
-            _xwriter.WriteStartElement(ElementName);
-            _xwriter.WriteString(StringData);
-            _xwriter.WriteEndElement();
-        }
-
-        private bool StringToBool(string tfval)
-        {
-            tfval = tfval.ToLower();
-            return tfval == "true" || tfval == "1" || tfval == "t" || tfval == "y" || tfval == "yes" || tfval == "affirmative";
         }
 
         private void ValidateDirectoryExists(string path)

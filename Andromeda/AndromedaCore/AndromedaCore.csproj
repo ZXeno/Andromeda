@@ -48,6 +48,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\Users\zxeno\AppData\Roaming\NuGet\src\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -72,7 +75,6 @@
     <Compile Include="Infrastructure\Abstractions\IRegistryServices.cs" />
     <Compile Include="Infrastructure\Abstractions\ISccmClientServices.cs" />
     <Compile Include="Infrastructure\Abstractions\IWmiServices.cs" />
-    <Compile Include="Infrastructure\Abstractions\IXmlServices.cs" />
     <Compile Include="Infrastructure\DelegateCommand.cs" />
     <Compile Include="Infrastructure\Implementations\FileAndFolderServices.cs" />
     <Compile Include="Infrastructure\Implementations\Logger.cs" />
@@ -81,7 +83,6 @@
     <Compile Include="Infrastructure\Implementations\RegistryServices.cs" />
     <Compile Include="Infrastructure\Implementations\SccmClientServices.cs" />
     <Compile Include="Infrastructure\Implementations\WmiServices.cs" />
-    <Compile Include="Infrastructure\Implementations\XmlServices.cs" />
     <Compile Include="Infrastructure\IoC\IoCContainer.cs" />
     <Compile Include="Infrastructure\IoC\LifeTimeOptions.cs" />
     <Compile Include="Infrastructure\IoC\ResolvedTypeWithLifeTimeOptions.cs" />
@@ -149,6 +150,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

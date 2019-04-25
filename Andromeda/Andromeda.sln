@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andromeda", "Andromeda\Andromeda.csproj", "{3E77B185-F61F-4E1C-8238-1694230DD3A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndromedaCore", "AndromedaCore\AndromedaCore.csproj", "{D7BBEA7D-EE3C-4EB8-99AA-BDEADBF7E3E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndromedaActions", "AndromedaActions\AndromedaActions.csproj", "{6D917D41-C70A-4AEC-985D-00BC899A1E61}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AndromedaSetup", "AndromedaSetup\AndromedaSetup.vdproj", "{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,14 +55,6 @@ Global
 		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|x64.Build.0 = Release|x64
 		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|x86.ActiveCfg = Release|Any CPU
 		{6D917D41-C70A-4AEC-985D-00BC899A1E61}.Release|x86.Build.0 = Release|Any CPU
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Debug|Any CPU.ActiveCfg = Debug
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Debug|x64.ActiveCfg = Debug
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Debug|x86.ActiveCfg = Debug
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Release|Any CPU.ActiveCfg = Release
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Release|Any CPU.Build.0 = Release
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Release|x64.ActiveCfg = Release
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Release|x64.Build.0 = Release
-		{D70BB4AD-13D9-4868-AC9C-F24B898BE2B9}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

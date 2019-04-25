@@ -30,9 +30,9 @@
     </Window.Resources>
 
     <Grid>
-        <TextBox Text="{Binding DeviceListString}" Style="{StaticResource DeviceListBox}" Margin="16,100,0,0" HorizontalAlignment="Left" Width="116" Height="419" VerticalAlignment="Top" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        <TextBox Text="{Binding DeviceListString}" Style="{StaticResource DeviceListBox}" Margin="16,100,0,202" HorizontalAlignment="Left" Width="133" ToolTip="Enter device ids here." ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-        <ListView  HorizontalAlignment="Right" Margin="0,100,280,240" Width="358" Background="#A5474747" ItemsSource="{Binding Source={StaticResource ViewSource}}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
+        <ListView Margin="156,100,280,232" Background="#A5474747" BorderBrush="Transparent" ItemsSource="{Binding Source={StaticResource ViewSource}}" SelectedItem="{Binding SelectedAction}" ItemContainerStyle="{StaticResource ListboxSelectedItem}">
             <ListView.GroupStyle>
                 <GroupStyle >
                     <GroupStyle.ContainerStyle>
@@ -67,23 +67,23 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Label Style="{StaticResource SectionLabel}" Content="Available Actions:" Margin="154,77,0,0"  Width="200" />
-        <Label Style="{StaticResource SectionLabel}" Content="Computers:" Margin="16,77,0,0" Width="116" />
+        <Label Style="{StaticResource SectionLabel}" Content="Available Actions:" Margin="156,72,0,0"  Width="200" />
+        <Label Style="{StaticResource SectionLabel}" Content="Computers:" Margin="16,72,0,0" Width="116" />
 
-        <Label Content="{Binding Path=SelectedAction.Description}" Foreground="#FFE0E0E0" Background="#A5474747" Margin="0,0,86,201" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="552" Height="26"/>
+        <Label Content="{Binding Path=SelectedAction.Description}" Foreground="#FFE0E0E0" Background="#A5474747" Margin="156,0,86,201" VerticalAlignment="Bottom" Height="26"/>
         <Button Content="{Binding Path=RunButtonText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="0,0,16,201" Width="65" Height="26" VerticalAlignment="Bottom" Command="{Binding RunCommand, UpdateSourceTrigger=PropertyChanged}"  />
-        <TextBox Style="{StaticResource ResultConsole}" Text="{Binding ConsoleString, UpdateSourceTrigger=PropertyChanged}" inf:TextBoxBehavior.ScrollOnTextChanged="True" Margin="16,0,16,35" Height="150" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  >
+        <TextBox Style="{StaticResource ResultConsole}" Text="{Binding ConsoleString, UpdateSourceTrigger=PropertyChanged}" inf:TextBoxBehavior.ScrollOnTextChanged="True" Margin="16,525,16,10" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"  >
             <TextBox.DataContext>
                 <viewModel:ResultConsoleViewModel></viewModel:ResultConsoleViewModel>
             </TextBox.DataContext>
         </TextBox>
 
 
-        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="38,0,0,10" />
+        <Label Content="{Binding VersionNumber}" Style="{StaticResource VersionNumber}" Margin="0,10,16,0" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" />
 
-        <Label Style="{StaticResource SectionLabel}" Content="Running Actions:" Margin="517,77,0,0"  Width="200" />
+        <Label Style="{StaticResource SectionLabel}" Content="Running Actions:" Margin="519,72,0,0"  Width="200" />
 
-        <ListView x:Name="RunningActionListView" ItemsSource="{Binding Source={StaticResource ThreadViewSource}}" SelectedItem="{Binding SelectedActionThread}" Background="#A5474747" Margin="0,100,16,263" HorizontalAlignment="Right" Width="259">
+        <ListView x:Name="RunningActionListView" ItemsSource="{Binding Source={StaticResource ThreadViewSource}}" SelectedItem="{Binding SelectedActionThread}" Background="#A5474747" BorderBrush="Transparent" Margin="0,100,16,263" HorizontalAlignment="Right" Width="259">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid HorizontalAlignment="Left">
@@ -127,7 +127,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Button Command="{Binding CancelCommand}" Content="Cancel Selected Action" HorizontalAlignment="Right" Margin="0,0,16,240" Width="259" Height="18" VerticalAlignment="Bottom" />
+        <Button Command="{Binding CancelCommand}" Content="Cancel Selected Action" HorizontalAlignment="Right" Margin="0,0,16,232" Width="259" Height="26" VerticalAlignment="Bottom" />
 
     </Grid>
 

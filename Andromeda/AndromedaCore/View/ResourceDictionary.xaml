@@ -16,7 +16,7 @@
         <Setter Property="Foreground" Value="#FFC9C9C9"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="FontFamily" Value="Lucida Console"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Height" Value="20"/>
@@ -27,7 +27,7 @@
         <Setter Property="Foreground" Value="#FFAA5555"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="FontFamily" Value="Lucida Console"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Height" Value="20"/>
@@ -37,7 +37,7 @@
     <Style TargetType="Button" >
         <Setter Property="Background" Value="#CC404040"/>
         <Setter Property="Foreground" Value="#FFC9C9C9" />
-        <Setter Property="FontFamily" Value="Lucida Console" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -60,7 +60,7 @@
     <Style TargetType="{x:Type TextBox}" x:Key="White">
         <Setter Property="Background" Value="#E5C9C9C9" />
         <Setter Property="Foreground" Value="#FF121212" />
-        <Setter Property="FontFamily" Value="Lucida Console" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
 
 
         <Setter Property="Template">
@@ -110,7 +110,7 @@
     <Style TargetType="{x:Type PasswordBox}" x:Key="PwdWhite">
         <Setter Property="Background" Value="#E5C9C9C9" />
         <Setter Property="Foreground" Value="#FF121212" />
-        <Setter Property="FontFamily" Value="Lucida Console" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
 
 
         <Setter Property="Template">
@@ -155,7 +155,7 @@
     
     <Style x:Key="SectionLabel" TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="#FFE0E0E0"/>
-        <Setter Property="FontFamily" Value="Lucida Console" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Height" Value="28"/>
@@ -196,7 +196,7 @@
     
     <Style x:Key="Checkbox" TargetType="{x:Type CheckBox}">
         <Setter Property="Foreground" Value="#FFC9C9C9"/>
-        <Setter Property="FontFamily" Value="Lucida Console" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Height" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -212,7 +212,7 @@
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Height" Value="20" />
         <Setter Property="Width" Value="Auto" />
-        <Setter Property="FontFamily" Value="Lucida Console"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
     </Style>
 
 </ResourceDictionary>

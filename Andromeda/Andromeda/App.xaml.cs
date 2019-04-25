@@ -54,7 +54,7 @@ namespace Andromeda
 
             _credman = new CredentialManager(IoC.Resolve<IWindowService>());
             _resultConsole = new ResultConsole();
-            ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<IXmlServices>(), IoC.Resolve<ILoggerService>());
+            ConfigManager = new ConfigManager(UserFolder, IoC.Resolve<ILoggerService>());
             ActionManager = new ActionManager(_logger, IoC.Resolve<IWindowService>());
             PluginManager = new PluginManager(_logger);
             _actionFactory = new ActionFactory(IoC);
@@ -70,7 +70,7 @@ namespace Andromeda
             
             
             // Initialize Main Window
-            var mainWindowViewModel = new MainWindowViewModel(IoC.Resolve<ILoggerService>(),IoC.Resolve<IWindowService>(), ActionManager);
+            var mainWindowViewModel = new MainWindowViewModel(IoC.Resolve<ILoggerService>(), IoC.Resolve<IWindowService>(), ActionManager);
             mainWindowViewModel.LoadActionsCollection();
             var window = new MainWindow
             {
@@ -97,7 +97,6 @@ namespace Andromeda
             IoC.Register<IPsExecServices, PsExecServices>();
             IoC.Register<IWmiServices, WmiServices>();
             IoC.Register<ISccmClientServices, SccmClientServices>();
-            IoC.Register<IXmlServices, XmlServices>();
             IoC.Register<IRegistryServices, RegistryServices>();
             IoC.Register<IWindowService, WindowService>();
 
@@ -126,8 +125,6 @@ namespace Andromeda
 
         protected override void OnExit(ExitEventArgs e)
         {
-            //TODO: Add cleanup of all application resources
-
             base.OnExit(e);
         }
     }
